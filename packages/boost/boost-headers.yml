@@ -1,0 +1,40 @@
+- boost-headers:
+    <<: *thirdparty_defaults
+    version: 1.58.0.0
+    mode: dr
+    source: http://downloads.sourceforge.net/project/boost/boost/1.58.0/boost_1_58_0.tar.bz2
+    cmake_definitions:
+        - BASENAME_STRIP=boost_1_58_0
+        - BOOST_INSTALL_HEADERS=1
+    before_copy:
+        - ../boost-headers/CMakeLists.txt .
+    references:
+        definitions_boost_headers: &definitions_boost_headers
+            win32:
+                definitions:
+                    - -DBOOST_ALL_NO_LIB
+            win64:
+                definitions:
+                    - -DBOOST_ALL_NO_LIB
+            Linux_Ubuntu_trusty_x86_64:
+                definitions:
+                    - -DBOOST_ALL_NO_LIB
+            solaris_sparc32:
+                definitions:
+                    - -DBOOST_ALL_NO_LIB
+    unittest:
+        |
+            #include <boost/smart_ptr/shared_ptr.hpp>
+            #include <boost/make_shared.hpp>
+            int main()
+            {
+                boost::shared_ptr<int> a = boost::make_shared<int>(123);
+                return 0;
+            }
+    targets:
+        - dummy:
+            info:
+                <<: *library_dynamic_boost
+            extra:
+                <<: *definitions_boost_headers
+

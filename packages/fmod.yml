@@ -1,0 +1,22 @@
+- fmod:
+    <<: *thirdparty_defaults
+    version: 1.0.1.0
+    mode: r
+    source: http://localhost/packages/fmodstudioapi10703linux.tar.gz
+    uncompress_strip: fmodstudioapi10703linux/api/lowlevel
+    post_install:
+        - ./lib/x86_64/* lib/
+        - ./inc/*.h include/
+        - ./inc/*.hpp include/
+    build:
+        |
+            #!/bin/bash
+            echo installing fmod
+    targets:
+        - fmod:
+            info:
+                <<: *library_dynamic_exact
+        - fmodL:
+            info:
+                <<: *library_dynamic_exact
+

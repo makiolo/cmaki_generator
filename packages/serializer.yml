@@ -1,0 +1,13 @@
+- serializer:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    version_manager: git
+    cmake_target: null
+    post_install:
+        - ./*.h include/
+    mode: dr
+    source: https://makiolo@bitbucket.org/makiolo/serializer.git
+    targets:
+        - serializer:
+            info:
+                <<: *library_dynamic_exact

@@ -1,0 +1,24 @@
+- dune-freetype:
+    <<: *thirdparty_defaults
+    version: 1.0.0.0
+    mode: dr
+    source: http://download.savannah.gnu.org/releases/freetype/freetype-2.6.tar.bz2
+    uncompress_strip: freetype-2.6
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=ON
+    install: false
+    targets:
+        - freetype:
+            info:
+                <<: *library_dynamic_exact
+            extra:
+                win32:
+                    include:
+                        - include/freetype2
+                win64:
+                    include:
+                        - include/freetype2
+                Linux_Ubuntu_trusty_x86_64:
+                    include:
+                        - include/freetype2
+

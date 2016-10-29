@@ -1,0 +1,702 @@
+# begin environments references
+
+environment_new: &environment_new
+    PATH:
+        - $toolchain_BASE/bin
+    LD_LIBRARY_PATH:
+        - $toolchain_BASE/lib
+        - $toolchain_BASE/lib$ARCH
+    MANPATH:
+        - $toolchain_BASE/man
+    CPPFLAGS:
+        - -I$toolchain_BASE/include
+    PYTHONPATH:
+        - $toolchain_BASE/lib/python2.7/site-packages
+    LD_RUN_PATH:
+        - $toolchain_BASE/lib
+        - $toolchain_BASE/lib$ARCH
+    ACLOCAL_PATH:
+        - $toolchain_BASE/share/aclocal-1.15
+    PKG_CONFIG_PATH:
+        - $toolchain_BASE/lib/pkgconfig
+
+environment_new_solaris: &environment_new_solaris
+    <<: *environment_new
+    LDFLAGS:
+        - -L$toolchain_BASE/lib
+        - -L$toolchain_BASE/lib$ARCH
+        - -R$toolchain_BASE/lib
+        - -R$toolchain_BASE/lib$ARCH
+    LD_OPTIONS:
+        - -R$toolchain_BASE/lib
+        - -R$toolchain_BASE/lib$ARCH
+
+environment_new_linux: &environment_new_linux
+    <<: *environment_new
+    LDFLAGS:
+        - -L$toolchain_BASE/lib
+        - -L$toolchain_BASE/lib$ARCH
+        # traditional way of setting rpath only works in linux
+        #- -Wl,-rpath,\$${TOOLCHAIN}/lib
+        #- -Wl,--enable-new-dtags
+
+environment_old: &environment_old
+    PATH:
+        - /us/xatemb1d/image/bin
+        - /us/xatemb1d/scripts
+        - /us/xatemb1d/cmakelib
+    LD_LIBRARY_PATH:
+        - /us/xatemb1d/image/lib
+    MANPATH:
+        - /us/xatemb1d/image/man
+    PYTHONPATH:
+        - /us/xatemb1d/local/lib/python2.7/site-packages
+
+# end enviroments references
+
+compile_with_path_toolchain: &compile_with_path_toolchain
+    win32: 
+        generator: Visual Studio 11
+        ext_dyn: dll
+        ext_sta: lib
+        compiler:
+            - VC110, VC110
+    win64:
+        generator: Visual Studio 11 Win64
+        ext_dyn: dll
+        ext_sta: lib
+        compiler:
+            - VC110, VC110
+    Linux_Ubuntu_trusty_x86_64:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: a
+        compiler:
+            - gcc, g++
+        environment:
+            push_front:
+                <<: *environment_old
+            remove:
+                <<: *environment_new_linux
+            assign:
+                LC_ALL: en_GB.UTF-8
+            flags:
+                CFLAGS:
+                    - -m64 -pipe
+                CPPFLAGS:
+                    - -m64 -pipe
+    emscripten:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: bc
+        compiler:
+            - emcc, em++
+        environment:
+            push_front:
+                <<: *environment_old
+            remove:
+                <<: *environment_new_linux
+            flags:
+                CFLAGS:
+                    []
+                CPPFLAGS:
+                    []
+
+compile_with_toolchain: &compile_with_toolchain
+    win32:
+        generator: Visual Studio 11
+        ext_dyn: dll
+        ext_sta: lib
+        compiler:
+            - VC110, VC110
+    win64:
+        generator: Visual Studio 11 Win64
+        ext_dyn: dll
+        ext_sta: lib
+        compiler:
+            - VC110, VC110
+    Linux_Ubuntu_trusty_x86_64:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: a
+        compiler:
+            - $toolchain_BASE/bin/gcc, $toolchain_BASE/bin/g++
+        environment:
+            push_front:
+                <<: *environment_new_linux
+            remove:
+                <<: *environment_old
+            assign:
+                LC_ALL: en_GB.UTF-8
+                MAKE: $toolchain_BASE/bin/make
+                PKG_CONFIG_PATH: $toolchain_BASE/lib/pkgconfig
+            flags:
+                CFLAGS:
+                    - -m64 -pipe
+                CPPFLAGS:
+                    - -m64 -pipe
+    solaris_sparc32:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: a
+        compiler:
+            - $toolchain_BASE/bin/gcc, $toolchain_BASE/bin/g++
+        environment:
+            push_front:
+                <<: *environment_new_solaris
+            remove:
+                <<: *environment_old
+            assign:
+                MAKE: $toolchain_BASE/bin/make
+                PKG_CONFIG_PATH: $toolchain_BASE/lib/pkgconfig
+
+compile_with_native_compiler: &compile_with_native_compiler
+    Linux_Ubuntu_trusty_x86_64:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: a
+        compiler:
+            - /usr/bin/gcc, /usr/bin/g++
+        environment:
+            push_front:
+                <<: *environment_new_linux
+            remove:
+                <<: *environment_old
+            assign:
+                LC_ALL: en_GB.UTF-8
+            flags:
+                CFLAGS:
+                    - -march=native -pipe
+                CPPFLAGS:
+                    - -march=native -pipe
+    solaris_sparc32:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: a
+        compiler:
+            - /usr/sfw/bin/gcc, /usr/sfw/bin/g++
+        environment:
+            push_front:
+                <<: *environment_new_solaris
+            remove:
+                <<: *environment_old
+
+# layer 1 - minimal
+# system preset features:
+#   - Use system compiler
+#   - Compile in unix (linux & solaris)
+#   - Compile in release
+toolchain_minimal_defaults: &toolchain_minimal_defaults
+    platforms:
+        <<: *compile_with_native_compiler
+    mask: ls
+    mode: r
+    depends: null
+    source: skip
+    packing: false
+    exclude_from_all: true
+    priority: 10
+
+# layer 2 - tools
+# tools preset features:
+#   - Use last toolchain generated like compiler
+#   - Compile in unix (linux & solaris)
+#   - Compile in release
+toolchain_defaults: &toolchain_defaults
+    platforms:
+        <<: *compile_with_toolchain
+    mask: ls
+    mode: r
+    depends: null
+    source: skip
+    packing: false
+    exclude_from_all: true
+    priority: 20
+
+# layer 3 - third party
+# thirdparty preset features:
+#   - Use last toolchain generated like compiler
+#   - Compile in all operative systems
+#   - Compile in all build mode available
+thirdparty_defaults: &thirdparty_defaults
+    platforms:
+        <<: *compile_with_path_toolchain
+    mask: wlse
+    mode: dri
+    depends: null
+    source: skip
+    packing: true
+    unittest:
+        |
+            int main() { return 0; }
+    common_factor:
+        - include
+    priority: 30
+
+# thirdparty preset features:
+#   - Use toolchain present in path (be careful if toolchain_install was executed)
+#   - Compile in all operative systems
+#   - Compile in all build mode available
+thirdparty_old_defaults: &thirdparty_old_defaults
+    platforms:
+        <<: *compile_with_path_toolchain
+    mask: wlse
+    mode: dri
+    depends: null
+    source: skip
+    packing: true
+    # gcc 4.4 is deprecated by default, need to be explicit
+    exclude_from_all: true
+    unittest:
+        |
+            int main() { return 0; }
+    common_factor:
+        - include
+    priority: 30
+
+library_dynamic: &library_dynamic
+    common: &library_dynamic_common
+        include:
+            - $PLATFORM/include
+            - include
+    windows: &library_dynamic_windows
+        <<: *library_dynamic_common
+        dynamic:
+            debug:
+                dll:
+                    /*$TARGET*.dll/
+                lib:
+                    /*$TARGET*.lib/
+                pdb:
+                    /*$TARGET*.pdb/
+            relwithdebinfo:
+                dll:
+                    /*$TARGET*.dll/
+                lib:
+                    /*$TARGET*.lib/
+                pdb:
+                    /*$TARGET*.pdb/
+            release:
+                dll:
+                    /*$TARGET*.dll/
+                lib:
+                    /*$TARGET*.lib/
+                pdb:
+                    /*$TARGET*.pdb/
+
+    unix: &library_dynamic_unix
+        <<: *library_dynamic_common
+        dynamic:
+            debug:
+                so:
+                    - /lib*$TARGET*.so/
+                    - /*$TARGET*.so/
+            relwithdebinfo:
+                so:
+                    - /lib*$TARGET*.so/
+                    - /*$TARGET*.so/
+            release:
+                so:
+                    - /lib*$TARGET*.so/
+                    - /*$TARGET*.so/
+    win32:
+        <<: *library_dynamic_windows
+    win64:
+        <<: *library_dynamic_windows
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *library_dynamic_unix
+    solaris_sparc32:
+        <<: *library_dynamic_unix
+
+
+executable: &executable
+    windows: &executable_windows_common
+        executable:
+            release:
+                bin:
+                    /*${TARGET}.exe/
+    unix: &executable_unix_common
+        executable:
+            release:
+                bin:
+                    /*${TARGET}/
+    win32:
+        <<: *executable_windows_common
+    win64:
+        <<: *executable_windows_common
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *executable_unix_common
+    solaris_sparc32:
+        <<: *executable_unix_common
+
+executable_exact: &executable_exact
+    windows: &executable_exact_windows_common
+        executable:
+            release:
+                bin:
+                    - ${TARGET}.exe
+                    - bin/${TARGET}.exe
+                    - dll/${TARGET}.exe
+    unix: &executable_exact_unix_common
+        executable:
+            release:
+                bin:
+                    - $TARGET
+                    - bin/$TARGET
+                    - dll/$TARGET
+    win32:
+        <<: *executable_exact_windows_common
+    win64:
+        <<: *executable_exact_windows_common
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *executable_exact_unix_common
+    solaris_sparc32:
+        <<: *executable_exact_unix_common
+
+library_dynamic_exact: &library_dynamic_exact
+    common: &library_dynamic_exact_common
+        include:
+            - $PLATFORM/include
+            - include
+    windows: &library_dynamic_exact_windows
+        <<: *library_dynamic_exact_common
+        dynamic:
+            debug:
+                dll:
+                    - ${TARGET}d.dll
+                    - bin/${TARGET}d.dll
+                    - dll/${TARGET}d.dll
+                    - ${TARGET}_D.dll
+                    - bin/${TARGET}_D.dll
+                    - dll/${TARGET}_D.dll
+                    - $TARGET.dll
+                    - bin/$TARGET.dll
+                    - dll/$TARGET.dll
+                lib:
+                    - ${TARGET}d.lib
+                    - lib/${TARGET}d.lib
+                    - bin/${TARGET}d.lib
+                    - dll/${TARGET}d.lib
+                    - ${TARGET}_D.lib
+                    - lib/${TARGET}_D.lib
+                    - bin/${TARGET}_D.lib
+                    - dll/${TARGET}_D.lib
+                    - $TARGET.lib
+                    - lib/$TARGET.lib
+                    - bin/$TARGET.lib
+                    - dll/$TARGET.lib
+                pdb:
+                    - ${TARGET}d.pdb
+                    - pdb/${TARGET}d.pdb
+                    - bin/${TARGET}d.pdb
+                    - dll/${TARGET}d.pdb
+                    - ${TARGET}_D.pdb
+                    - pdb/${TARGET}_D.pdb
+                    - bin/${TARGET}_D.pdb
+                    - dll/${TARGET}_D.pdb
+                    - $TARGET.pdb
+                    - pdb/$TARGET.pdb
+                    - bin/$TARGET.pdb
+                    - dll/$TARGET.pdb
+            relwithdebinfo:
+                dll:
+                    - $TARGET.dll
+                    - bin/$TARGET.dll
+                    - dll/$TARGET.dll
+                lib:
+                    - $TARGET.lib
+                    - lib/$TARGET.lib
+                    - bin/$TARGET.lib
+                    - dll/$TARGET.lib
+                pdb:
+                    - $TARGET.pdb
+                    - pdb/$TARGET.pdb
+                    - bin/$TARGET.pdb
+                    - dll/$TARGET.pdb
+            release:
+                dll:
+                    - $TARGET.dll
+                    - bin/$TARGET.dll
+                    - dll/$TARGET.dll
+                lib:
+                    - $TARGET.lib
+                    - lib/$TARGET.lib
+                    - bin/$TARGET.lib
+                    - dll/$TARGET.lib
+                pdb:
+                    - $TARGET.pdb
+                    - pdb/$TARGET.pdb
+                    - bin/$TARGET.pdb
+                    - dll/$TARGET.pdb
+
+    unix: &library_dynamic_exact_unix
+        <<: *library_dynamic_exact_common
+        dynamic:
+            debug:
+                so:
+                    - lib${TARGET}d.so
+                    - lib/lib${TARGET}d.so
+                    - bin/lib${TARGET}d.so
+                    - lib${ARCH}/lib${TARGET}d.so
+                    - lib/${ARCH}/lib${TARGET}d.so
+                    - lib${TARGET}_D.so
+                    - lib/lib${TARGET}_D.so
+                    - bin/lib${TARGET}_D.so
+                    - lib${ARCH}/lib${TARGET}_D.so
+                    - lib/${ARCH}/lib${TARGET}_D.so
+                    - Debug/lib${TARGET}d.so
+                    - lib${TARGET}.so
+                    - lib/lib${TARGET}.so
+                    - bin/lib${TARGET}.so
+                    - lib${ARCH}/lib${TARGET}.so
+                    - lib/${ARCH}/lib${TARGET}.so
+                    - Debug/lib${TARGET}.so
+                    - lib${TARGET}_debug.so
+                    - lib/lib${TARGET}_debug.so
+                    - bin/lib${TARGET}_debug.so
+                    - lib${ARCH}/lib${TARGET}_debug.so
+                    - lib/${ARCH}/lib${TARGET}_debug.so
+                    - Debug/lib${TARGET}_debug.so
+                    - lib${TARGET}-d.so
+                    - lib/lib${TARGET}-d.so
+                    - bin/lib${TARGET}-d.so
+                    - lib${ARCH}/lib${TARGET}-d.so
+                    - lib/${ARCH}/lib${TARGET}-d.so
+                    - Debug/lib${TARGET}-d.so
+            relwithdebinfo:
+                so:
+                    - lib$TARGET.so
+                    - lib/lib$TARGET.so
+                    - bin/lib$TARGET.so
+                    - lib${ARCH}/lib$TARGET.so
+                    - lib/${ARCH}/lib$TARGET.so
+                    - RelWithDebInfo/lib$TARGET.so
+            release:
+                so:
+                    - lib$TARGET.so
+                    - lib/lib$TARGET.so
+                    - bin/lib$TARGET.so
+                    - lib${ARCH}/lib$TARGET.so
+                    - lib/${ARCH}/lib$TARGET.so
+                    - Release/lib$TARGET.so
+    win32:
+        <<: *library_dynamic_exact_windows
+    win64:
+        <<: *library_dynamic_exact_windows
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *library_dynamic_exact_unix
+    solaris_sparc32:
+        <<: *library_dynamic_exact_unix
+
+library_static: &library_static
+    common: &library_static_common
+        include:
+            - $PLATFORM/include
+            - include
+        static:
+            debug:
+                lib:
+                    /*$TARGET*.$EXT_STA/
+            relwithdebinfo:
+                lib:
+                    /*$TARGET*.$EXT_STA/
+            release:
+                lib:
+                    /*$TARGET*.$EXT_STA/
+    win32:
+        <<: *library_static_common
+    win64:
+        <<: *library_static_common
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *library_static_common
+    solaris_sparc32:
+        <<: *library_static_common
+
+library_static_exact: &library_static_exact
+    common: &library_static_exact_common
+        include:
+            - $PLATFORM/include
+            - include
+        static:
+            debug:
+                lib:
+                    - ${TARGET}d.$EXT_STA
+                    - lib/${TARGET}d.$EXT_STA
+                    - lib${TARGET}d.$EXT_STA
+                    - lib/lib${TARGET}d.$EXT_STA
+                    - lib/lib${TARGET}.$EXT_STA
+                    - ${TARGET}.$EXT_STA
+                    - lib/${TARGET}.$EXT_STA
+                    - lib${TARGET}.$EXT_STA
+            relwithdebinfo:
+                lib:
+                    - ${TARGET}.$EXT_STA
+                    - lib/${TARGET}.$EXT_STA
+                    - lib${TARGET}.$EXT_STA
+                    - lib/lib${TARGET}.$EXT_STA
+            release:
+                lib:
+                    - ${TARGET}.$EXT_STA
+                    - lib/${TARGET}.$EXT_STA
+                    - lib${TARGET}.$EXT_STA
+                    - lib/lib${TARGET}.$EXT_STA
+    win32:
+        <<: *library_static_exact_common
+    win64:
+        <<: *library_static_exact_common
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *library_static_exact_common
+    solaris_sparc32:
+        <<: *library_static_exact_common
+
+library_net: &library_net
+    windows: &library_net_windows
+        # avoid append to BBVA_TARGET_3RDPARTY_DEPENDENCIES
+        add_3rdparty_dependencies: false
+        # lib is not mandatory in .NET library
+        lib_provided: false
+        dynamic:
+            debug:
+                dll:
+                    /*$TARGET*.dll/
+                pdb:
+                    /*$TARGET*.pdb/
+            relwithdebinfo:
+                dll:
+                    /*$TARGET*.dll/
+                pdb:
+                    /*$TARGET*.pdb/
+            release:
+                dll:
+                    /*$TARGET*.dll/
+                pdb:
+                    /*$TARGET*.pdb/
+    win32:
+        <<: *library_net_windows
+    win64:
+        <<: *library_net_windows
+
+library_net_exact: &library_net_exact
+    windows: &library_net_exact_windows
+        <<: *library_net_exact_windows
+        # avoid append to BBVA_TARGET_3RDPARTY_DEPENDENCIES
+        add_3rdparty_dependencies: false
+        # lib is not mandatory in .NET library
+        lib_provided: false
+        dynamic:
+            debug:
+                dll:
+                    - ${TARGET}d.dll
+                    - bin/${TARGET}d.dll
+                    - dll/${TARGET}d.dll
+                    - $TARGET.dll
+                    - bin/$TARGET.dll
+                    - dll/$TARGET.dll
+                pdb:
+                    - ${TARGET}d.pdb
+                    - pdb/${TARGET}d.pdb
+                    - bin/${TARGET}d.pdb
+                    - dll/${TARGET}d.pdb
+                    - ${TARGET}.pdb
+                    - dll/${TARGET}.pdb
+                    - pdb/${TARGET}.pdb
+                    - bin/${TARGET}.pdb
+            relwithdebinfo:
+                dll:
+                    - ${TARGET}.dll
+                    - bin/${TARGET}.dll
+                    - dll/${TARGET}.dll
+                pdb:
+                    - ${TARGET}.pdb
+                    - pdb/${TARGET}.pdb
+                    - bin/${TARGET}.pdb
+                    - dll/${TARGET}.pdb
+            release:
+                dll:
+                    - ${TARGET}.dll
+                    - bin/${TARGET}.dll
+                    - dll/${TARGET}.dll
+                pdb:
+                    - ${TARGET}.pdb
+                    - pdb/${TARGET}.pdb
+                    - bin/${TARGET}.pdb
+                    - dll/${TARGET}.pdb
+    win32:
+        <<: *library_net_exact_windows
+    win64:
+        <<: *library_net_exact_windows
+
+# case very specific for lapack
+# when need distribute dll (only windows) but dont need linking
+library_only_dll: &library_only_dll
+    windows: &library_only_dll_windows
+        add_3rdparty_dependencies: false
+        lib_provided: false
+        dynamic:
+            debug:
+                dll:
+                    /*$TARGET*.dll/
+                pdb:
+                    /*$TARGET*.pdb/
+            relwithdebinfo:
+                dll:
+                    /*$TARGET*.dll/
+                pdb:
+                    /*$TARGET*.pdb/
+            release:
+                dll:
+                    /*$TARGET*.dll/
+                pdb:
+                    /*$TARGET*.pdb/
+
+library_dynamic_boost: &library_dynamic_boost
+    common: &common_boost
+        include:
+            - include
+        definitions:
+            - -D${PACKAGE_UPPER}_DYN_LINK
+    windows: &windows_dynamic_boost
+        <<: *common_boost
+        dynamic:
+            debug:
+                dll:
+                    /$TARGET-*-mt-*d-*_*.dll/
+                lib:
+                    /$TARGET-*-mt-*d-*_*.lib/
+                pdb:
+                    null
+            relwithdebinfo:
+                dll:
+                    /$TARGET-*-mt-*_*.dll/
+                lib:
+                    /$TARGET-*-mt-*_*.dll/
+                pdb:
+                    null
+            release:
+                dll:
+                    /$TARGET-*-mt-*_*.dll/
+                lib:
+                    /$TARGET-*-mt-*_*.lib/
+                pdb:
+                    null
+    unix: &unix_dynamic_boost
+        <<: *common_boost
+        dynamic:
+            debug:
+                so:
+                    /lib$TARGET-*-mt-*d-*_*.so/
+            relwithdebinfo:
+                so:
+                    /lib$TARGET-*-mt-*_*.so/
+            release:
+                so:
+                    /lib$TARGET-*-mt-*_*.so/
+    win32:
+        <<: *windows_dynamic_boost
+    win64:
+        <<: *windows_dynamic_boost
+    Linux_Ubuntu_trusty_x86_64:
+        <<: *unix_dynamic_boost
+    solaris_sparc32:
+        <<: *unix_dynamic_boost
+

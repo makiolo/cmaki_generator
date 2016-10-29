@@ -1,0 +1,18 @@
+- raknet:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    version_manager: git
+    source: https://github.com/OculusVR/RakNet.git
+    post_install:
+        - ./Source/*.h include/raknet/
+    unittest:
+        |
+            int main()
+            {
+                return 0;
+            }
+    targets:
+        - RakNetDLL:
+            info:
+                <<: *library_dynamic_exact
+

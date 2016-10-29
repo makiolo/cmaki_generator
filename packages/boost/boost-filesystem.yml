@@ -1,0 +1,20 @@
+- boost-filesystem:
+    <<: *thirdparty_defaults
+    version: 1.58.0.0
+    mode: dr
+    source: null
+    uncompress: null
+    depends:
+        - boost-headers
+        - boost-system
+    before_copy:
+        - ../boost-headers/CMakeLists.txt .
+    cmake_definitions:
+        - BASENAME_STRIP=boost_1_58_0
+        - BOOST_PARAMETERS=--with-filesystem
+        - BOOST_INSTALL_HEADERS=0
+    targets:
+        - boost_filesystem:
+            info:
+                <<: *library_dynamic_boost
+

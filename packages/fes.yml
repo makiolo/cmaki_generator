@@ -1,0 +1,29 @@
+- fast-event-system:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    version_manager: git
+    cmake_target: null
+    post_install:
+        - ./*.h include/fes/
+        - ./concurrentqueue/*.h include/fes/concurrentqueue/
+        - ./metacommon/*.h include/fes/metacommon/
+    mode: dr
+    source: https://github.com/makiolo/fast-event-system.git
+    targets:
+        - fes:
+            info:
+                <<: *library_dynamic_exact
+            extra:
+                win32:
+                    include:
+                        - include/fes
+                        - include/fes/metacommon
+                win64:
+                    include:
+                        - include/fes
+                        - include/fes/metacommon
+                Linux_Ubuntu_trusty_x86_64:
+                    include:
+                        - include/fes
+                        - include/fes/metacommon
+

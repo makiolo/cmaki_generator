@@ -1,0 +1,44 @@
+- boost-python:
+    <<: *thirdparty_defaults
+    version: 1.58.0.0
+    mode: r
+    source: null
+    uncompress: null
+    depends:
+        - boost-headers
+        - python
+    before_copy:
+        - ../boost-headers/CMakeLists.txt .
+    cmake_definitions:
+        - BASENAME_STRIP=boost_1_58_0
+        - BOOST_PARAMETERS=--with-python
+        - BOOST_INSTALL_HEADERS=0
+    targets:
+        - boost_python:
+            info:
+                <<: *library_dynamic_boost
+
+- boost-python-debug:
+    <<: *thirdparty_defaults
+    version: 1.58.0.0
+    mode: d
+    source: null
+    uncompress: null
+    depends:
+        - boost-headers
+        - python-debug
+    before_copy:
+        - ../boost-headers/CMakeLists.txt .
+    cmake_definitions:
+        - BASENAME_STRIP=boost_1_58_0
+        - BOOST_PARAMETERS=--with-python
+        - BOOST_INSTALL_HEADERS=0
+    targets:
+        - boost_python:
+            info:
+                <<: *library_dynamic_boost
+            extra:
+                Linux_Ubuntu_trusty_x86_64:
+                    definitions:
+                        - -DBOOST_DEBUG_PYTHON=1
+

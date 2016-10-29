@@ -1,0 +1,10 @@
+- libpng:
+    <<: *thirdparty_defaults
+    version: 1.6.20.0
+    source: http://download.sourceforge.net/libpng/libpng-1.6.20.tar.gz
+    uncompress_strip: libpng-1.6.20
+    targets:
+        - png16:
+            info:
+                <<: *library_dynamic_exact
+

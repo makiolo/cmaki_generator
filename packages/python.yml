@@ -1,0 +1,76 @@
+- python:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    mask: w
+    version_manager: git
+    mode: dr
+    source: https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git
+    targets:
+        - libpython2.7:
+            info:
+                <<: *library_static_exact
+            extra:
+                win32:
+                    include:
+                        - include/python2.7
+                win64:
+                    include:
+                        - include/python2.7
+                Linux_Ubuntu_trusty_x86_64:
+                    include:
+                        - include/python2.7
+        - python2.7:
+            info:
+                <<: *executable_exact
+
+- python-debug:
+    <<: *thirdparty_defaults
+    version: 2.7.11.0
+    mask: ls
+    mode: d
+    source: https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
+    uncompress_strip: Python-2.7.11
+    build:
+        |
+            #!/bin/bash
+            source find.script
+            export CFLAGS="-fPIC $CFLAGS"
+            ./configure --prefix=$python_debug_HOME --enable-unicode=ucs4 --with-pydebug && make -j $CORES && make -j $CORES install
+            exit $?
+    targets:
+        - libpython2.7:
+            info:
+                <<: *library_static_exact
+            extra:
+                Linux_Ubuntu_trusty_x86_64:
+                    include:
+                        - include/python2.7
+                    definitions:
+                        - -DPy_DEBUG
+
+- python:
+    <<: *thirdparty_defaults
+    version: 2.7.11.0
+    mask: ls
+    mode: r
+    source: https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
+    uncompress_strip: Python-2.7.11
+    build:
+        |
+            #!/bin/bash
+            source find.script
+            export CFLAGS="-fPIC $CFLAGS"
+            ./configure --prefix=$python_HOME --enable-unicode=ucs4 && make -j $CORES && make -j $CORES install
+            exit $?
+    targets:
+        - libpython2.7:
+            info:
+                <<: *library_static_exact
+            extra:
+                Linux_Ubuntu_trusty_x86_64:
+                    include:
+                        - include/python2.7
+        - python2.7:
+            info:
+                <<: *executable_exact
+

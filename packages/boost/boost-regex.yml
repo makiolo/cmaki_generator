@@ -1,0 +1,19 @@
+- boost-regex:
+    <<: *thirdparty_defaults
+    version: 1.58.0.0
+    mode: dr
+    source: null
+    uncompress: null
+    depends:
+        - boost-headers
+    before_copy:
+        - ../boost-headers/CMakeLists.txt .
+    cmake_definitions:
+        - BASENAME_STRIP=boost_1_58_0
+        - BOOST_PARAMETERS=--with-regex
+        - BOOST_INSTALL_HEADERS=0
+    targets:
+        - boost_regex:
+            info:
+                <<: *library_dynamic_boost
+
