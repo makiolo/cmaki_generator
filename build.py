@@ -398,7 +398,7 @@ usage:""")
     os.environ['TOOLCHAIN'] = parameters.toolchain
 
     # prepare cmakelin
-    prepare_cmakelib(parameters)
+    # prepare_cmakelib(parameters)
 
     # generate amalgaimation yaml
     amalgamation_yaml(parameters.rootdir)

@@ -81,8 +81,8 @@ elif sys.platform.startswith("linux"):  # linux2
     else:
         print('using linux ubuntu ...')
         somask_id = 'l'
-        archs = {'Linux_Ubuntu_trusty_x86_64': '64'}
-        platforms = ["Linux_Ubuntu_trusty_x86_64"]
+        archs = {"Linux_Ubuntu_xenial_x86_64": '64'}
+        platforms = ["Linux_Ubuntu_xenial_x86_64"]
 elif sys.platform.startswith("sun"): # sunos5
     somask_id = 's'
     archs = {'solaris_sparc32': ''}
@@ -526,6 +526,12 @@ class ThirdParty:
                 if key == plat:
                     plat_parms = parameters['platforms'][key]
                     raise Found()
+            else:
+                if 'default' in parameters['platforms']:
+                    plat_parms = parameters['platforms']['default']
+                    raise Found()
+                else:
+                    raise Exception("not found 'default' platform or %s" % plat)
         except Found:
             try:
                 generator = plat_parms['generator']
@@ -848,26 +854,26 @@ class ThirdParty:
             utils.tryremove_dir( build_directory )
             logging.info('Download from git: %s' % url)
             self.safe_system('git clone --recursive %s %s' % (url, build_directory), compiler_replace_maps)
-            # depends_file = self.user_parameters.depends
-            # if depends_file is not None:
-            #     with utils.working_directory(build_directory):
-            #         # leer el fichero de dependencias
-            #         if os.path.exists(depends_file):
-            #             data = utils.deserialize(depends_file)
-            #         else:
-            #             data = {}
-            #
-            #         # obedecer, si trae algo util
-            #         if package in data:
-            #             logging.info('updating to revision %s' % data[package])
-            #             self.safe_system('git reset --hard %s' % (data[package]), compiler_replace_maps)
-            #
-            #         # actualizar y reescribir
-            #         revision = hash_version.get_one_revision_git(build_directory)
-            #         assert(len(revision) > 0)
-            #         data[package] = revision
-            #         utils.serialize(data, depends_file)
-            # # utils.tryremove_dir( os.path.join(build_directory, '.git') )
+            depends_file = self.user_parameters.depends
+            if depends_file is not None:
+                with utils.working_directory(build_directory):
+                    # leer el fichero de dependencias
+                    if os.path.exists(depends_file):
+                        data = utils.deserialize(depends_file)
+                    else:
+                        data = {}
+
+                    # obedecer, si trae algo util
+                    if package in data:
+                        logging.info('updating to revision %s' % data[package])
+                        self.safe_system('git reset --hard %s' % (data[package]), compiler_replace_maps)
+
+                    # actualizar y reescribir
+                    revision = hash_version.get_one_revision_git(build_directory)
+                    assert(len(revision) > 0)
+                    data[package] = revision
+                    utils.serialize(data, depends_file)
+            # utils.tryremove_dir( os.path.join(build_directory, '.git') )
 
         # file in http
         elif (     url.startswith('http://')

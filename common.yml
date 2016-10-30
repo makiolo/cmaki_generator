@@ -55,7 +55,7 @@ environment_old: &environment_old
 # end enviroments references
 
 compile_with_path_toolchain: &compile_with_path_toolchain
-    win32: 
+    win32:
         generator: Visual Studio 11
         ext_dyn: dll
         ext_sta: lib
@@ -67,7 +67,7 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_sta: lib
         compiler:
             - VC110, VC110
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         generator: Unix Makefiles
         ext_dyn: so
         ext_sta: a
@@ -115,7 +115,7 @@ compile_with_toolchain: &compile_with_toolchain
         ext_sta: lib
         compiler:
             - VC110, VC110
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         generator: Unix Makefiles
         ext_dyn: so
         ext_sta: a
@@ -151,7 +151,7 @@ compile_with_toolchain: &compile_with_toolchain
                 PKG_CONFIG_PATH: $toolchain_BASE/lib/pkgconfig
 
 compile_with_native_compiler: &compile_with_native_compiler
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         generator: Unix Makefiles
         ext_dyn: so
         ext_sta: a
@@ -303,7 +303,7 @@ library_dynamic: &library_dynamic
         <<: *library_dynamic_windows
     win64:
         <<: *library_dynamic_windows
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *library_dynamic_unix
     solaris_sparc32:
         <<: *library_dynamic_unix
@@ -324,7 +324,7 @@ executable: &executable
         <<: *executable_windows_common
     win64:
         <<: *executable_windows_common
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *executable_unix_common
     solaris_sparc32:
         <<: *executable_unix_common
@@ -348,7 +348,7 @@ executable_exact: &executable_exact
         <<: *executable_exact_windows_common
     win64:
         <<: *executable_exact_windows_common
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *executable_exact_unix_common
     solaris_sparc32:
         <<: *executable_exact_unix_common
@@ -483,7 +483,7 @@ library_dynamic_exact: &library_dynamic_exact
         <<: *library_dynamic_exact_windows
     win64:
         <<: *library_dynamic_exact_windows
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *library_dynamic_exact_unix
     solaris_sparc32:
         <<: *library_dynamic_exact_unix
@@ -507,7 +507,7 @@ library_static: &library_static
         <<: *library_static_common
     win64:
         <<: *library_static_common
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *library_static_common
     solaris_sparc32:
         <<: *library_static_common
@@ -544,7 +544,7 @@ library_static_exact: &library_static_exact
         <<: *library_static_exact_common
     win64:
         <<: *library_static_exact_common
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *library_static_exact_common
     solaris_sparc32:
         <<: *library_static_exact_common
@@ -695,7 +695,7 @@ library_dynamic_boost: &library_dynamic_boost
         <<: *windows_dynamic_boost
     win64:
         <<: *windows_dynamic_boost
-    Linux_Ubuntu_trusty_x86_64:
+    default:
         <<: *unix_dynamic_boost
     solaris_sparc32:
         <<: *unix_dynamic_boost

@@ -20,6 +20,7 @@ if __name__ == '__main__':
     else:
         data = {}
     data[parameters.name] = parameters.version
+    logging.info('serialize data = %s' % data)
     utils.serialize_json(data, depends_file)
     os.system('python -m json.tool %s > %s.json' % (depends_file, depends_file))
     utils.tryremove(depends_file)
