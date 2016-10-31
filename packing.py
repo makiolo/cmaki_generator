@@ -23,7 +23,7 @@ def packing(node, parameters, compiler_replace_maps):
         for plat, build_mode in product(platforms, build_modes):
             workspace = node.get_workspace(plat)
             build_directory = os.path.join(os.getcwd(), node.get_build_directory(plat, build_mode))
-            revision_git = hash_version.get_one_revision_git(build_directory, short=False)
+            revision_git = hash_version.get_last_changeset(build_directory, short=False)
             version_old = version
             version = hash_version.to_cmaki_version(build_directory, revision_git)
             logging.info('[git] Renamed version from %s to %s' % (version_old, version))

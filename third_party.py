@@ -49,7 +49,7 @@ class FailThirdParty(Exception):
 #
 # INMUTABLE GLOBALS
 #
-HTTP_URL_NPSERVER = 'http://localhost/packages'
+HTTP_URL_NPSERVER = 'https://artifacts.000webhostapp.com/packages'
 CMAKELIB_URL='https://github.com/makiolo/cmaki.git'
 prefered = {}
 prefered['Debug'] = ['Debug', 'RelWithDebInfo', 'Release']
@@ -770,11 +770,8 @@ class ThirdParty:
 
     def remove_cmakefiles(self):
         utils.tryremove('CMakeCache.txt')
-
         utils.tryremove('cmake_install.cmake')
-
         utils.tryremove('install_manifest.txt')
-
         utils.tryremove_dir('CMakeFiles')
 
 
@@ -865,11 +862,14 @@ class ThirdParty:
 
                     # obedecer, si trae algo util
                     if package in data:
-                        logging.info('updating to revision %s' % data[package])
-                        self.safe_system('git reset --hard %s' % (data[package]), compiler_replace_maps)
+                        logging.info('data package is %s' % data[package])
+                        git_version = hash_version.to_git_version(build_directory, data[package])
+                        logging.info('data package in git version is %s' % git_version)
+                        logging.info('updating to revision %s' % git_version)
+                        self.safe_system('git reset --hard %s' % git_version, compiler_replace_maps)
 
                     # actualizar y reescribir
-                    revision = hash_version.get_one_revision_git(build_directory)
+                    revision = hash_version.get_last_version(build_directory)
                     assert(len(revision) > 0)
                     data[package] = revision
                     utils.serialize(data, depends_file)

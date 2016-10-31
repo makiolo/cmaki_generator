@@ -87,19 +87,21 @@ def tryremove(filename):
         pass
 
 def _tryremove_dir(directory):
-    if os.path.isdir(directory):
-        i = 0
-        tries = 3
-        while i < tries:
-            try:
-                shutil.rmtree(directory)
-                if not os.path.exists(directory):
-                    i = tries + 1
-            except OSError:
-                logging.debug('Fail removing %s. Retry %d/%d' % (directory, i, tries))
+    i = 0
+    tries = 3
+    while os.path.isdir(directory):
+        try:
+            shutil.rmtree(directory)
+            if not os.path.exists(directory):
+                i = tries + 1
+        except OSError:
+            logging.debug('Fail removing %s. Retry %d/%d' % (directory, i + 1, tries))
+            if i < tries:
                 time.sleep(1)
-            finally:
-                i += 1
+            else:
+                raise Exception("Fail removing %s" % os.path.abspath(directory))
+        finally:
+            i += 1
 
 def tryremove_dir(source):
     logging.debug('Removing directory %s' % (source))
@@ -130,9 +132,11 @@ def download_from_url(url, filename):
                     file_size_dl += len(buffer)
                     f.write(buffer)
     else:
-        logging.warning('skipping download, already exists %s' % filename)
+        logging.debug('skipping download, already exists %s' % filename)
 
 def setup_logging(level, logname):
+    format_console_log = '%(asctime)s %(levelname)-7s %(message)s'
+    format_date = '%H-%M:%S'
     dirlog = os.path.dirname(logname)
     if dirlog != '':
         trymkdir(dirlog)
@@ -142,11 +146,11 @@ def setup_logging(level, logname):
         logging.root.removeHandler( logging.root.handlers[0] )
     handler = logging.StreamHandler()
     handler.setLevel(level)
-    handler.setFormatter(logging.Formatter('%(asctime)s %(name)-12s: %(levelname)-8s %(message)s'))
+    handler.setFormatter(logging.Formatter(format_console_log, format_date))
     logger.addHandler(handler)
     handler2 = logging.FileHandler(logname)
     handler2.setLevel(logging.DEBUG)
-    handler2.setFormatter(logging.Formatter('%(asctime)s %(name)-12s: %(levelname)-8s %(message)s'))
+    handler2.setFormatter(logging.Formatter(format_console_log, format_date))
     logger.addHandler(handler2)
 
 def prompt_yes_no(default = False):
@@ -360,11 +364,13 @@ def get_real_home():
     if sys.platform.startswith("sun"):
         # problems launching subshell in solaris
         return os.environ['HOME']
-    else:
+    elif sys.platform.startswith("linux"):
         cmd = "REAL_HOME=$(cd $HOME && pwd -P) && echo $REAL_HOME"
         for line in get_stdout(cmd):
             return line
         return os.environ['HOME']
+    else:
+        return os.path.expanduser('~')
 
 @contextlib.contextmanager
 def working_directory(path):
@@ -380,7 +386,10 @@ def walklevel(some_dir, level=1):
     os.walk() with max level
     '''
     some_dir = some_dir.rstrip(os.path.sep)
-    assert os.path.isdir(some_dir)
+    if not os.path.isdir(some_dir):
+        logging.error('%s is not folder' % some_dir)
+        sys.exit(1)
+
     num_sep = some_dir.count(os.path.sep)
     for root, dirs, files in os.walk(some_dir):
         yield root, dirs, files
@@ -478,20 +487,22 @@ def get_stdout(cmd, env=os.environ.copy(), program_required=None):
 
 def safe_system(cmd, env=os.environ.copy()):
     logging.debug("exec command: %s" % cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
-    data, err = p.communicate()
-    data = [line for line in data.split('\n')]
-    if p.returncode != 0:
-        logging.error("begin@output: %s" % cmd)
-    for line in data:
+    if False:
+        # TODO: env vars
+        ret = os.system(cmd)
+        return ret
+    else:
+        p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
+        data, err = p.communicate()
+        data = [line for line in data.split('\n')]
         if p.returncode != 0:
-            if (line.lower().find('error') != -1) or (line.lower().find('fatal') != -1):
-                logging.error(line)
-            else:
+            logging.error("begin@output: %s" % cmd)
+        for line in data:
+            if p.returncode != 0:
                 logging.warning(line)
-        else:
-            logging.debug(line)
-    if p.returncode != 0:
-        logging.error("end@output: %s" % cmd)
-    return p.returncode
+            else:
+                logging.debug(line)
+        if p.returncode != 0:
+            logging.error("end@output: %s" % cmd)
+        return p.returncode
 
