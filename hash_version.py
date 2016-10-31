@@ -69,7 +69,7 @@ def get_last_changeset(repo, short=False):
     return ""
 
 def get_last_version(repo):
-    return to_cmaki_version( get_last_changeset(repo) )
+    return to_cmaki_version(repo, get_last_changeset(repo))
 
 def rehash_simple(commit_name):
     add = 0

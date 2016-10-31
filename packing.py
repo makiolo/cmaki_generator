@@ -36,7 +36,7 @@ def packing(node, parameters, compiler_replace_maps):
             new_workspace = node.get_workspace(plat)
             new_source_folder = node.get_base_folder()
 
-            # changed version ? 
+            # changed version ?
             if source_folder != new_source_folder:
                 utils.move_folder_recursive(os.path.join(workspace, source_folder), os.path.join(workspace, new_source_folder))
                 utils.move_folder_recursive(workspace, new_workspace)
