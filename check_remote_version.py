@@ -19,17 +19,17 @@ version_separator = '.'
 version_count_max = 4
 
 def version_to_tuple(version_str):
-    # try:
-    if (version_str is not None) and (len(version_str) > 0):
-        count = len(version_str.split(version_separator))
-        list_data = [int(x) for x in version_str.split(version_separator)]
-        zeros = [0 for x in range(version_count_max - count)]
-        list_data.extend(zeros)
-        return tuple(list_data)
-    else:
+    try:
+        if (version_str is not None) and (len(version_str) > 0):
+            count = len(version_str.split(version_separator))
+            list_data = [int(x) for x in version_str.split(version_separator)]
+            zeros = [0 for x in range(version_count_max - count)]
+            list_data.extend(zeros)
+            return tuple(list_data)
+        else:
+            return None
+    except ValueError:
         return None
-    # except ValueError:
-    #     return None
 
 class package(object):
     def __init__(self, name,  version, local):

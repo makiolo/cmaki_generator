@@ -25,7 +25,7 @@
             info:
                 <<: *library_dynamic_exact
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     definitions:
                         - -DOXYGINE_SDL=1
 

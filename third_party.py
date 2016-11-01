@@ -462,16 +462,19 @@ class ThirdParty:
                     outputinfo = target_info['info']
                     if plat in outputinfo:
                         platform_info = copy.deepcopy( outputinfo[plat] )
+                    elif 'default' in outputinfo:
+                        platform_info = copy.deepcopy( outputinfo['default'] )
                     else:
                         platform_info = None
                 else:
                     platform_info = None
 
-
                 if 'extra' in target_info:
                     outputinfo_extra = target_info['extra']
                     if plat in outputinfo_extra:
                         platform_extra = copy.deepcopy( outputinfo_extra[plat] )
+                    elif 'default' in outputinfo_extra:
+                        platform_extra = copy.deepcopy( outputinfo_extra['default'] )
                     else:
                         platform_extra = None
                 else:
@@ -494,8 +497,9 @@ class ThirdParty:
                                                                         })
 
                 if platform_info is None:
-                    logging.warning('No platform info in package %s, paltform %s' % (superpackage, plat))
-                    platform_info = {}
+                    logging.error('No platform info in package %s, platform %s' % (superpackage, plat))
+                    logging.error("%s" % targets)
+                    sys.exit(1)
 
                 yield (target_name, platform_info)
 

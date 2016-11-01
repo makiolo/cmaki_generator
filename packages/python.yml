@@ -16,7 +16,7 @@
                 win64:
                     include:
                         - include/python2.7
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/python2.7
         - python2.7:
@@ -42,7 +42,7 @@
             info:
                 <<: *library_static_exact
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/python2.7
                     definitions:
@@ -67,7 +67,7 @@
             info:
                 <<: *library_static_exact
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/python2.7
         - python2.7:

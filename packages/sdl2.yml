@@ -17,7 +17,7 @@
                 win64:
                     include:
                         - include/SDL2
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/SDL2
 

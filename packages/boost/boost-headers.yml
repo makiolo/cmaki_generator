@@ -16,7 +16,7 @@
             win64:
                 definitions:
                     - -DBOOST_ALL_NO_LIB
-            Linux_Ubuntu_trusty_x86_64:
+            default:
                 definitions:
                     - -DBOOST_ALL_NO_LIB
             solaris_sparc32:

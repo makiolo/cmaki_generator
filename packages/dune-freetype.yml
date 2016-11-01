@@ -18,7 +18,7 @@
                 win64:
                     include:
                         - include/freetype2
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/freetype2
 

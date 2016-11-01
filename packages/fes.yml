@@ -22,7 +22,7 @@
                     include:
                         - include/fes
                         - include/fes/metacommon
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/fes
                         - include/fes/metacommon

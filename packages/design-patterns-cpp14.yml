@@ -20,7 +20,7 @@
                 win64:
                     include:
                         - include/dp14/metacommon
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/dp14/metacommon
                 emscripten:

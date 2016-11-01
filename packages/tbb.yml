@@ -35,7 +35,7 @@
             info:
                 <<: *library_dynamic_exact
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     definitions:
                         - -DTBB_USE_DEBUG=0
         - tbbmalloc:
@@ -82,7 +82,7 @@
             info:
                 <<: *library_dynamic_exact
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     definitions:
                         - -DTBB_USE_DEBUG=1
         - tbbmalloc:

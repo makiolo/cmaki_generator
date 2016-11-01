@@ -13,7 +13,7 @@
         win64:
             include:
                 - include/bullet
-        Linux_Ubuntu_trusty_x86_64:
+        default:
             include:
                 - include/bullet
     targets:

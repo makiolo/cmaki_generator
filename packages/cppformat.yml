@@ -20,7 +20,7 @@
                 win64:
                     include:
                         - include/cppformat
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     include:
                         - include/cppformat
 

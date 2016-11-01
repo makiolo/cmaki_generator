@@ -38,7 +38,7 @@
             info:
                 <<: *library_dynamic_boost
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     definitions:
                         - -DBOOST_DEBUG_PYTHON=1
 

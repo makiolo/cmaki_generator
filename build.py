@@ -220,8 +220,8 @@ def clean_subset(solutions):
     return groups
 
 def prepare_cmakelib(parameters):
-    if os.path.isdir(os.path.join(parameters.cmakefiles)):
-        utils.tryremove_dir(parameters.cmakefiles)
+    # if os.path.isdir(os.path.join(parameters.cmakefiles)):
+    #     utils.tryremove_dir(parameters.cmakefiles)
     utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, parameters.cmakefiles))
 
 def init_parameter_path(value, default):

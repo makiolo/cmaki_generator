@@ -20,7 +20,7 @@
             info:
                 <<: *library_dynamic_boost
             extra:
-                Linux_Ubuntu_trusty_x86_64:
+                default:
                     system_depends:
                         - pthread
                 solaris_sparc32:
