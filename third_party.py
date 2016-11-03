@@ -81,7 +81,7 @@ elif sys.platform.startswith("linux"):  # linux2
     else:
         print('using linux ...')
         somask_id = 'l'
-        for platform in utils.get_stdout(os.path.join(parameters.cmakefiles, 'ci', 'detect_operative_system.sh')):
+        for platform in utils.get_stdout(os.path.join('..', 'cmaki', 'ci', 'detect_operative_system.sh')):
             archs = {platform: '64'}
             platforms = [platform]
             break
