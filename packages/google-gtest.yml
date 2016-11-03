@@ -12,24 +12,3 @@
         - gtest:
             info:
                 <<: *library_static_exact
-
-- google-gtest:
-    <<: *thirdparty_defaults
-    version: 1.8.0.0
-    mode: dr
-    mask: null
-    source: https://github.com/google/googletest/archive/release-1.8.0.tar.gz
-    uncompress_strip: googletest-release-1.8.0
-    targets:
-        - gtest:
-            info:
-                <<: *library_dynamic_exact
-            extra:
-                win32:
-                    definitions:
-                        - -D_VARIADIC_MAX=10
-                        - -DGTEST_LINKED_AS_SHARED_LIBRARY=1
-                win64:
-                    definitions:
-                        - -D_VARIADIC_MAX=10
-                        - -DGTEST_LINKED_AS_SHARED_LIBRARY=1
