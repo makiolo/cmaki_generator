@@ -1,11 +1,16 @@
 - google-gmock:
     <<: *thirdparty_defaults
+    mask: wls
+    mode: dr
     version: 0.0.0.0
     version_manager: git
-    mask: wls
     source: https://github.com/google/googletest.git
+    cmake_target: null
+    post_install:
+        - ./googlemock/include/gmock/*.h include/gmock/ RECURSIVE
     cmake_definitions:
         - BUILD_SHARED_LIBS=OFF
+        - BUILD_GTEST=OFF
         - BUILD_GMOCK=ON
         - GTEST_HAS_PTHREAD=0
     targets:
@@ -15,3 +20,4 @@
         - gmock_main:
             info:
                 <<: *library_static_exact
+
