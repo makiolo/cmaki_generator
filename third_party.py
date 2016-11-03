@@ -79,10 +79,10 @@ elif sys.platform.startswith("linux"):  # linux2
         archs = {'emscripten': ''}
         platforms = ["emscripten"]
     else:
-        print('using linux ubuntu ...')
+        print('using linux ...')
         somask_id = 'l'
-        archs = {"Linux_Ubuntu_xenial_x86_64": '64'}
-        platforms = ["Linux_Ubuntu_xenial_x86_64"]
+        archs = {"default": '64'}
+        platforms = ["default"]
 elif sys.platform.startswith("sun"): # sunos5
     somask_id = 's'
     archs = {'solaris_sparc32': ''}
