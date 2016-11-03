@@ -1,7 +1,25 @@
 - google-gmock:
     <<: *thirdparty_defaults
+    version: 0.0.0.0
+    version_manager: git
+    mask: wls
+    source: https://github.com/google/googletest.git
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=OFF
+        - BUILD_GMOCK=ON
+        - GTEST_HAS_PTHREAD=0
+    targets:
+        - gmock:
+            info:
+                <<: *library_static_exact
+        - gmock_main:
+            info:
+                <<: *library_static_exact
+
+- google-gmock:
+    <<: *thirdparty_defaults
     version: 1.7.0.1
-    mask: w
+    mask: null
     mode: dr
     depends:
         - google-gtest
@@ -32,26 +50,3 @@
         - gmock_main:
             info:
                 <<: *library_dynamic_exact
-
-- google-gmock:
-    <<: *thirdparty_defaults
-    version: 0.0.0.0
-    version_manager: git
-    mask: ls
-    source: https://github.com/google/googletest.git
-    cmake_definitions:
-        - BUILD_SHARED_LIBS=OFF
-        - BUILD_GMOCK=ON
-        - GTEST_HAS_PTHREAD=0
-    targets:
-        - gmock:
-            info:
-                <<: *library_static_exact
-            # extra:
-            #     default:
-            #         system_depends:
-            #             - pthread
-        - gmock_main:
-            info:
-                <<: *library_static_exact
-
