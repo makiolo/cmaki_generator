@@ -26,6 +26,8 @@ def compilation(node, parameters, compiler_replace_maps):
             # get generator and platform info
             for compiler_c, compiler_cpp, generator, _, _, env_modified, _ in node.compiler_iterator(plat, compiler_replace_maps):
 
+                logging.info('-- compilation mode: %s plat: %s' % (build_mode, plat))
+
                 ############# 1. prepare vars
 
                 if build_mode.lower() == 'debug':
