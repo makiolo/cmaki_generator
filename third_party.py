@@ -1516,8 +1516,8 @@ PLATFORM=%s
                 return env_modified
         return os.environ.copy()
 
-    def safe_system(self, cmd, compiler_replace_maps):
-        return utils.safe_system(cmd, env=self.get_first_environment(compiler_replace_maps))
+    def safe_system(self, cmd, compiler_replace_maps, log=False):
+        return utils.safe_system(cmd, env=self.get_first_environment(compiler_replace_maps), log=log)
 
     def __repr__(self):
         return "%s - %s" % (self.name, self.parameters)

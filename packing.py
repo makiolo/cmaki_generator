@@ -84,7 +84,7 @@ def packing(node, parameters, compiler_replace_maps):
                 # OJO: excluir el prefix del empaquetado, (los paquetes se guardan dentro del toolchain)
                 gen_targz = "%star zcvf %s %s --exclude '%s/*'" % (precmd, prefix_package, source_folder, parameters.prefix)
 
-            node.ret += abs( node.safe_system(gen_targz, compiler_replace_maps) )
+            node.ret += abs( node.safe_system(gen_targz, compiler_replace_maps, log=True) )
             if not os.path.exists(prefix_package):
                 logging.error('No such file: %s' % prefix_package)
                 return False

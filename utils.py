@@ -485,7 +485,7 @@ def get_stdout(cmd, env=os.environ.copy(), program_required=None):
     else:
         raise NotFoundProgram('Not found program %s, for execute: %s' % (program_required, cmd))
 
-def safe_system(cmd, env=os.environ.copy()):
+def safe_system(cmd, env=os.environ.copy(), log=False):
     logging.debug("exec command: %s" % cmd)
     if False:
         # TODO: env vars
@@ -498,7 +498,7 @@ def safe_system(cmd, env=os.environ.copy()):
         if p.returncode != 0:
             logging.error("begin@output: %s" % cmd)
         for line in data:
-            if p.returncode != 0:
+            if (p.returncode != 0) or log:
                 logging.warning(line)
             else:
                 logging.debug(line)
