@@ -81,8 +81,10 @@ elif sys.platform.startswith("linux"):  # linux2
     else:
         print('using linux ...')
         somask_id = 'l'
-        archs = {"default": '64'}
-        platforms = ["default"]
+        for platform in utils.get_stdout(os.path.join(parameters.cmakefiles, 'ci', 'detect_operative_system.sh')):
+            archs = {platform: '64'}
+            platforms = [platform]
+            break
 elif sys.platform.startswith("sun"): # sunos5
     somask_id = 's'
     archs = {'solaris_sparc32': ''}
