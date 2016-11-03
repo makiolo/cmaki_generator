@@ -1,29 +1,8 @@
 - google-gtest:
     <<: *thirdparty_defaults
-    version: 1.7.0.1
-    mode: dr
-    mask: w
-    source: https://googletest.googlecode.com/files/gtest-1.7.0.zip
-    uncompress_strip: gtest-1.7.0
-    targets:
-        - gtest:
-            info:
-                <<: *library_dynamic_exact
-            extra:
-                win32:
-                    definitions:
-                        - -D_VARIADIC_MAX=10
-                        - -DGTEST_LINKED_AS_SHARED_LIBRARY=1
-                win64:
-                    definitions:
-                        - -D_VARIADIC_MAX=10
-                        - -DGTEST_LINKED_AS_SHARED_LIBRARY=1
-
-- google-gtest:
-    <<: *thirdparty_defaults
     version: 0.0.0.0
     version_manager: git
-    mask: ls
+    mask: wls
     source: https://github.com/google/googletest.git
     cmake_definitions:
         - BUILD_SHARED_LIBS=OFF
@@ -33,8 +12,3 @@
         - gtest:
             info:
                 <<: *library_static_exact
-            # extra:
-            #     default:
-            #         system_depends:
-            #             - pthread
-            #

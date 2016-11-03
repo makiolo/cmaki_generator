@@ -238,7 +238,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(prog="""
 
-generic-third-compiler:
+cmaki_generator:
 
     gtc can build third parties in a easy way. Each third-party need a block definition in yaml. This block contain all need information necessary for download, build, testing and packing.
 
