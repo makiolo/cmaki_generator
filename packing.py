@@ -111,8 +111,6 @@ def packing(node, parameters, compiler_replace_maps):
                 logging.info('generating package cmake %s' % prefix_package_cmake)
                 gen_targz_cmake = '%star zcvf %s %s' % (precmd, prefix_package_cmake, node.get_base_folder())
                 node.ret += abs( node.safe_system(gen_targz_cmake, compiler_replace_maps) )
-            # only first platform
-            break
 
     # finish well
     return True
