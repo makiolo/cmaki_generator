@@ -2,7 +2,6 @@ import os
 import sys
 import utils
 import logging
-import hashlib
 import hash_version
 from itertools import product
 from third_party import platforms
@@ -10,8 +9,7 @@ from third_party import platforms
 def packing(node, parameters, compiler_replace_maps):
 
     package = node.get_package_name()
-    version = node.get_version()
-
+    version_git = node.get_version()
     packing = node.is_packing()
     if not packing:
         logging.warning('Skiping package: %s' % package)
@@ -24,25 +22,29 @@ def packing(node, parameters, compiler_replace_maps):
             workspace = node.get_workspace(plat)
             build_directory = os.path.join(os.getcwd(), node.get_build_directory(plat, build_mode))
             revision_git = hash_version.get_last_changeset(build_directory, short=False)
-            version_old = version
-            version = hash_version.to_cmaki_version(build_directory, revision_git)
-            logging.info('[git] Renamed version from %s to %s' % (version_old, version))
+            version_old = node.get_version()
+            version_git = hash_version.to_cmaki_version(build_directory, revision_git)
+            logging.info('[git] Renamed version from %s to %s' % (version_old, version_git))
 
             # renombrar package-version-platform/package-version
 
             workspace = node.get_workspace(plat)
             source_folder = node.get_base_folder()
-            node.set_version(version)
-            new_workspace = node.get_workspace(plat)
-            new_source_folder = node.get_base_folder()
+            oldversion = node.get_version()
+            try:
+                node.set_version(version_git)
+                new_workspace = node.get_workspace(plat)
+                new_source_folder = node.get_base_folder()
 
-            # changed version ?
-            if source_folder != new_source_folder:
-                utils.move_folder_recursive(os.path.join(workspace, source_folder), os.path.join(workspace, new_source_folder))
-                utils.move_folder_recursive(workspace, new_workspace)
+                # changed version ?
+                if source_folder != new_source_folder:
+                    utils.move_folder_recursive(os.path.join(workspace, source_folder), os.path.join(workspace, new_source_folder))
+                    utils.move_folder_recursive(workspace, new_workspace)
+            finally:
+                node.set_version(oldversion)
 
-            # can exit because I am sure debug and release have same version
-            break
+    node.set_version(version_git)
+    version = node.get_version()
 
     precmd = ''
     if utils.is_windows():
