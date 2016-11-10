@@ -206,6 +206,7 @@ def trymkdir(directory):
 def move_folder_recursive(source, destiny):
     if not os.path.exists(source):
         raise Exception('Error in move_folder_recursive: source not exists: %s' % source)
+    logging.info('move from source %s to %s' % (source, destiny))
     for archive in os.listdir(source):
         # ignore some stuff
         if archive.startswith('.git') or archive.startswith('.svn'):

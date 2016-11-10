@@ -56,17 +56,17 @@ environment_old: &environment_old
 
 compile_with_path_toolchain: &compile_with_path_toolchain
     win32:
-        generator: Visual Studio 14 2015
+        generator: "Visual Studio 14 2015"
         ext_dyn: dll
         ext_sta: lib
         compiler:
-            - VC110, VC110
+            - VC140, VC140
     win64:
-        generator: Visual Studio 14 2015 Win64
+        generator: "Visual Studio 14 2015 Win64"
         ext_dyn: dll
         ext_sta: lib
         compiler:
-            - VC110, VC110
+            - VC140, VC140
     default:
         generator: Unix Makefiles
         ext_dyn: so
@@ -104,17 +104,17 @@ compile_with_path_toolchain: &compile_with_path_toolchain
 
 compile_with_toolchain: &compile_with_toolchain
     win32:
-        generator: Visual Studio 14 2015
+        generator: "Visual Studio 14 2015"
         ext_dyn: dll
         ext_sta: lib
         compiler:
-            - VC110, VC110
+            - VC140, VC140
     win64:
-        generator: Visual Studio 14 2015 Win64
+        generator: "Visual Studio 14 2015 Win64"
         ext_dyn: dll
         ext_sta: lib
         compiler:
-            - VC110, VC110
+            - VC140, VC140
     default:
         generator: Unix Makefiles
         ext_dyn: so
