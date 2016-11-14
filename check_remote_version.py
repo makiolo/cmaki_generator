@@ -151,22 +151,25 @@ if __name__ == '__main__':
 			pass
 
     if parameters.server is not None:
-        if not parameters.server.endswith('?quiet'):
-            parameters.server = parameters.server + '/' + '?quiet'
-        csv_content = read_remote_csv(parameters.server)
-        reader = csv.reader(cStringIO.StringIO(csv_content), delimiter=';')
-        i = 0
-        for row in reader:
-            if len(row) >= 2:
-                if i > 0:
-                    package_name = row[0]
-                    package_version = row[1]
-                    package_platform = row[2]
-                    new_package = package(package_name, package_version, False)
-                    if (parameters.platform is None) or (parameters.platform == package_platform):
-                        if new_package == package_request:
-                            packages_found.append(new_package)
-                i += 1
+        try:
+            if not parameters.server.endswith('?quiet'):
+                parameters.server = parameters.server + '/' + '?quiet'
+            csv_content = read_remote_csv(parameters.server)
+            reader = csv.reader(cStringIO.StringIO(csv_content), delimiter=';')
+            i = 0
+            for row in reader:
+                if len(row) >= 2:
+                    if i > 0:
+                        package_name = row[0]
+                        package_version = row[1]
+                        package_platform = row[2]
+                        new_package = package(package_name, package_version, False)
+                        if (parameters.platform is None) or (parameters.platform == package_platform):
+                            if new_package == package_request:
+                                packages_found.append(new_package)
+                    i += 1
+        except IOError:
+            logging.debug('error in cache artifacts: %s' % parameters.server)
 
     if len(packages_found) > 0:
 
