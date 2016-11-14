@@ -1,6 +1,6 @@
 - boost-chrono:
     <<: *thirdparty_defaults
-    version: 1.58.0.0
+    version: 1.62.0.0
     mode: dr
     source: null
     uncompress: null
@@ -9,7 +9,7 @@
     before_copy:
         - ../boost-headers/CMakeLists.txt .
     cmake_definitions:
-        - BASENAME_STRIP=boost_1_58_0
+        - BASENAME_STRIP=boost_1_62_0
         - BOOST_PARAMETERS=--with-chrono
         - BOOST_INSTALL_HEADERS=0
     targets:
@@ -19,4 +19,4 @@
         - boost_system:
             info:
                 <<: *library_dynamic_boost
-        
+

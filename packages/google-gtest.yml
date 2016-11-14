@@ -16,3 +16,4 @@
         - gtest:
             info:
                 <<: *library_static_exact
+

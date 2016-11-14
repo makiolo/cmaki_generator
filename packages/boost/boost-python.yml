@@ -1,6 +1,6 @@
 - boost-python:
     <<: *thirdparty_defaults
-    version: 1.58.0.0
+    version: 1.62.0.0
     mode: r
     source: null
     uncompress: null
@@ -10,7 +10,7 @@
     before_copy:
         - ../boost-headers/CMakeLists.txt .
     cmake_definitions:
-        - BASENAME_STRIP=boost_1_58_0
+        - BASENAME_STRIP=boost_1_62_0
         - BOOST_PARAMETERS=--with-python
         - BOOST_INSTALL_HEADERS=0
     targets:
@@ -20,7 +20,7 @@
 
 - boost-python-debug:
     <<: *thirdparty_defaults
-    version: 1.58.0.0
+    version: 1.62.0.0
     mode: d
     source: null
     uncompress: null
@@ -30,7 +30,7 @@
     before_copy:
         - ../boost-headers/CMakeLists.txt .
     cmake_definitions:
-        - BASENAME_STRIP=boost_1_58_0
+        - BASENAME_STRIP=boost_1_62_0
         - BOOST_PARAMETERS=--with-python
         - BOOST_INSTALL_HEADERS=0
     targets:
