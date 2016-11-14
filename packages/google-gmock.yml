@@ -10,9 +10,8 @@
         - ./googlemock/include/gmock/*.h include/gmock/ RECURSIVE
     cmake_definitions:
         - BUILD_SHARED_LIBS=OFF
-        - BUILD_GTEST=OFF
+        - BUILD_GTEST=ON
         - BUILD_GMOCK=ON
-        - GTEST_HAS_PTHREAD=0
     targets:
         - gmock:
             info:

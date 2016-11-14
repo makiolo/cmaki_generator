@@ -12,9 +12,7 @@
         - BUILD_SHARED_LIBS=OFF
         - BUILD_GTEST=ON
         - BUILD_GMOCK=OFF
-        - GTEST_HAS_PTHREAD=0
     targets:
         - gtest:
             info:
                 <<: *library_static_exact
-
