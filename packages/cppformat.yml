@@ -6,11 +6,11 @@
     post_install:
         - ./*.h include/cppformat
     mode: dr
-    source: https://github.com/cppformat/cppformat.git
+    source: https://github.com/fmtlib/fmt/tree/2.1.1
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
     targets:
-        - fmt:
+        - cppformat:
             info:
                 <<: *library_dynamic_exact
             extra:
@@ -23,5 +23,4 @@
                 default:
                     include:
                         - include/cppformat
-
 
