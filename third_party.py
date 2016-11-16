@@ -343,6 +343,13 @@ class ThirdParty:
             # default value
             return True
 
+    def get_branch(self):
+        try:
+            return self.parameters['branch']
+        except KeyError:
+            # default value
+            return None
+
     def get_build_modes(self):
         parms = self.parameters
         build_modes = []
@@ -852,11 +859,16 @@ class ThirdParty:
             self.safe_system( 'svn co %s %s' % (url, build_directory), compiler_replace_maps )
             # utils.tryremove_dir( os.path.join(build_directory, '.svn') )
 
-        elif(url.endswith('.git')):
+        elif(url.endswith('.git') or (url.find('github') != -1) or (url.find('bitbucket') != -1)):
             # strip is not implemmented with git://
             utils.tryremove_dir( build_directory )
             logging.info('Download from git: %s' % url)
-            self.safe_system('git clone --recursive %s %s' % (url, build_directory), compiler_replace_maps)
+            branch = self.get_branch()
+            extra_cmd = ''
+            if branch is not None:
+                logging.info('clonning to branch %s' % branch)
+                extra_cmd = '-b %s' % branch
+            self.safe_system('git clone %s --recursive %s %s' % (extra_cmd, url, build_directory), compiler_replace_maps)
             depends_file = self.user_parameters.depends
             if depends_file is not None:
                 with utils.working_directory(build_directory):
