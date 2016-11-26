@@ -894,7 +894,8 @@ class ThirdParty:
                     assert(len(revision) > 0)
                     data[package] = revision
                     utils.serialize(data, depends_file)
-            # utils.tryremove_dir( os.path.join(build_directory, '.git') )
+            else:
+                logging.warning('not found depends file, using newest changeset')
 
         # file in http
         elif (     url.startswith('http://')
