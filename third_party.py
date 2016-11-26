@@ -308,7 +308,7 @@ class ThirdParty:
             return parms['cmake_target']
         except KeyError:
             return 'install'
-    
+
     def get_post_install(self):
         parms = self.parameters
         try:
@@ -880,11 +880,11 @@ class ThirdParty:
 
                     # obedecer, si trae algo util
                     if package in data:
-                        logging.info('data package version is %s' % data[package])
+                        logging.debug('data package version is %s' % data[package])
                         try:
                             git_version = hash_version.to_git_version(build_directory, data[package])
-                            logging.info('data package in git version is %s' % git_version)
-                            logging.info('updating to revision %s' % git_version)
+                            logging.debug('data package in git version is %s' % git_version)
+                            logging.debug('updating to revision %s' % git_version)
                             self.safe_system('git reset --hard %s' % git_version, compiler_replace_maps)
                         except AssertionError:
                             logging.info('using HEAD')

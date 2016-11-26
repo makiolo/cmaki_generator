@@ -12,6 +12,8 @@
         - BUILD_SHARED_LIBS=OFF
         - BUILD_GTEST=ON
         - BUILD_GMOCK=ON
+    depends:
+        - google-gtest
     targets:
         - gmock:
             info:
@@ -19,4 +21,3 @@
         - gmock_main:
             info:
                 <<: *library_static_exact
-

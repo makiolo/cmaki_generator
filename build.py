@@ -25,6 +25,7 @@ from prepare import prepare
 from compilation import compilation
 from packing import packing
 from run_tests import run_tests
+from upload import upload
 from get_return_code import get_return_code
 from third_party import FailThirdParty
 
@@ -263,6 +264,7 @@ usage:""")
     group_main.add_argument('packages', metavar='packages', type=str, nargs='+', help='name (or list names) third party')
     group_main.add_argument('--plan', '--dry-run', dest='plan', action='store_true', help='Show packages plan (like a dry-run)', default=False)
     group_main.add_argument('--toolchain', dest='toolchain', help='Toolchain path (default is $ROOTDIR + "toolchain_default")', default=None)
+    group_main.add_argument('--server', dest='server', help='artifact server', default=None)
 
     group_layer = group_main.add_mutually_exclusive_group()
     group_layer.add_argument('--layer', dest='priority', help='filter by layername. Valid values: (minimal|tools|third_party)', default=None)
@@ -286,6 +288,9 @@ usage:""")
     group_run_tests = group_padawan.add_mutually_exclusive_group()
     group_run_tests.add_argument('--no-run-tests', dest='no_run_tests', action='store_true', help='remove run_tests from pipeline', default=False)
     group_run_tests.add_argument('--only-run-tests', dest='only_run_tests', action='store_true', help='execute only run_tests in pipeline', default=False)
+    group_upload = group_padawan.add_mutually_exclusive_group()
+    group_upload.add_argument('--no-upload', dest='no_upload', action='store_true', help='remove upload from pipeline', default=False)
+    group_upload.add_argument('--only-upload', dest='only_upload', action='store_true', help='execute only upload in pipeline', default=False)
     # creador de third parties
     group_jedi = parser.add_argument_group('jedi')
     group_jedi.add_argument('-o', '--only', dest='build_only', action='store_true', help='build only explicit packages and not your depends')
@@ -330,30 +335,42 @@ usage:""")
         parameters.no_compilation = True
         parameters.no_packing = True
         parameters.no_run_tests = True
+        parameters.no_upload = True
     elif(parameters.only_prepare):
         parameters.no_purge = True
         parameters.no_prepare = False
         parameters.no_compilation = True
         parameters.no_packing = True
         parameters.no_run_tests = True
+        parameters.no_upload = True
     elif(parameters.only_compilation):
         parameters.no_purge = True
         parameters.no_prepare = True
         parameters.no_compilation = False
         parameters.no_packing = True
         parameters.no_run_tests = True
+        parameters.no_upload = True
     elif(parameters.only_packing):
         parameters.no_purge = True
         parameters.no_prepare = True
         parameters.no_compilation = True
         parameters.no_packing = False
         parameters.no_run_tests = True
+        parameters.no_upload = True
     elif(parameters.only_run_tests):
         parameters.no_purge = True
         parameters.no_prepare = True
         parameters.no_compilation = True
         parameters.no_packing = True
         parameters.no_run_tests = False
+        parameters.no_upload = True
+    elif(parameters.only_upload):
+        parameters.no_purge = True
+        parameters.no_prepare = True
+        parameters.no_compilation = True
+        parameters.no_packing = True
+        parameters.no_run_tests = True
+        parameters.no_upload = False
 
     # prepare logging
     if(parameters.debug):
@@ -601,7 +618,7 @@ usage:""")
                 p = pipeline.feed(packages)(p)
 
                 if (not parameters.no_prepare):
-                    # ./bootstrap (download sources)
+                    # download sources
                     p = pipeline.do(prepare, False, parameters, compiler_replace_maps)(p)
 
                 if (not parameters.no_compilation):
@@ -615,6 +632,10 @@ usage:""")
                 if (not parameters.no_run_tests):
                     # execute unittests and save results in "unittests"
                     p = pipeline.do(run_tests, False, parameters, compiler_replace_maps, unittests)(p)
+
+                if (not parameters.no_upload):
+                    # upload artifacts
+                    p = pipeline.do(upload, False, parameters, compiler_replace_maps)(p)
 
                 # save results in "rets"
                 p = get_return_code(parameters, rets)(p)

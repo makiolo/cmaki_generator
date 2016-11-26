@@ -105,7 +105,11 @@ def _tryremove_dir(directory):
 
 def tryremove_dir(source):
     logging.debug('Removing directory %s' % (source))
-    _tryremove_dir(source)
+    if sys.platform.startswith('win'):
+        if os.path.isdir(source) and safe_system('rd /s /q %s' % source) != 0:
+            raise Exception('Fail removing %s' % source)
+    else:
+        _tryremove_dir(source)
 
 def tryremove_dir_empty(source):
     try:
@@ -487,22 +491,17 @@ def get_stdout(cmd, env=os.environ.copy(), program_required=None):
 
 def safe_system(cmd, env=os.environ.copy(), log=False):
     logging.debug("exec command: %s" % cmd)
-    if False:
-        # TODO: env vars
-        ret = os.system(cmd)
-        return ret
-    else:
-        p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
-        data, err = p.communicate()
-        data = [line for line in data.split('\n')]
-        if p.returncode != 0:
-            logging.error("begin@output: %s" % cmd)
-        for line in data:
-            if (p.returncode != 0) or log:
-                logging.warning(line)
-            else:
-                logging.debug(line)
-        if p.returncode != 0:
-            logging.error("end@output: %s" % cmd)
-        return p.returncode
+    p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
+    data, err = p.communicate()
+    data = [line for line in data.split('\n')]
+    if p.returncode != 0:
+        logging.error("begin@output: %s" % cmd)
+    for line in data:
+        if (p.returncode != 0) or log:
+            logging.warning(line)
+        else:
+            logging.debug(line)
+    if p.returncode != 0:
+        logging.error("end@output: %s" % cmd)
+    return p.returncode
 

@@ -109,11 +109,10 @@ def to_git_version(repo, version):
     assert(len(version) == 4)
     position = int(version[2])
     pseudohash = int(version[3])
-    # print "position is %d" % position
     changeset = get_changeset_git_from_position(repo, position=position)
     hash_simple = rehash_simple(changeset)
     assert( get_position_git_from_changeset(repo, changeset) == position )
-    # assert( hash_simple == pseudohash )
+    assert( hash_simple == pseudohash )
     return changeset
 
 if __name__ == '__main__':

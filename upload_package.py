@@ -3,7 +3,6 @@ import sys
 import urllib2
 import argparse
 import logging
-# 
 import poster
 
 if __name__ == '__main__':
