@@ -1,7 +1,9 @@
 project(gtc)
 cmake_minimum_required(VERSION 2.8)
 
-include("${CMAKE_MODULE_PATH}/facts/facts.cmake")
+set(CMAKI_REPOSITORY "http://artifacts.myftp.biz:8080")
+include("${CMAKE_MODULE_PATH}/cmaki.cmake")
+cmaki_setup()
 
 SET(GLOBAL_COMPILER "${CMAKI_COMPILER}")
 SET(GLOBAL_PLATFORM "${CMAKI_PLATFORM}")
