@@ -568,7 +568,7 @@ class ThirdParty:
         ext_dyn = plat_parms['ext_dyn']
         ext_sta = plat_parms['ext_sta']
         if compilers is None:
-            compilers = [('default, default')]
+            compilers = [('%s, %s' % (os.environ.get('CC', 'gcc'), os.environ.get('CXX', 'g++')))]
 
         for compiler in compilers:
             compilers_tuple = compiler.split(',')
