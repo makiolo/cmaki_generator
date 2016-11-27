@@ -71,8 +71,6 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         generator: Unix Makefiles
         ext_dyn: so
         ext_sta: a
-        compiler:
-            - gcc, g++
         environment:
             push_front:
                 <<: *environment_old
