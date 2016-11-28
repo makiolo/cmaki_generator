@@ -15,4 +15,7 @@
         - RakNetDLL:
             info:
                 <<: *library_dynamic_exact
-
+            extra:
+                default:
+                    definitions:
+                        - -Wno-error=address
