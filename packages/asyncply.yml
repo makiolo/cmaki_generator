@@ -54,21 +54,4 @@
                 }
                 return 0;
             }
-    targets:
-        - verypoco:
-            info:
-                <<: *library_dynamic_exact
-            extra:
-                win32:
-                    include:
-                        - include/metacommon
-                win64:
-                    include:
-                        - include/metacommon
-                default:
-                    include:
-                        - include/metacommon
-        - multithread:
-            info:
-                <<: *library_dynamic_exact
 
