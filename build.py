@@ -241,23 +241,7 @@ if __name__ == '__main__':
 
 cmaki_generator:
 
-    gtc can build third parties in a easy way. Each third-party need a block definition in yaml. This block contain all need information necessary for download, build, testing and packing.
-
-Examples:
-    - Build all (compiler + tools + third party):
-        ./build .
-
-    - Build all and generate a new image.future in system:
-        ./bootstrap-prefix.sh
-
-    - Show build order of all packages:
-        ./build . --plan
-
-    - Buila only minimal layer (excluding layer "tools" and "third_party"):
-        ./build . --layer minimal
-
-    - Build a third party using toolchain system:
-        ./build lua --toolchain=~/image.future
+    Can build artifacts in a easy way. Each third-party need a block definition in yaml. This block contain all need information necessary for download, build, testing and packing.
 
 usage:""")
     group_main = parser.add_argument_group('basic usage')
