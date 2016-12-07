@@ -28,6 +28,7 @@ from run_tests import run_tests
 from upload import upload
 from get_return_code import get_return_code
 from third_party import FailThirdParty
+from utils import download_from_url
 
 # GLOBAL NO MUTABLES
 image_pattern = "image.%Y.%m.%d.%H%M"
@@ -394,6 +395,18 @@ usage:""")
         sys.stdout.write('%s\n' % parameters.toolchain)
         sys.stderr.write('You can use this in parameter --toolchain=%s\n' % parameters.toolchain)
         sys.exit(0)
+
+    i = 0
+    for package in parameters.packages:
+        if package.startswith('github://'):
+            repo = package[len('github://'):]
+            utils.trymkdir('github')
+            yml_file = os.path.join('github', '{}.yml'.format(repo.replace('/', '_')))
+            if os.path.isfile(yml_file):
+                utils.tryremove(yml_file)
+            download_from_url('https://raw.githubusercontent.com/{}/master/cmaki.yml'.format(repo), yml_file)
+            parameters.packages[i] = repo.split('/')[1]
+        i += 1
 
     # set env TOOLCHAIN
     os.environ['TOOLCHAIN'] = parameters.toolchain
