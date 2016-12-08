@@ -52,12 +52,12 @@ def get_position_git_from_changeset(repo, changeset):
         for line in reversed(lines):
             if line.startswith('commit'):
                 parts = line.split(' ')
-                assert(len(parts) == 2)
-                commit_name = parts[1]
-                if commit_name == changeset:
-                    return i
-                else:
-                    i += 1
+                if(len(parts) == 2):
+                    commit_name = parts[1]
+                    if commit_name == changeset:
+                        return i
+                    else:
+                        i += 1
     return -1
 
 def get_last_changeset(repo, short=False):

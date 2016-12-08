@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0011 NEW)
 
 IF(NOT DEFINED BASENAME_STRIP)
-	MESSAGE(FATAL_ERROR "Undefined $BASENAME_STRIP (example: boost_1_5X_0)")
+	MESSAGE(FATAL_ERROR "Undefined $BASENAME_STRIP (example: boost_1_XX_0)")
 ENDIF()
 
 include(${PACKAGE_BUILD_DIRECTORY}/../boost-headers/find.cmake)
@@ -105,16 +105,16 @@ ELSE()
 	IF(BOOST_PARAMETERS STREQUAL "--with-python")
 
 		IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-			include(${PACKAGE_BUILD_DIRECTORY}/../python-debug/find.cmake)
+			include(${PACKAGE_BUILD_DIRECTORY}/../python/find.cmake)
 			set(PYTHON_DEBUG "python-debugging=on")
-			file( TO_CMAKE_PATH ${python_debug_LIBDIR} PYTHON_BASE )
-			file( TO_CMAKE_PATH ${python_debug_INCLUDE}/python2.7 PYTHON_INCL )
-			file( TO_CMAKE_PATH ${python_debug_LIBDIR}/lib PYTHON_LIBS )
+			file( TO_CMAKE_PATH ${python_LIBDIR} PYTHON_BASE )
+			file( TO_CMAKE_PATH ${python_INCLUDE}/python3.5 PYTHON_INCL )
+			file( TO_CMAKE_PATH ${python_LIBDIR}/lib PYTHON_LIBS )
 		ELSE()
 			include(${PACKAGE_BUILD_DIRECTORY}/../python/find.cmake)
 			set(PYTHON_DEBUG)
 			file( TO_CMAKE_PATH ${python_LIBDIR} PYTHON_BASE )
-			file( TO_CMAKE_PATH ${python_INCLUDE}/python2.7 PYTHON_INCL )
+			file( TO_CMAKE_PATH ${python_INCLUDE}/python3.5 PYTHON_INCL )
 			file( TO_CMAKE_PATH ${python_LIBDIR}/lib PYTHON_LIBS )
 		ENDIF()
 
@@ -124,11 +124,11 @@ ELSE()
 			set(PYTHON_USING "gcc")
 		ENDIF()
 
-		FILE(WRITE "${BOOST_WORKING_DIR}/project-config.jam" 
+		FILE(WRITE "${BOOST_WORKING_DIR}/project-config.jam"
 "import option ;\n"
 "using ${PYTHON_USING} ;\n"
 "option.set keep-going : false ;\n"
-"using python : 2.7 : ${PYTHON_BASE} : ${PYTHON_INCL} : ${PYTHON_LIBS} ;\n"
+"using python : 3.5 : ${PYTHON_BASE} : ${PYTHON_INCL} : ${PYTHON_LIBS} ;\n"
 		)
 
 	ELSE()

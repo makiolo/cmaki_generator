@@ -1,7 +1,7 @@
 - boost-python:
     <<: *thirdparty_defaults
     version: 1.62.0.0
-    mode: r
+    mode: dr
     source: null
     uncompress: null
     depends:
@@ -17,11 +17,15 @@
         - boost_python:
             info:
                 <<: *library_dynamic_boost
+            extra:
+                default:
+                    include:
+                        - include/python3.5
 
 - boost-python-debug:
     <<: *thirdparty_defaults
     version: 1.62.0.0
-    mode: d
+    mode: z
     source: null
     uncompress: null
     depends:
@@ -40,5 +44,5 @@
             extra:
                 default:
                     definitions:
-                        - -DBOOST_DEBUG_PYTHON=1
+                        - Debug="-DBOOST_DEBUG_PYTHON=1"
 

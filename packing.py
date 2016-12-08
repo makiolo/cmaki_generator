@@ -46,6 +46,9 @@ def packing(node, parameters, compiler_replace_maps):
     node.set_version(version_git)
     version = node.get_version()
 
+    # regenerate autoscripts with new version
+    node.generate_scripts_headers(compiler_replace_maps)
+
     precmd = ''
     if utils.is_windows():
         precmd = 'cmake -E '
