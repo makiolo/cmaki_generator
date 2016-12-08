@@ -8,13 +8,15 @@
     cmake_target: null
     post_install:
         - ./googlemock/include/gmock/*.h include/gmock/ RECURSIVE
+        - ./googletest/include/gtest/*.h include/gtest/ RECURSIVE
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
         - BUILD_GTEST=ON
         - BUILD_GMOCK=ON
-    depends:
-        - google-gtest
     targets:
+        - gtest:
+            info:
+                <<: *library_dynamic_exact
         - gmock:
             info:
                 <<: *library_dynamic_exact
