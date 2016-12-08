@@ -1167,8 +1167,10 @@ cmake_policy(SET CMP0011 NEW)
 cmaki_download_package()
 file(TO_NATIVE_PATH "${_DIR}" %s_HOME)
 file(TO_NATIVE_PATH "${_DIR}/${CMAKI_PLATFORM}" %s_PREFIX)
+set(%s_HOME "${%s_HOME}" PARENT_SCOPE)
+set(%s_PREFIX "${%s_PREFIX}" PARENT_SCOPE)
 include(${_MY_DIR}/${CMAKI_PLATFORM}.cmake)
-                ''' % (superpackage_upper, superpackage_upper))
+                ''' % (superpackage_upper, superpackage_upper, superpackage_upper, superpackage_upper, superpackage_upper, superpackage_upper))
 
                 if(len(condition) > 0):
                     f.write('\nendif()\n')
@@ -1259,9 +1261,9 @@ cmaki_package_version_check()
 
                                 for suffix in ['', '_EXECUTABLE']:
                                     if 'use_run_with_libs' in platform_info:
-                                        f.write('set(%s%s "${%s_LAUNCHER}" "${_DIR}/%s/%s/%s")\n' % (package_upper, suffix, package_upper, plat, basename_compiler_cpp, utils.get_norm_path(release_bin, native=False)))
+                                        f.write('set(%s%s "${%s_LAUNCHER}" "${_DIR}/%s/%s/%s" PARENT_SCOPE)\n' % (package_upper, suffix, package_upper, plat, basename_compiler_cpp, utils.get_norm_path(release_bin, native=False)))
                                     else:
-                                        f.write('set(%s%s "${_DIR}/%s/%s/%s")\n' % (package_upper, suffix, plat, basename_compiler_cpp, utils.get_norm_path(release_bin, native=False)))
+                                        f.write('set(%s%s "${_DIR}/%s/%s/%s" PARENT_SCOPE)\n' % (package_upper, suffix, plat, basename_compiler_cpp, utils.get_norm_path(release_bin, native=False)))
                                     f.write('file(TO_NATIVE_PATH "${%s%s}" %s%s)\n' % (package_upper, suffix, package_upper, suffix))
                                 f.write('\n')
 
