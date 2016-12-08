@@ -83,22 +83,6 @@ compile_with_path_toolchain: &compile_with_path_toolchain
                     - -m64 -pipe
                 CPPFLAGS:
                     - -m64 -pipe
-    emscripten:
-        generator: Unix Makefiles
-        ext_dyn: so
-        ext_sta: bc
-        compiler:
-            - emcc, em++
-        environment:
-            push_front:
-                <<: *environment_old
-            remove:
-                <<: *environment_new_linux
-            flags:
-                CFLAGS:
-                    []
-                CPPFLAGS:
-                    []
 
 compile_with_toolchain: &compile_with_toolchain
     win32:
@@ -133,20 +117,6 @@ compile_with_toolchain: &compile_with_toolchain
                     - -m64 -pipe
                 CPPFLAGS:
                     - -m64 -pipe
-    solaris_sparc32:
-        generator: Unix Makefiles
-        ext_dyn: so
-        ext_sta: a
-        compiler:
-            - $toolchain_BASE/bin/gcc, $toolchain_BASE/bin/g++
-        environment:
-            push_front:
-                <<: *environment_new_solaris
-            remove:
-                <<: *environment_old
-            assign:
-                MAKE: $toolchain_BASE/bin/make
-                PKG_CONFIG_PATH: $toolchain_BASE/lib/pkgconfig
 
 compile_with_native_compiler: &compile_with_native_compiler
     default:
@@ -167,17 +137,6 @@ compile_with_native_compiler: &compile_with_native_compiler
                     - -march=native -pipe
                 CPPFLAGS:
                     - -march=native -pipe
-    solaris_sparc32:
-        generator: Unix Makefiles
-        ext_dyn: so
-        ext_sta: a
-        compiler:
-            - /usr/sfw/bin/gcc, /usr/sfw/bin/g++
-        environment:
-            push_front:
-                <<: *environment_new_solaris
-            remove:
-                <<: *environment_old
 
 # layer 1 - minimal
 # system preset features:
@@ -303,8 +262,6 @@ library_dynamic: &library_dynamic
         <<: *library_dynamic_windows
     default:
         <<: *library_dynamic_unix
-    solaris_sparc32:
-        <<: *library_dynamic_unix
 
 
 executable: &executable
@@ -323,8 +280,6 @@ executable: &executable
     win64:
         <<: *executable_windows_common
     default:
-        <<: *executable_unix_common
-    solaris_sparc32:
         <<: *executable_unix_common
 
 executable_exact: &executable_exact
@@ -347,8 +302,6 @@ executable_exact: &executable_exact
     win64:
         <<: *executable_exact_windows_common
     default:
-        <<: *executable_exact_unix_common
-    solaris_sparc32:
         <<: *executable_exact_unix_common
 
 library_dynamic_exact: &library_dynamic_exact
@@ -483,8 +436,6 @@ library_dynamic_exact: &library_dynamic_exact
         <<: *library_dynamic_exact_windows
     default:
         <<: *library_dynamic_exact_unix
-    solaris_sparc32:
-        <<: *library_dynamic_exact_unix
 
 library_static: &library_static
     common: &library_static_common
@@ -506,8 +457,6 @@ library_static: &library_static
     win64:
         <<: *library_static_common
     default:
-        <<: *library_static_common
-    solaris_sparc32:
         <<: *library_static_common
 
 library_static_exact: &library_static_exact
@@ -543,8 +492,6 @@ library_static_exact: &library_static_exact
     win64:
         <<: *library_static_exact_common
     default:
-        <<: *library_static_exact_common
-    solaris_sparc32:
         <<: *library_static_exact_common
 
 library_net: &library_net
@@ -694,7 +641,5 @@ library_dynamic_boost: &library_dynamic_boost
     win64:
         <<: *windows_dynamic_boost
     default:
-        <<: *unix_dynamic_boost
-    solaris_sparc32:
         <<: *unix_dynamic_boost
 

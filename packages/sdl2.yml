@@ -6,6 +6,7 @@
     uncompress_strip: SDL2-2.0.3
     depends:
         - dune-glew
+    mode: dr
     targets:
         - SDL2:
             info:
@@ -20,29 +21,4 @@
                 default:
                     include:
                         - include/SDL2
-
-- sdl2-emscripten:
-    <<: *thirdparty_defaults
-    version: 0.0.0.0
-    version_manager: git
-    mode: r
-    mask: e
-    cmake_definitions:
-        - BUILD_SHARED_LIBS=ON
-        - EMSCRIPTEN=1
-    source: https://github.com/gsathya/SDL-emscripten.git 
-    # build:
-    #     |
-    #         #!/bin/bash
-    #         emconfigure ./configure --host=asmjs-unknown-emscripten --disable-assembly --disable-threads --enable-cpuinfo=false CFLAGS="-O2" && emmake make -j $CORES && emmake make -j $CORES install
-    targets:
-        - SDL2:
-            info:
-                <<: *library_dynamic_exact
-            extra:
-                emscripten:
-                    include:
-                        - include/SDL2
-                    definitions:
-                        - DEMSCRIPTEN=1
 
