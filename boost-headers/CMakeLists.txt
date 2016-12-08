@@ -36,7 +36,7 @@ endif()
 IF(WIN32)
 	set(PROGRAM_B2 "b2.exe")
 	set(PROGRAM_BOOTSTRAP "bootstrap.bat")
-	set(TOOLSET "msvc-11.0")
+	set(TOOLSET "msvc-14.0")
 	set(INSTALL_DIR "${LIBRARY_OUTPUT_PATH}/${GLOBAL_BUILD_MODE}")
 ELSE()
 	set(PROGRAM_B2 "./b2")
@@ -148,6 +148,6 @@ ELSE()
 ENDIF()
 
 # need install any file
-file(TO_NATIVE_PATH "${BOOST_WORKING_DIR}/LICENSE_1_0.txt" LICENSE_FILE)
+file(TO_CMAKE_PATH "${BOOST_WORKING_DIR}/LICENSE_1_0.txt" LICENSE_FILE)
 INSTALL(FILES "${LICENSE_FILE}" DESTINATION share)
 
