@@ -19,6 +19,10 @@
             info:
                 <<: *library_dynamic_boost
             extra:
+                win32:
+                    null
+                win64:
+                    null
                 default:
                     system_depends:
                         - pthread
