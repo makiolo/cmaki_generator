@@ -224,7 +224,7 @@ def clean_subset(solutions):
 def prepare_cmakelib(parameters):
     if not os.path.isdir(os.path.join(parameters.cmakefiles)):
         utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, parameters.cmakefiles))
-    utils.safe_system('git pull')
+    utils.safe_system('git pull origin master')
 
 def init_parameter_path(value, default):
     if value is None:
