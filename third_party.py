@@ -739,7 +739,6 @@ class ThirdParty:
 
                 # generate find.cmake
                 build_directory = self.get_build_directory(r"${GLOBAL_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
-                print ("----> build_directory = %s" % build_directory)
                 with open('find.cmake', 'wt') as f:
                     f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
                     f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
