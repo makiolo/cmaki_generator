@@ -41,7 +41,11 @@ IF(WIN32)
 ELSE()
 	set(PROGRAM_B2 "./b2")
 	set(PROGRAM_BOOTSTRAP "bootstrap.sh")
-	set(TOOLSET "gcc")
+	if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		set(TOOLSET "clang")
+	elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+		set(TOOLSET "gcc")
+	endif()
 	set(INSTALL_DIR "${LIBRARY_OUTPUT_PATH}")
 ENDIF()
 
@@ -55,18 +59,23 @@ set(BOOST_TOP_WORKING_DIR ${boost_headers_BUILD})
 set(BOOST_WORKING_DIR "${boost_headers_BUILD}/${BASENAME_STRIP}")
 set(BOOST_INTERMEDIATE_DIR "${boost_headers_BUILD}/${BASENAME_STRIP}/build")
 
+MESSAGE("-- writing ${BOOST_WORKING_DIR}/tools/build/v2/user-config.jam")
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+	# using Clang
+	FILE(WRITE "${BOOST_WORKING_DIR}/usr.jam"
+	"import option ;\n"
+	"using clang : : $ENV{CXX} : <cxxflags>$ENV{CXXFLAGS} ;\n")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+	# using GCC
+	FILE(WRITE "${BOOST_WORKING_DIR}/usr.jam"
+	"import option ;\n"
+	"using gcc : : $ENV{CXX} : <cxxflags>$ENV{CXXFLAGS} ;\n")
+endif()
+
 IF(BOOST_INSTALL_HEADERS EQUAL 1)
 
 	if(NOT WIN32)
-
-		FILE(WRITE "${BOOST_WORKING_DIR}/tools/build/v2/user-config.jam"
-"import option ;\n"
-"using gcc : 4.9 : $ENV{CXX} : <cxxflags>\"$ENV{CXXFLAGS}\" ;\n"
-		)
-		FILE(WRITE "$ENV{HOME}/user-config.jam"
-"import option ;\n"
-"using gcc : 4.9 : $ENV{CXX} : <cxxflags>\"$ENV{CXXFLAGS}\" ;\n"
-		)
 
 		execute_process(
 							COMMAND "patch" "-N" "-p0" "--strip=1"
@@ -86,8 +95,6 @@ IF(BOOST_INSTALL_HEADERS EQUAL 1)
 							COMMAND "chmod" "+x" "${PROGRAM_B2}"
 							WORKING_DIRECTORY ${BOOST_WORKING_DIR})
 
-		FILE(REMOVE "${BOOST_WORKING_DIR}/tools/build/v2/user-config.jam")
-		FILE(REMOVE "$ENV{HOME}/user-config.jam")
 	else()
 		execute_process(
 							COMMAND "patch" "-N" "-p0" "--strip=0"
@@ -118,11 +125,13 @@ ELSE()
 			file( TO_CMAKE_PATH ${python_LIBDIR}/lib PYTHON_LIBS )
 		ENDIF()
 
-		IF(WIN32)
-			set(PYTHON_USING "msvc")
-		ELSE()
+		if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+			set(PYTHON_USING "clang")
+		elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 			set(PYTHON_USING "gcc")
-		ENDIF()
+		else()
+			set(PYTHON_USING "msvc")
+		endif()
 
 		FILE(WRITE "${BOOST_WORKING_DIR}/project-config.jam"
 "import option ;\n"

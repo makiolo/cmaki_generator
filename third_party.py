@@ -354,7 +354,7 @@ class ThirdParty:
         parms = self.parameters
         build_modes = []
         try:
-            if 'MODE' in os.environ:
+            if 'MODE' in os.environ and (os.environ['MODE'] != 'UNDEFINED'):
                 build_modes.append(os.environ['MODE'])
             else:
                 mode = parms['mode']
