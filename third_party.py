@@ -354,13 +354,16 @@ class ThirdParty:
         parms = self.parameters
         build_modes = []
         try:
-            mode = parms['mode']
-            if mode.find('d') != -1:
-                build_modes.append('Debug')
-            if mode.find('i') != -1:
-                build_modes.append('RelWithDebInfo')
-            if mode.find('r') != -1:
-                build_modes.append('Release')
+            if 'MODE' in os.environ:
+                build_modes.append(os.environ['MODE'])
+            else:
+                mode = parms['mode']
+                if mode.find('d') != -1:
+                    build_modes.append('Debug')
+                if mode.find('i') != -1:
+                    build_modes.append('RelWithDebInfo')
+                if mode.find('r') != -1:
+                    build_modes.append('Release')
         except KeyError:
             # no mode provided
             build_modes.append('Debug')
@@ -736,6 +739,7 @@ class ThirdParty:
 
                 # generate find.cmake
                 build_directory = self.get_build_directory(r"${GLOBAL_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
+                print ("----> build_directory = %s" % build_directory)
                 with open('find.cmake', 'wt') as f:
                     f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
                     f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
