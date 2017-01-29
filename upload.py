@@ -16,6 +16,9 @@ def upload(node, parameters, compiler_replace_maps):
             command = "python upload_package.py --url=%s/upload.php --filename=%s" % (parameters.server, prefix_package)
             node.ret += abs(utils.safe_system(command))
 
+        if node.ret != 0:
+            return False
+
         # pack cmakefiles
         if not parameters.no_packing_cmakefiles:
             for plat in platforms:
