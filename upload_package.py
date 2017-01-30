@@ -19,10 +19,15 @@ if __name__ == '__main__':
     # Register the streaming http handlers with urllib2
     poster.streaminghttp.register_openers()
 
-    datagen, headers = poster.encode.multipart_encode({parameters.field: open(parameters.filename, "rb")})
-
-    # Create the Request object
-    request = urllib2.Request(parameters.url, datagen, headers)
-    # Actually do the request, and get the response
-    print urllib2.urlopen(request).read()
+    with open(parameters.filename, "rb") as f:
+        datagen, headers = poster.encode.multipart_encode({parameters.field: f})
+        # Create the Request object
+        request = urllib2.Request(parameters.url, datagen, headers)
+        # Actually do the request, and get the response
+        handler = urllib2.urlopen(request)
+        print handler.read()
+        if handler.getcode() == 200:    
+            sys.exit(0)
+        else:
+            sys.exit(1)
 

@@ -13,6 +13,8 @@ def upload(node, parameters, compiler_replace_maps):
         for plat in platforms:
             workspace = node.get_workspace(plat)
             prefix_package = os.path.join(parameters.prefix, '%s.tar.gz' % workspace)
+            if not os.path.isfile(prefix_package):
+                return False
             command = "python upload_package.py --url=%s/upload.php --filename=%s" % (parameters.server, prefix_package)
             node.ret += abs(utils.safe_system(command))
 
@@ -24,6 +26,8 @@ def upload(node, parameters, compiler_replace_maps):
             for plat in platforms:
                 base_folder = node.get_base_folder()
                 prefix_package_cmake = os.path.join(parameters.prefix, '%s-%s-cmake.tar.gz' % (base_folder, plat))
+                if not os.path.isfile(prefix_package_cmake):
+                    return False
                 command = "python upload_package.py --url=%s/upload.php --filename=%s" % (parameters.server, prefix_package_cmake)
                 node.ret += abs(utils.safe_system(command))
 
