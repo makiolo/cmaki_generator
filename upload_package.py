@@ -25,9 +25,8 @@ if __name__ == '__main__':
         request = urllib2.Request(parameters.url, datagen, headers)
         # Actually do the request, and get the response
         handler = urllib2.urlopen(request)
-        print handler.read()
+        logging.info( handler.read() )
         if handler.getcode() == 200:    
             sys.exit(0)
         else:
             sys.exit(1)
-
