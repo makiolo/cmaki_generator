@@ -871,7 +871,7 @@ class ThirdParty:
             if branch is not None:
                 logging.info('clonning to branch %s' % branch)
                 extra_cmd = '-b %s' % branch
-            self.safe_system('git clone %s --recursive %s %s' % (extra_cmd, url, build_directory), compiler_replace_maps)
+            self.safe_system('git clone %s %s %s && git submodule update --recursive --remote' % (extra_cmd, url, build_directory), compiler_replace_maps)
             depends_file = self.user_parameters.depends
             if depends_file is not None:
                 with utils.working_directory(build_directory):
