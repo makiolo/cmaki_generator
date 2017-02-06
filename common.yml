@@ -290,9 +290,19 @@ executable_exact: &executable_exact
                     - ${TARGET}.exe
                     - bin/${TARGET}.exe
                     - dll/${TARGET}.exe
+            debug:
+                bin:
+                    - ${TARGET}.exe
+                    - bin/${TARGET}.exe
+                    - dll/${TARGET}.exe
     unix: &executable_exact_unix_common
         executable:
             release:
+                bin:
+                    - $TARGET
+                    - bin/$TARGET
+                    - dll/$TARGET
+            debug:
                 bin:
                     - $TARGET
                     - bin/$TARGET
