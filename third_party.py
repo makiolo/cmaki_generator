@@ -7,6 +7,7 @@ import datetime
 import hash_version
 import copy
 from sets import Set
+from build import prepare_cmakelib
 
 class InvalidPlatform(Exception):
     def __init__(self, plat):
@@ -81,7 +82,9 @@ elif sys.platform.startswith("linux"):  # linux2
     else:
         print('using linux ...')
         somask_id = 'l'
-        for platform in utils.get_stdout(os.path.join('..', 'cmaki', 'ci', 'detect_operative_system.sh')):
+        temporal_cmakelib = os.path.join('..', 'cmaki', 'ci')
+        prepare_cmakelib(temporal_cmakelib)
+        for platform in utils.get_stdout(os.path.join(temporal_cmakelib, 'detect_operative_system.sh')):
             archs = {platform: '64'}
             platforms = [platform]
             break
