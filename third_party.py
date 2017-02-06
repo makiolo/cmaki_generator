@@ -7,7 +7,6 @@ import datetime
 import hash_version
 import copy
 from sets import Set
-from build import prepare_cmakelib
 
 class InvalidPlatform(Exception):
     def __init__(self, plat):
@@ -47,6 +46,11 @@ class FailThirdParty(Exception):
     def __repr__(self):
         return "%s" % self._msg
 
+def prepare_cmakefiles(cmakefiles):
+    if not os.path.isdir(os.path.join(cmakefiles)):
+        utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, cmakefiles))
+    utils.safe_system('git pull origin master')
+
 #
 # INMUTABLE GLOBALS
 #
@@ -83,7 +87,7 @@ elif sys.platform.startswith("linux"):  # linux2
         print('using linux ...')
         somask_id = 'l'
         temporal_cmakelib = os.path.join('..', 'cmaki', 'ci')
-        prepare_cmakelib(temporal_cmakelib)
+        prepare_cmakefiles(temporal_cmakelib)
         for platform in utils.get_stdout(os.path.join(temporal_cmakelib, 'detect_operative_system.sh')):
             archs = {platform: '64'}
             platforms = [platform]
