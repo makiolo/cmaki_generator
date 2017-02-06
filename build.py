@@ -221,9 +221,9 @@ def clean_subset(solutions):
                     groups.remove(solution1)
     return groups
 
-def prepare_cmakelib(parameters):
-    if not os.path.isdir(os.path.join(parameters.cmakefiles)):
-        utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, parameters.cmakefiles))
+def prepare_cmakelib(cmakefiles):
+    if not os.path.isdir(os.path.join(cmakefiles)):
+        utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, cmakefiles))
     utils.safe_system('git pull origin master')
 
 def init_parameter_path(value, default):
@@ -412,7 +412,7 @@ usage:""")
     os.environ['TOOLCHAIN'] = parameters.toolchain
 
     # prepare cmakelin
-    prepare_cmakelib(parameters)
+    prepare_cmakelib(parameters.cmakefiles)
 
     # generate amalgaimation yaml
     amalgamation_yaml(parameters.rootdir)
