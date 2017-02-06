@@ -54,5 +54,4 @@ install:
   - pip install --user poster
 
 script:
-  - NOCACHE_LOCAL=TRUE NOCACHE_REMOTE=TRUE ./build raknet --server=http://artifacts.myftp.biz:8080
   - NOCACHE_LOCAL=TRUE NOCACHE_REMOTE=TRUE ./build librocket --server=http://artifacts.myftp.biz:8080
