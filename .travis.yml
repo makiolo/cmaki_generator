@@ -54,4 +54,6 @@ install:
   - pip install --user poster
 
 script:
-  - NOCACHE_LOCAL=TRUE NOCACHE_REMOTE=TRUE ./build librocket --server=http://artifacts.myftp.biz:8080
+  - export NOCACHE_LOCAL=TRUE
+  - export NOCACHE_REMOTE=FALSE
+  - ./build librocket --server=http://artifacts.myftp.biz:8080
