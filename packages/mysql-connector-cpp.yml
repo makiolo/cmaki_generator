@@ -1,0 +1,28 @@
+- mysql-connector-cpp:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    version_manager: git
+    cmake_target: null
+    depends:
+        - boost-system
+    post_install:
+        - ./include/*.h include/mysql-connector-cpp RECURSIVE
+    mode: dr
+    source: https://github.com/mysql/mysql-connector-cpp
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=ON
+    targets:
+        - concpp:
+            info:
+                <<: *library_dynamic_exact
+            extra:
+                win32:
+                    include:
+                        - include/mysql-connector-cpp
+                win64:
+                    include:
+                        - include/mysql-connector-cpp
+                default:
+                    include:
+                        - include/mysql-connector-cpp
+
