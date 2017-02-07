@@ -58,4 +58,5 @@ script:
   - export NOCACHE_REMOTE=FALSE
   # build in travis 7-feb
   # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
-  - ./build spdlog --server=http://artifacts.myftp.biz:8080
+  #- ./build spdlog --server=http://artifacts.myftp.biz:8080
+  - ./build raknet --server=http://artifacts.myftp.biz:8080
