@@ -50,7 +50,7 @@ def prepare_cmakefiles(cmakefiles):
     if not os.path.isdir(cmakefiles):
         utils.trymkdir(cmakefiles)
         utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, cmakefiles))
-    utils.safe_system('git pull origin master')
+    utils.safe_system('cd {} && git pull origin master'.format(cmakefiles))
 
 #
 # INMUTABLE GLOBALS
