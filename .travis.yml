@@ -54,6 +54,9 @@ install:
   - pip install --user poster
 
 script:
+  - set -e
+  - (cd cmaki && git pull origin master)
+  - ./cmaki/run.sh
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
   # build in travis 7-feb
@@ -61,4 +64,5 @@ script:
   #- ./build spdlog --server=http://artifacts.myftp.biz:8080
   #- ./build raknet google-gmock boost-date-time --server=http://artifacts.myftp.biz:8080
   #- ./build raknet --server=http://artifacts.myftp.biz:8080
-  - ./build intel-tbb* --server=http://artifacts.myftp.biz:8080
+  - (cd cmaki_generator && ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080)
+  - set +e
