@@ -56,7 +56,6 @@ install:
 script:
   - set -e
   - (cd cmaki && git pull origin master)
-  - ./cmaki/run.sh
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
   # build in travis 7-feb
