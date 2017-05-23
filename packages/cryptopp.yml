@@ -1,0 +1,18 @@
+- cryptopp:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    mode: dr
+    version_manager: git
+    post_install:
+        - ./*.h include
+    mode: dr
+    source: https://github.com/weidai11/cryptopp.git
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=ON
+        - BUILD_STATIC=OFF
+        - BUILD_TESTING=OFF
+        - BUILD_SHARED=ON
+    targets:
+        - cryptopp-shared:
+            info:
+                <<: *library_dynamic_exact
