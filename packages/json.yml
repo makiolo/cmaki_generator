@@ -1,0 +1,20 @@
+- json:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    mode: dr
+    version_manager: git
+    post_install:
+        - ./*.h include
+        - ./*.a lib
+    cmake_target: null
+    mode: dr
+    source: https://github.com/nlohmann/json.git
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=ON
+        - BUILD_STATIC=ON
+        - BUILD_TESTING=OFF
+        - BUILD_SHARED=OFF
+    targets:
+        - json:
+            info:
+                <<: *library_static_exact
