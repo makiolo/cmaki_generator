@@ -15,6 +15,6 @@
         - BUILD_TESTING=OFF
         - BUILD_SHARED=OFF
     targets:
-        - json:
+        - nlohmann_json:
             info:
                 <<: *library_static_exact
