@@ -14,6 +14,7 @@ import hashlib
 import yaml
 import json
 import errno
+import multiprocessing
 from distutils.spawn import find_executable
 try:
     import bz2
@@ -264,7 +265,6 @@ def extract_file(path, to_directory, environment):
                 logging.debug('Using cmake -E tar for package: %s' % path)
                 ret = safe_system('cmake -E tar xvf %s' % path, env=environment)
                 ok = (ret == 0)
-
             # be careful, early return
             return ok
         else:
@@ -300,33 +300,7 @@ def extract_file(path, to_directory, environment):
 
 # Copy Paste from run_tests (handler.py)
 def detect_ncpus():
-    """Detects the number of effective CPUs in the system.
-    if the there is variable called FOL_NUMBER_OF_PROCESSORS_OVERRIDE detect_ncpus will return its value"""
-    nprocessors_override = os.environ.get("FOL_NUMBER_OF_PROCESSORS_OVERRIDE", None)
-    if (nprocessors_override != None):
-        if isinstance(nprocessors_override, int) and nprocessors_override > 0:
-            return nprocessors_override
-        elif isinstance(nprocessors_override, str):
-            return int(nprocessors_override)
-    else:
-        #for Linux, Unix and MacOS
-        if hasattr(os, "sysconf"):
-            if os.sysconf_names.has_key("SC_NPROCESSORS_ONLN"):
-                #Linux and Unix
-                ncpus = os.sysconf("SC_NPROCESSORS_ONLN")
-                if isinstance(ncpus, int) and ncpus > 0:
-                    return ncpus
-            else:
-                #MacOS X
-                ncpus = int(os.popen2("sysctl -n hw.ncpu")[1].read())
-                return ncpus
-        #for Windows
-        if os.environ.has_key("NUMBER_OF_PROCESSORS"):
-            ncpus = int(os.environ["NUMBER_OF_PROCESSORS"]);
-            if ncpus > 0:
-                return ncpus
-        #return the default value
-        return 1
+    return multiprocessing.cpu_count()
 
 def get_norm_path(pathfile, native=True):
     if native and is_windows():
