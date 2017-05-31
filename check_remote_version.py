@@ -203,6 +203,6 @@ if __name__ == '__main__':
                     if parameters.name != '.':
                         sys.exit(0)
     else:
-        print("UNSUITABLE;;")
+        print("UNSUITABLE;")
         sys.exit(1)
 
