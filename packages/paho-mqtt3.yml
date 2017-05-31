@@ -1,4 +1,4 @@
-- paho-mqtt:
+- paho-mqtt3:
     <<: *thirdparty_defaults
     version: 0.0.0.0
     mode: dr
@@ -13,6 +13,9 @@
         - BUILD_STATIC=OFF
         - BUILD_SHARED=ON
     targets:
-        - paho-mqtt:
+        - paho-mqtt3c:
+            info:
+                <<: *library_dynamic_exact
+        - paho-mqtt3a:
             info:
                 <<: *library_dynamic_exact
