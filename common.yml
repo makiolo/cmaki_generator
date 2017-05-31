@@ -40,18 +40,6 @@ environment_new_linux: &environment_new_linux
         #- -Wl,-rpath,\$${TOOLCHAIN}/lib
         #- -Wl,--enable-new-dtags
 
-environment_old: &environment_old
-    PATH:
-        - /us/xatemb1d/image/bin
-        - /us/xatemb1d/scripts
-        - /us/xatemb1d/cmakelib
-    LD_LIBRARY_PATH:
-        - /us/xatemb1d/image/lib
-    MANPATH:
-        - /us/xatemb1d/image/man
-    PYTHONPATH:
-        - /us/xatemb1d/local/lib/python2.7/site-packages
-
 # end enviroments references
 
 compile_with_path_toolchain: &compile_with_path_toolchain
@@ -72,8 +60,8 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_dyn: so
         ext_sta: a
         environment:
-            push_front:
-                <<: *environment_old
+            # push_front:
+            #     <<: *environment_old
             remove:
                 <<: *environment_new_linux
             assign:
@@ -106,8 +94,8 @@ compile_with_toolchain: &compile_with_toolchain
         environment:
             push_front:
                 <<: *environment_new_linux
-            remove:
-                <<: *environment_old
+            # remove:
+            #     <<: *environment_old
             assign:
                 LC_ALL: en_GB.UTF-8
                 MAKE: $toolchain_BASE/bin/make
@@ -128,8 +116,8 @@ compile_with_native_compiler: &compile_with_native_compiler
         environment:
             push_front:
                 <<: *environment_new_linux
-            remove:
-                <<: *environment_old
+            # remove:
+            #     <<: *environment_old
             assign:
                 LC_ALL: en_GB.UTF-8
             flags:

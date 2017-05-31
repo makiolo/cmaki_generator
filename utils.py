@@ -211,6 +211,7 @@ def trymkdir(directory):
 def move_folder_recursive(source, destiny):
     if not os.path.exists(source):
         raise Exception('Error in move_folder_recursive: source not exists: %s' % source)
+    logging.debug('move recursive from {} to {}'.format(source, destiny))
     for archive in os.listdir(source):
         # ignore some stuff
         if archive.startswith('.git') or archive.startswith('.svn'):
@@ -334,10 +335,6 @@ def get_needed(libfile, env=os.environ.copy()):
         if line.find('NEEDED') != -1:
             yield line.split()[1]
 
-'''
-Example use, in ldgrd105:
-/us/xatemb1d is a symbolic link to /pr/us/xatemb1d
-'''
 def get_real_home():
     if sys.platform.startswith("sun"):
         # problems launching subshell in solaris
@@ -458,7 +455,7 @@ def get_stdout(cmd, env=os.environ.copy(), program_required=None):
         data, err = p.communicate()
         data = [line.strip() for line in data.split('\n') if line.strip()]
         for line in data:
-            logging.debug('[out cmd] %s' % line)
+            # logging.debug('[out cmd] %s' % line)
             yield line
     else:
         raise NotFoundProgram('Not found program %s, for execute: %s' % (program_required, cmd))

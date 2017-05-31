@@ -91,12 +91,12 @@ def packing(node, parameters, compiler_replace_maps):
 
             node.ret += abs( node.safe_system(gen_targz, compiler_replace_maps, log=parameters.verbose) )
             if not os.path.exists(prefix_package):
-                logging.error('No such file: %s' % prefix_package)
+                logging.error('No such file: {}'.format(prefix_package))
                 return False
 
             # calculate md5 file
             package_md5 = utils.md5sum(prefix_package)
-            logging.debug("new package %s, with md5sum %s" % (prefix_package, package_md5))
+            logging.debug("new package {}, with md5sum {}".format(prefix_package, package_md5))
             with open(prefix_package_md5, 'wt') as f:
                 f.write('%s\n' % package_md5)
 
@@ -114,7 +114,7 @@ def packing(node, parameters, compiler_replace_maps):
                 logging.debug('working dir: %s' % folder_3rdparty)
                 # packing install
                 logging.info('generating package cmake %s' % prefix_package_cmake)
-                gen_targz_cmake = '%star zcvf %s %s' % (precmd, prefix_package_cmake, node.get_base_folder())
+                gen_targz_cmake = '{}tar zcvf {} {}'.format(precmd, prefix_package_cmake, node.get_base_folder())
                 node.ret += abs( node.safe_system(gen_targz_cmake, compiler_replace_maps) )
 
     # finish well

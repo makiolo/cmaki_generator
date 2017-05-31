@@ -6,7 +6,7 @@
         - paho-mqtt3
     version_manager: git
     post_install:
-        - ./src/mqtt/*.h include/mqttpp
+        - ./src/mqtt/*.h include/mqtt
     mode: dr
     source: https://github.com/eclipse/paho.mqtt.cpp.git
     cmake_definitions:
@@ -14,7 +14,7 @@
         - BUILD_TESTING=OFF
         - BUILD_STATIC=OFF
         - BUILD_SHARED=ON
-        - PAHO_MQTT_C_PATH=/dev/null
+        - PAHO_WITH_SSL=OFF
     targets:
         - paho-mqttpp3:
             info:
