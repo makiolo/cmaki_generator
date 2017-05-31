@@ -4,7 +4,7 @@
     mode: dr
     version_manager: git
     post_install:
-        - ./src/mqtt/*.h include/mqtt
+        - ./src/mqtt/*.h include/mqttpp
     mode: dr
     source: https://github.com/eclipse/paho.mqtt.cpp.git
     cmake_definitions:
