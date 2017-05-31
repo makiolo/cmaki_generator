@@ -65,6 +65,6 @@ script:
   #- ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
   #- ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
   # - ./build json -o --server=http://artifacts.myftp.biz:8080
-  # - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080 -d
-  - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080 -d
+  - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080 -d
+  # - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080 -d
   - set +e
