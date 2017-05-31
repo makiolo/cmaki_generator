@@ -2,6 +2,8 @@
     <<: *thirdparty_defaults
     version: 0.0.0.0
     mode: dr
+    depends:
+        - paho-mqtt3
     version_manager: git
     post_install:
         - ./src/mqtt/*.h include/mqttpp
