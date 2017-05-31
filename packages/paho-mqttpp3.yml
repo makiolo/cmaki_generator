@@ -14,6 +14,7 @@
         - BUILD_TESTING=OFF
         - BUILD_STATIC=OFF
         - BUILD_SHARED=ON
+        - PAHO_MQTT_C_PATH=/dev/null
     targets:
         - paho-mqttpp3:
             info:
