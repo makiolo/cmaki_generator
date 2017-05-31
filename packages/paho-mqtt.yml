@@ -1,0 +1,18 @@
+- paho-mqtt:
+    <<: *thirdparty_defaults
+    version: 0.0.0.0
+    mode: dr
+    version_manager: git
+    post_install:
+        - ./src/*.h include/mqtt
+    mode: dr
+    source: https://github.com/eclipse/paho.mqtt.c.git
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=ON
+        - BUILD_TESTING=OFF
+        - BUILD_STATIC=OFF
+        - BUILD_SHARED=ON
+    targets:
+        - paho-mqtt:
+            info:
+                <<: *library_dynamic_exact
