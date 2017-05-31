@@ -104,6 +104,7 @@ def compilation(node, parameters, compiler_replace_maps):
                     cmake_definitions_list_original = parms['cmake_definitions']
                     cmake_definitions_list = []
                     for define in cmake_definitions_list_original:
+                        # TODO: resolver tus variables directas e indirectas (de dependencias)
                         define = define.replace('$%s_HOME' % package_norm, install_directory)
                         # apply replaces
                         cmake_definitions_list.append( utils.apply_replaces(define, compiler_replace_resolved) )
@@ -202,4 +203,3 @@ def compilation(node, parameters, compiler_replace_maps):
 
     # finish well
     return True
-
