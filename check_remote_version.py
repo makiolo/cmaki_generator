@@ -181,9 +181,9 @@ if __name__ == '__main__':
             """
             for package in sorted(packages_found, cmp=sort_versions(False)):
                 if package_request.is_same_version(package):
-                    print("EXACT;%s" % (package))
+                    print("EXACT;%s;%s" % (package, package.get_version()))
                 else:
-                    print("COMPATIBLE;%s" % (package))
+                    print("COMPATIBLE;%s;%s" % (package, package.get_version()))
                 if parameters.name != '.':
                     sys.exit(0)
         else:
@@ -197,12 +197,12 @@ if __name__ == '__main__':
             for package in sorted(packages_found, cmp=sort_versions(True), reverse=True):
                 if(package.get_version() >= package_request.get_version()):
                     if package_request.is_same_version(package):
-                        print("EXACT;%s" % (package))
+                        print("EXACT;%s;%s" % (package, package.get_version()))
                     else:
-                        print("COMPATIBLE;%s" % (package))
+                        print("COMPATIBLE;%s;%s" % (package, package.get_version()))
                     if parameters.name != '.':
                         sys.exit(0)
     else:
-        print("UNSUITABLE;")
+        print("UNSUITABLE;;")
         sys.exit(1)
 
