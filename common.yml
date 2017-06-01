@@ -64,13 +64,6 @@ compile_with_path_toolchain: &compile_with_path_toolchain
             #     <<: *environment_old
             remove:
                 <<: *environment_new_linux
-            assign:
-                LC_ALL: en_GB.UTF-8
-            flags:
-                CFLAGS:
-                    - -m64 -pipe
-                CPPFLAGS:
-                    - -m64 -pipe
 
 compile_with_toolchain: &compile_with_toolchain
     win32:
@@ -100,11 +93,6 @@ compile_with_toolchain: &compile_with_toolchain
                 LC_ALL: en_GB.UTF-8
                 MAKE: $toolchain_BASE/bin/make
                 PKG_CONFIG_PATH: $toolchain_BASE/lib/pkgconfig
-            flags:
-                CFLAGS:
-                    - -m64 -pipe
-                CPPFLAGS:
-                    - -m64 -pipe
 
 compile_with_native_compiler: &compile_with_native_compiler
     default:
