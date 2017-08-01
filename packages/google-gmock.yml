@@ -10,6 +10,7 @@
         - ./googlemock/include/gmock/*.h include/gmock/ RECURSIVE
         - ./googletest/include/gtest/*.h include/gtest/ RECURSIVE
     cmake_definitions:
+        # shared need symbol GTEST_LINKED_AS_SHARED_LIBRARY=1
         - BUILD_SHARED_LIBS=OFF
         - BUILD_GTEST=ON
         - BUILD_GMOCK=ON
