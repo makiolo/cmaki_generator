@@ -59,7 +59,8 @@ script:
   - export NOCACHE_REMOTE=FALSE
   # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
   - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o
-  - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o -d
+  - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --no-purge
+  - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --only-packing -d
   # - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080 -d -o
   # - ./build spdlog --server=http://artifacts.myftp.biz:8080
   # - ./build google-gmock --server=http://artifacts.myftp.biz:8080
