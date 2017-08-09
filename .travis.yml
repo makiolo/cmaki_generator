@@ -57,7 +57,8 @@ script:
   - set -e
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
-  - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
+  # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
+  - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080 -d
   # - ./build spdlog --server=http://artifacts.myftp.biz:8080
   # - ./build google-gmock --server=http://artifacts.myftp.biz:8080
   # - ./build raknet --server=http://artifacts.myftp.biz:8080
