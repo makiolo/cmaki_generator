@@ -57,14 +57,14 @@ script:
   - set -e
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
-  # build in travis 7-feb
-  # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
+  - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
   # - ./build spdlog --server=http://artifacts.myftp.biz:8080
   # - ./build google-gmock --server=http://artifacts.myftp.biz:8080
   # - ./build raknet --server=http://artifacts.myftp.biz:8080
   # - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
   # - ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
-  - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
   # - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080
+  # no esta compilando
+  # - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
   - set +e
