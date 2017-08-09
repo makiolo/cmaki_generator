@@ -1,3 +1,5 @@
+gcc 4.9 / clang 3.6: [![Build Status](https://travis-ci.org/makiolo/cmaki_generator.svg?branch=master)](https://travis-ci.org/makiolo/cmaki_generator)
+
 # artifacts responsability
 - boost-headers
 - boost-system
@@ -16,4 +18,3 @@
 - boost-python
 - boost-python-debug
 - boost-serialization
-
