@@ -5,6 +5,13 @@
     version_manager: git
     mode: dr
     source: https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git
+    cmake_definitions:
+        - BUILD_SHARED=TRUE
+        - BUILD_STATIC=FALSE
+        - USE_LIB64=TRUE
+        - BUILD_EXTENSIONS_AS_BUILTIN=TRUE
+        - INSTALL_DEVELOPMENT=TRUE
+        - INSTALL_MANUAL=TRUE
     targets:
         - libpython3.5m:
             info:
