@@ -64,7 +64,7 @@ script:
   # - ./build raknet --server=http://artifacts.myftp.biz:8080
   # - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
   # - ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
-  - ./build json -o --server=http://artifacts.myftp.biz:8080
+  # - ./build json -o --server=http://artifacts.myftp.biz:8080
   - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080 -d
   - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080 -d
   - set +e
