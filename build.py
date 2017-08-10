@@ -9,6 +9,7 @@ import pipeline
 import traceback
 import copy
 import datetime
+import urllib2
 # object package
 from third_party import ThirdParty
 from collections import OrderedDict
@@ -400,7 +401,11 @@ usage:""")
             yml_file = os.path.join('github', '{}.yml'.format(repo.replace('/', '_')))
             if os.path.isfile(yml_file):
                 utils.tryremove(yml_file)
-            download_from_url('https://raw.githubusercontent.com/{}/master/cmaki.yml'.format(repo), yml_file)
+            try:
+                download_from_url('https://raw.githubusercontent.com/{}/master/cmaki.yml'.format(repo), yml_file)
+            except urllib2.HTTPError:
+                logging.error('not found cmaki.yml in {}'.format(package))
+                sys.exit(1)
             parameters.packages[i] = repo.split('/')[1]
         i += 1
 
