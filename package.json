@@ -1,0 +1,23 @@
+{
+  "name": "cmaki_generator",
+  "version": "1.0.0",
+  "description": "generator of artifacts",
+  "main": "index.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makiolo/cmaki_generator.git"
+  },
+  "keywords": [
+    "c++",
+    "artifacts"
+  ],
+  "author": "Ricardo Marmolejo García",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/makiolo/cmaki_generator/issues"
+  },
+  "homepage": "https://github.com/makiolo/cmaki_generator#readme"
+}
