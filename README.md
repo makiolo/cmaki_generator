@@ -1,3 +1,5 @@
+# cmaki_generator [![npm version](https://badge.fury.io/js/cmaki_generator.svg)](https://badge.fury.io/js/cmaki_generator)
+
 gcc 4.9 / clang 3.6: [![Build Status](https://travis-ci.org/makiolo/cmaki_generator.svg?branch=master)](https://travis-ci.org/makiolo/cmaki_generator)
 
 # artifacts responsability
