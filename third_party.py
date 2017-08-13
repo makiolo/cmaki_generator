@@ -11,19 +11,19 @@ from sets import Set
 class InvalidPlatform(Exception):
     def __init__(self, plat):
         self._plat = plat
-    def __repr__(self):
+    def __str__(self):
         return "Invalid platform detected: %s" % self._plat
 
 class DontExistsFile(Exception):
     def __init__(self, source_filename):
         self._source_filename = source_filename
-    def __repr__(self):
+    def __str__(self):
         return 'Dont exists file %s' % self._source_filename
 
 class FailPrepare(Exception):
     def __init__(self, node):
         self._node = node
-    def __repr__(self):
+    def __str__(self):
         return ('Failing preparing package: %s' % self._node.get_package_name())
 
 class AmbiguationLibs(Exception):
@@ -31,19 +31,19 @@ class AmbiguationLibs(Exception):
         self._kind = kind
         self._package = package
         self._build_mode = build_mode
-    def __repr__(self):
+    def __str__(self):
         return "Ambiguation in %s in %s. Mode: %s. Candidates:" % (self._kind, self._package, self._build_mode)
 
 class NotFoundInDataset(Exception):
     def __init__(self, msg):
         self._msg = msg
-    def __repr__(self):
+    def __str__(self):
         return "%s" % self._msg
 
 class FailThirdParty(Exception):
     def __init__(self, msg):
         self._msg = msg
-    def __repr__(self):
+    def __str__(self):
         return "%s" % self._msg
 
 def prepare_cmakefiles(cmakefiles):
@@ -55,7 +55,7 @@ def prepare_cmakefiles(cmakefiles):
 #
 # INMUTABLE GLOBALS
 #
-HTTP_URL_NPSERVER = 'https://artifacts.000webhostapp.com/packages'
+HTTP_URL_NPSERVER = 'http://artifacts.myftp.biz:8080/packages'
 CMAKELIB_URL='https://github.com/makiolo/cmaki.git'
 prefered = {}
 prefered['Debug'] = ['Debug', 'RelWithDebInfo', 'Release']
