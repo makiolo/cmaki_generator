@@ -99,6 +99,10 @@ elif sys.platform.startswith("sun"): # sunos5
     somask_id = 's'
     archs = {'solaris_sparc32': ''}
     platforms = ["solaris_sparc32"]
+elif sys.platform.startswith("darwin"): # sunos5
+    somask_id = 'm'
+    archs = {'macosx': '64'}
+    platforms = ["macosx"]
 else:
     raise InvalidPlatform(sys.platform)
 alias_priority_name = { 10: 'minimal',
