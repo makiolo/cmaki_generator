@@ -122,7 +122,7 @@ compile_with_native_compiler: &compile_with_native_compiler
 toolchain_minimal_defaults: &toolchain_minimal_defaults
     platforms:
         <<: *compile_with_native_compiler
-    mask: ls
+    mask: mls
     mode: r
     depends: null
     source: skip
@@ -138,7 +138,7 @@ toolchain_minimal_defaults: &toolchain_minimal_defaults
 toolchain_defaults: &toolchain_defaults
     platforms:
         <<: *compile_with_toolchain
-    mask: ls
+    mask: mls
     mode: r
     depends: null
     source: skip
@@ -154,7 +154,7 @@ toolchain_defaults: &toolchain_defaults
 thirdparty_defaults: &thirdparty_defaults
     platforms:
         <<: *compile_with_path_toolchain
-    mask: wlse
+    mask: wlmse
     mode: dri
     depends: null
     source: skip
@@ -173,7 +173,7 @@ thirdparty_defaults: &thirdparty_defaults
 thirdparty_old_defaults: &thirdparty_old_defaults
     platforms:
         <<: *compile_with_path_toolchain
-    mask: wlse
+    mask: wlmse
     mode: dri
     depends: null
     source: skip
