@@ -99,7 +99,10 @@ if __name__ == '__main__':
         - Version ultima
     """
     parser.add_argument('--version', dest='version', help='version package fixed', default=None)
+    # TODO: packagename-1.0.0.0-windows_32-msvc_2015-debug
+    # --platform deberia filtrar artefactos compatibles con "MI PLATAFORMA"
     parser.add_argument('--platform', dest='platform', help='platform specified', default=None)
+    # --compiler deberia filtrar artefactos compatibles con "MI COMPILADOR"
     parameters = parser.parse_args()
 
     package_request = package(parameters.name, parameters.version, True)
@@ -205,4 +208,3 @@ if __name__ == '__main__':
     else:
         print("UNSUITABLE;;")
         sys.exit(1)
-
