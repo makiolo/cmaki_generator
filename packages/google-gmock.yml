@@ -1,6 +1,6 @@
 - google-gmock:
     <<: *thirdparty_defaults
-    mask: wls
+    mask: wlsm
     mode: dr
     version: 0.0.0.0
     version_manager: git
