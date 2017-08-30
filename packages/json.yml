@@ -4,17 +4,20 @@
     mode: dr
     version_manager: git
     post_install:
-        - ./*.h include
-        - ./*.a lib
+        - ./src/*.h include
     cmake_target: null
     mode: dr
     source: https://github.com/nlohmann/json.git
-    cmake_definitions:
-        - BUILD_SHARED_LIBS=ON
-        - BUILD_STATIC=ON
-        - BUILD_TESTING=OFF
-        - BUILD_SHARED=OFF
+    unittest:
+        |
+            #include <json.hpp>
+            using json = nlohmann::json;
+            int main()
+            {
+                json j1;
+                return 0;
+            }
     targets:
-        - nlohmann_json:
+        - dummy:
             info:
                 <<: *library_static_exact
