@@ -55,6 +55,13 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_sta: lib
         compiler:
             - VC140, VC140
+    macosx:
+        generator: Unix Makefiles
+        ext_dyn: dylib
+        ext_sta: a
+        environment:
+            remove:
+                <<: *environment_new_linux
     default:
         generator: Unix Makefiles
         ext_dyn: so
@@ -78,6 +85,21 @@ compile_with_toolchain: &compile_with_toolchain
         ext_sta: lib
         compiler:
             - VC140, VC140
+    macosx:
+        generator: Unix Makefiles
+        ext_dyn: dylib
+        ext_sta: a
+        compiler:
+            - $toolchain_BASE/bin/clang, $toolchain_BASE/bin/clang++
+        environment:
+            push_front:
+                <<: *environment_new_linux
+            # remove:
+            #     <<: *environment_old
+            assign:
+                LC_ALL: en_GB.UTF-8
+                MAKE: $toolchain_BASE/bin/make
+                PKG_CONFIG_PATH: $toolchain_BASE/lib/pkgconfig
     default:
         generator: Unix Makefiles
         ext_dyn: so
