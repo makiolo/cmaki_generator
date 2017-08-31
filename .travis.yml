@@ -80,12 +80,11 @@ script:
   # - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --only-packing -d
   # - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080 -d -o
   # - ./build spdlog --server=http://artifacts.myftp.biz:8080 -d
-  - ./build google-gmock --server=http://artifacts.myftp.biz:8080
+  - ./build google-gmock --server=http://artifacts.myftp.biz:8080 -d
   # - ./build raknet --server=http://artifacts.myftp.biz:8080
   # - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
   # - ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080
-  # no esta compilando
-  - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
+  # - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
   - set +e
