@@ -146,16 +146,16 @@ library_dynamic: &library_dynamic
         dynamic:
             debug:
                 so:
-                    - /lib*$TARGET*.so/
-                    - /*$TARGET*.so/
+                    - /lib*$TARGET*.$EXT_DYN/
+                    - /*$TARGET*.$EXT_DYN/
             relwithdebinfo:
                 so:
-                    - /lib*$TARGET*.so/
-                    - /*$TARGET*.so/
+                    - /lib*$TARGET*.$EXT_DYN/
+                    - /*$TARGET*.$EXT_DYN/
             release:
                 so:
-                    - /lib*$TARGET*.so/
-                    - /*$TARGET*.so/
+                    - /lib*$TARGET*.$EXT_DYN/
+                    - /*$TARGET*.$EXT_DYN/
     win32:
         <<: *library_dynamic_windows
     win64:
@@ -295,51 +295,51 @@ library_dynamic_exact: &library_dynamic_exact
         dynamic:
             debug:
                 so:
-                    - lib${TARGET}d.so
-                    - lib/lib${TARGET}d.so
-                    - bin/lib${TARGET}d.so
-                    - lib${ARCH}/lib${TARGET}d.so
-                    - lib/${ARCH}/lib${TARGET}d.so
-                    - lib${TARGET}_D.so
-                    - lib/lib${TARGET}_D.so
-                    - bin/lib${TARGET}_D.so
-                    - lib${ARCH}/lib${TARGET}_D.so
-                    - lib/${ARCH}/lib${TARGET}_D.so
-                    - Debug/lib${TARGET}d.so
-                    - lib${TARGET}.so
-                    - lib/lib${TARGET}.so
-                    - bin/lib${TARGET}.so
-                    - lib${ARCH}/lib${TARGET}.so
-                    - lib/${ARCH}/lib${TARGET}.so
-                    - Debug/lib${TARGET}.so
-                    - lib${TARGET}_debug.so
-                    - lib/lib${TARGET}_debug.so
-                    - bin/lib${TARGET}_debug.so
-                    - lib${ARCH}/lib${TARGET}_debug.so
-                    - lib/${ARCH}/lib${TARGET}_debug.so
-                    - Debug/lib${TARGET}_debug.so
-                    - lib${TARGET}-d.so
-                    - lib/lib${TARGET}-d.so
-                    - bin/lib${TARGET}-d.so
-                    - lib${ARCH}/lib${TARGET}-d.so
-                    - lib/${ARCH}/lib${TARGET}-d.so
-                    - Debug/lib${TARGET}-d.so
+                    - lib${TARGET}d.$EXT_DYN
+                    - lib/lib${TARGET}d.$EXT_DYN
+                    - bin/lib${TARGET}d.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}d.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}d.$EXT_DYN
+                    - lib${TARGET}_D.$EXT_DYN
+                    - lib/lib${TARGET}_D.$EXT_DYN
+                    - bin/lib${TARGET}_D.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}_D.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}_D.$EXT_DYN
+                    - Debug/lib${TARGET}d.$EXT_DYN
+                    - lib${TARGET}.$EXT_DYN
+                    - lib/lib${TARGET}.$EXT_DYN
+                    - bin/lib${TARGET}.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}.$EXT_DYN
+                    - Debug/lib${TARGET}.$EXT_DYN
+                    - lib${TARGET}_debug.$EXT_DYN
+                    - lib/lib${TARGET}_debug.$EXT_DYN
+                    - bin/lib${TARGET}_debug.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - Debug/lib${TARGET}_debug.$EXT_DYN
+                    - lib${TARGET}-d.$EXT_DYN
+                    - lib/lib${TARGET}-d.$EXT_DYN
+                    - bin/lib${TARGET}-d.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}-d.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}-d.$EXT_DYN
+                    - Debug/lib${TARGET}-d.$EXT_DYN
             relwithdebinfo:
                 so:
-                    - lib$TARGET.so
-                    - lib/lib$TARGET.so
-                    - bin/lib$TARGET.so
-                    - lib${ARCH}/lib$TARGET.so
-                    - lib/${ARCH}/lib$TARGET.so
-                    - RelWithDebInfo/lib$TARGET.so
+                    - lib$TARGET.$EXT_DYN
+                    - lib/lib$TARGET.$EXT_DYN
+                    - bin/lib$TARGET.$EXT_DYN
+                    - lib${ARCH}/lib$TARGET.$EXT_DYN
+                    - lib/${ARCH}/lib$TARGET.$EXT_DYN
+                    - RelWithDebInfo/lib$TARGET.$EXT_DYN
             release:
                 so:
-                    - lib$TARGET.so
-                    - lib/lib$TARGET.so
-                    - bin/lib$TARGET.so
-                    - lib${ARCH}/lib$TARGET.so
-                    - lib/${ARCH}/lib$TARGET.so
-                    - Release/lib$TARGET.so
+                    - lib$TARGET.$EXT_DYN
+                    - lib/lib$TARGET.$EXT_DYN
+                    - bin/lib$TARGET.$EXT_DYN
+                    - lib${ARCH}/lib$TARGET.$EXT_DYN
+                    - lib/${ARCH}/lib$TARGET.$EXT_DYN
+                    - Release/lib$TARGET.$EXT_DYN
     win32:
         <<: *library_dynamic_exact_windows
     win64:
@@ -539,13 +539,13 @@ library_dynamic_boost: &library_dynamic_boost
         dynamic:
             debug:
                 so:
-                    /lib$TARGET-*-mt-*d-*_*.so/
+                    /lib$TARGET-*-mt-*d-*_*.$EXT_DYN/
             relwithdebinfo:
                 so:
-                    /lib$TARGET-*-mt-*_*.so/
+                    /lib$TARGET-*-mt-*_*.$EXT_DYN/
             release:
                 so:
-                    /lib$TARGET-*-mt-*_*.so/
+                    /lib$TARGET-*-mt-*_*.$EXT_DYN/
     win32:
         <<: *windows_dynamic_boost
     win64:
