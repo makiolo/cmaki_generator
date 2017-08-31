@@ -55,7 +55,7 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_sta: lib
         compiler:
             - VC140, VC140
-    macosx:
+    darwin:
         generator: Unix Makefiles
         ext_dyn: dylib
         ext_sta: a
@@ -85,7 +85,7 @@ compile_with_toolchain: &compile_with_toolchain
         ext_sta: lib
         compiler:
             - VC140, VC140
-    macosx:
+    darwin:
         generator: Unix Makefiles
         ext_dyn: dylib
         ext_sta: a
@@ -650,4 +650,3 @@ library_dynamic_boost: &library_dynamic_boost
         <<: *windows_dynamic_boost
     default:
         <<: *unix_dynamic_boost
-
