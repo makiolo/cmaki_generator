@@ -6,6 +6,7 @@ import traceback
 import datetime
 import hash_version
 import copy
+import fnmatch
 from sets import Set
 
 class InvalidPlatform(Exception):
@@ -545,7 +546,7 @@ class ThirdParty:
         class Found(Exception): pass
         try:
             for key in parameters['platforms']:
-                if key == plat:
+                if fnmatch.fnmatch(plat, key):
                     plat_parms = parameters['platforms'][key]
                     raise Found()
             else:
