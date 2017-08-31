@@ -5,15 +5,22 @@
     version: 0.0.0.0
     version_manager: git
     source: https://github.com/google/googletest.git
-    cmake_target: null
+    # cmake_target: null
     post_install:
         - ./googlemock/include/gmock/*.h include/gmock/ RECURSIVE
         - ./googletest/include/gtest/*.h include/gtest/ RECURSIVE
     cmake_definitions:
         # shared need symbol GTEST_LINKED_AS_SHARED_LIBRARY=1
+        - CMAKI_DEBUG=ON
         - BUILD_SHARED_LIBS=OFF
         - BUILD_GTEST=ON
         - BUILD_GMOCK=ON
+        - gtest_build_samples=OFF
+        - gtest_build_tests=OFF
+        - gtest_disable_pthreads=OFF
+        - gmock_build_tests=OFF
+        - INSTALL_GTEST=ON
+        - INSTALL_GMOCK=ON
     targets:
         - gtest:
             info:
