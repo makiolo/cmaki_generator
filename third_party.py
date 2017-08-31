@@ -95,6 +95,7 @@ elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
         for platform in utils.get_stdout(os.path.join(temporal_cmakelib, 'ci', 'detect_operative_system.sh')):
             archs = {platform: '64'}
             platforms = [platform]
+            logging.info('Detecting platform from script like: {}'.format(platform))
             break
 else:
     raise InvalidPlatform(sys.platform)
