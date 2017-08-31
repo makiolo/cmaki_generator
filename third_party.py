@@ -72,7 +72,7 @@ if sys.platform.startswith("win"):
     somask_id = 'w'
     archs = {'win32': '', 'win64': '64'}
     platforms = ["win32", "win64"]
-elif sys.platform.startswith("linux"):  # linux2
+elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
     try:
         value = os.environ['EMSCRIPTEN']
         is_emscripten = (str(value) == '1')
@@ -85,7 +85,7 @@ elif sys.platform.startswith("linux"):  # linux2
         archs = {'emscripten': ''}
         platforms = ["emscripten"]
     else:
-        print('using linux ...')
+        print('using linux/mac ...')
         somask_id = 'l'
         temporal_cmakelib = os.path.join('..', 'cmaki')
         if not os.path.isdir(temporal_cmakelib):
@@ -95,14 +95,6 @@ elif sys.platform.startswith("linux"):  # linux2
             archs = {platform: '64'}
             platforms = [platform]
             break
-elif sys.platform.startswith("sun"): # sunos5
-    somask_id = 's'
-    archs = {'solaris_sparc32': ''}
-    platforms = ["solaris_sparc32"]
-elif sys.platform.startswith("darwin"): # sunos5
-    somask_id = 'm'
-    archs = {'macosx': '64'}
-    platforms = ["macosx"]
 else:
     raise InvalidPlatform(sys.platform)
 alias_priority_name = { 10: 'minimal',
