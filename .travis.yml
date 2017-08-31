@@ -74,7 +74,9 @@ script:
   - set -e
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
-  - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
+  - ./build boost-headers -o --server=http://artifacts.myftp.biz:8080
+  - ./build boost-context -o --server=http://artifacts.myftp.biz:8080 -d
+  # - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
   # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
   # - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o
   # - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
