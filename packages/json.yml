@@ -8,6 +8,8 @@
     cmake_target: null
     mode: dr
     source: https://github.com/nlohmann/json.git
+    cmake_definitions:
+        - JSON_BuildTests=OFF
     unittest:
         |
             #include <json.hpp>
