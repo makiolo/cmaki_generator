@@ -74,7 +74,8 @@ script:
   - set -e
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
-  - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
+  - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
+  # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
   # - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o
   # - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
   # - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --no-purge
