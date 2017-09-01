@@ -1,6 +1,6 @@
 - boost-coroutine2:
     <<: *thirdparty_defaults
-    version: 1.62.0.0
+    version: 1.65.0.0
     mode: dr
     source: null
     uncompress: null
@@ -13,11 +13,10 @@
     before_copy:
         - ../boost-headers/CMakeLists.txt .
     cmake_definitions:
-        - BASENAME_STRIP=boost_1_62_0
+        - BASENAME_STRIP=boost_1_65_0
         - BOOST_PARAMETERS=--with-coroutine2
         - BOOST_INSTALL_HEADERS=0
     targets:
         - dummy:
             info:
                 <<: *library_dynamic_boost
-
