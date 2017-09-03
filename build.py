@@ -305,7 +305,7 @@ usage:""")
     parameters.cmakefiles = init_parameter_path(parameters.cmakefiles, os.path.join(parameters.prefix, 'cmaki'))
     parameters.third_party_dir = init_parameter_path(parameters.third_party_dir, os.path.join(parameters.cmakefiles, '3rdparty'))
     parameters.blacklist = init_parameter_path(parameters.blacklist, os.path.join(parameters.rootdir, 'blacklist.txt'))
-    # parameters.depends = init_parameter_path(parameters.depends, os.path.join(parameters.cmakefiles, '..', 'depends.json'))
+    parameters.depends = init_parameter_path(parameters.depends, os.path.join(parameters.cmakefiles, '..', 'depends.json'))
 
     # convert priority to int
     parameters.priority = convert_priority_to_integer(parameters.priority)
