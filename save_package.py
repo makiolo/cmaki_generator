@@ -25,7 +25,7 @@ if __name__ == '__main__':
     if parameters.name not in data:
         data[parameters.name] = parameters.version
     logging.info('serialize data = %s' % data)
-    depends_file_tmp = os.path.join(depends_file, '.tmp')
+    depends_file_tmp = depends_file + '.tmp'
     utils.serialize(data, depends_file_tmp)
     ret = subprocess.call('python -m json.tool %s > %s.json' % (depends_file_tmp, depends_file))
     sys.exit(ret)
