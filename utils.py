@@ -424,15 +424,19 @@ def md5sum(filename, blocksize=65536):
     return hash.hexdigest()
 
 def serialize(pythonDict, fileName):
-    # serialiedData = json.dumps(pythonDict)
+    serialize_json(pythonDict, fileName)
+
+def deserialize(fileName):
+    return deserialize_json(fileName)
+
+def serialize_yaml(pythonDict, fileName):
     serialiedData = yaml.dump(pythonDict, default_flow_style=True)
     with open(fileName, 'wt') as f:
         f.write(serialiedData)
 
-def deserialize(fileName):
+def deserialize_yaml(fileName):
     with open(fileName, 'rt') as f:
         stringData = f.read()
-    # return json.loads(stringData)
     return yaml.load(stringData)
 
 def serialize_json(pythonDict, fileName):

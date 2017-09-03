@@ -6,6 +6,7 @@ import urllib
 import cStringIO
 import csv
 import utils
+import subprocess
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -24,9 +25,8 @@ if __name__ == '__main__':
     if parameters.name not in data:
         data[parameters.name] = parameters.version
     logging.info('serialize data = %s' % data)
-    utils.serialize(data, depends_file)
-    # utils.serialize_json(data, depends_file)
-    # os.system('python -m json.tool %s > %s.json' % (depends_file, depends_file))
-    # utils.tryremove(depends_file)
-    # os.rename('%s.json' % depends_file, depends_file)
+    depends_file_tmp = os.path.join(depends_file, '.tmp')
+    utils.serialize(data, depends_file_tmp)
+    ret = subprocess.call('python -m json.tool %s > %s.json' % (depends_file_tmp, depends_file))
+    sys.exit(ret)
 
