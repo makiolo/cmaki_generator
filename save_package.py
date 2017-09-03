@@ -20,7 +20,9 @@ if __name__ == '__main__':
         # data = utils.deserialize_json(depends_file)
     else:
         data = {}
-    data[parameters.name] = parameters.version
+    # serialize if is new data
+    if parameters.name not in data:
+        data[parameters.name] = parameters.version
     logging.info('serialize data = %s' % data)
     utils.serialize(data, depends_file)
     # utils.serialize_json(data, depends_file)
