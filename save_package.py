@@ -27,6 +27,6 @@ if __name__ == '__main__':
     logging.info('serialize data = %s' % data)
     depends_file_tmp = depends_file + '.tmp'
     utils.serialize(data, depends_file_tmp)
-    ret = subprocess.call('python -m json.tool %s > %s.json' % (depends_file_tmp, depends_file))
+    ret = subprocess.call('python -m json.tool %s > %s.json' % (depends_file_tmp, depends_file), shell=True)
     sys.exit(ret)
 
