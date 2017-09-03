@@ -69,6 +69,14 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         environment:
             remove:
                 <<: *environment_new_linux
+    Linux_LinuxMint_serena_x86_64_*_*:
+        generator: Unix Makefiles
+        ext_dyn: so
+        ext_sta: a
+        environment:
+            remove:
+                <<: *environment_new_linux
+
 
 # layer 3 - third party
 # thirdparty preset features:
@@ -552,3 +560,4 @@ library_dynamic_boost: &library_dynamic_boost
         <<: *windows_dynamic_boost
     default:
         <<: *unix_dynamic_boost
+
