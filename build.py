@@ -63,7 +63,7 @@ class Loader(yaml.Loader):
         with open(filename, 'r') as f:
             return yaml.load(f, Loader)
 
-def amalgamation_yaml(rootdir):
+def amalgamation_yaml(rootdir, yamlfile=None):
     Loader.add_constructor('!include', Loader.include)
 
     # autogeneration .data.yml
@@ -75,7 +75,7 @@ def amalgamation_yaml(rootdir):
         with open(yaml_common_references, 'r') as fr:
             for line in fr.readlines():
                 f.write('%s%s' % (' '*8, line))
-        collapse_third_parties(rootdir, yaml_collapsed_third_parties)
+        collapse_third_parties(rootdir, yaml_collapsed_third_parties, yamlfile=yamlfile)
         # inject third_parties.yml
         f.write('%sthird_parties:\n' % (' '*4))
         with open(yaml_collapsed_third_parties) as ft:
@@ -89,12 +89,15 @@ def search_nodes_by_key(list_nodes, found_key):
             nodes.append(node)
     return nodes
 
-def collapse_third_parties(rootdir, filename):
+def collapse_third_parties(rootdir, filename, yamlfile=None):
     p = pipeline.make_pipe()
     # begin
-    p = pipeline.find(rootdir, 3)(p)
-    p = pipeline.endswith('.yml')(p)
+    if yamlfile is None:
+        p = pipeline.find(rootdir, 3)(p)
+    else:
+        p = pipeline.echo(yamlfile)(p)
     # exclusions
+    p = pipeline.endswith('.yml')(p)
     p = pipeline.grep_v('.build_')(p)
     p = pipeline.grep_v('.bs_')(p)
     p = pipeline.grep_v('.travis.yml')(p)
@@ -294,6 +297,7 @@ usage:""")
     group_master_jedi.add_argument('--cmakefiles', dest='cmakefiles', help='input folder with cmake scripts (default is $PREFIX + "cmakelib")', default=None)
     group_master_jedi.add_argument('--third-party-dir', dest='third_party_dir', help='output folder for cmakefiles (default is $CMAKEFILES + "3rdparty")', default=None)
     group_master_jedi.add_argument('--depends', dest='depends', help='json for save versions', default=None)
+    group_master_jedi.add_argument('--yaml', dest='unique file with third party to compile', default=None)
     parameters = parser.parse_args()
 
     toolchain_povided = parameters.toolchain is not None
@@ -416,7 +420,7 @@ usage:""")
     prepare_cmakefiles(parameters.cmakefiles)
 
     # generate amalgaimation yaml
-    amalgamation_yaml(parameters.rootdir)
+    amalgamation_yaml(parameters.rootdir, parameters.yaml)
 
     # load yaml to python
     with open(yaml_collapsed_final, 'rt') as fy:
