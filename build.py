@@ -297,7 +297,7 @@ usage:""")
     group_master_jedi.add_argument('--cmakefiles', dest='cmakefiles', help='input folder with cmake scripts (default is $PREFIX + "cmakelib")', default=None)
     group_master_jedi.add_argument('--third-party-dir', dest='third_party_dir', help='output folder for cmakefiles (default is $CMAKEFILES + "3rdparty")', default=None)
     group_master_jedi.add_argument('--depends', dest='depends', help='json for save versions', default=None)
-    group_master_jedi.add_argument('--yaml', dest='unique file with third party to compile', default=None)
+    group_master_jedi.add_argument('--yaml', dest='yaml', help='unique file with third party to compile', default=None)
     parameters = parser.parse_args()
 
     toolchain_povided = parameters.toolchain is not None
