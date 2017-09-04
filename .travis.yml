@@ -82,11 +82,11 @@ script:
   # - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o
   # - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
   # - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --no-purge
-  # - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080 -d -o
+  - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080
   # - ./build spdlog --server=http://artifacts.myftp.biz:8080 -d
   # - ./build google-gmock --server=http://artifacts.myftp.biz:8080 -d
-  - ./build raknet -o --server=http://artifacts.myftp.biz:8080
-  - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
+  # - ./build raknet -o --server=http://artifacts.myftp.biz:8080
+  # - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
   # - ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080
