@@ -48,9 +48,11 @@ class FailThirdParty(Exception):
         return "%s" % self._msg
 
 def prepare_cmakefiles(cmakefiles):
+    logging.info("preparing cmaki: {}".format(cmakefiles))
     if not os.path.isdir(cmakefiles):
         utils.trymkdir(cmakefiles)
         utils.safe_system('git clone --recursive %s %s' % (CMAKELIB_URL, cmakefiles))
+        logging.info("clone cmaki: {}".format(cmakefiles))
     utils.safe_system('cd {} && git pull origin master'.format(cmakefiles))
 
 #
@@ -92,6 +94,7 @@ elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
         if not os.path.isdir(temporal_cmakelib):
             temporal_cmakelib = os.path.join('depends', 'cmaki')
         prepare_cmakefiles(temporal_cmakelib)
+        logging.info('using temporal cmaki: {}'.format(temporal_cmakelib))
         for platform in utils.get_stdout(os.path.join(temporal_cmakelib, 'ci', 'detect_operative_system.sh')):
             archs = {platform: '64'}
             platforms = [platform]
