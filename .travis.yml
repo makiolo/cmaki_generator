@@ -85,12 +85,12 @@ script:
   - find $CMAKI_PWD/$CMAKI_BASE/ci
   - $CMAKI_PWD/$CMAKI_BASE/ci/$MODE/predef
   - echo ------------------
-  - ./build boost-coroutine2 boost-filesystem boost-system --server=http://artifacts.myftp.biz:8080
+  # - ./build boost-coroutine2 boost-filesystem boost-system --server=http://artifacts.myftp.biz:8080
   # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
   # - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o 
   # - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --no-purge
   # - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080
-  - ./build spdlog --server=http://artifacts.myftp.biz:8080
+  # - ./build spdlog --server=http://artifacts.myftp.biz:8080
   - ./build google-gmock --server=http://artifacts.myftp.biz:8080
   # - ./build raknet -o --server=http://artifacts.myftp.biz:8080
   # - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
