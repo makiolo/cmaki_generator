@@ -73,6 +73,7 @@ install:
 
 script:
   - set -e
+  - curl -s https://raw.githubusercontent.com/makiolo/cmaki/master/bootstrap.sh | bash
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
   - export USE_CMAKI_IDENTIFIER=TRUE
