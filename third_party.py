@@ -48,12 +48,12 @@ class FailThirdParty(Exception):
         return "%s" % self._msg
 
 def prepare_cmakefiles(cmakefiles):
+    cmakefiles_temp = cmakefiles + '.tmp'
+    utils.tryremove_dir(cmakefiles_temp)
     logging.info("preparing cmaki: {}".format(cmakefiles))
-    if not os.path.isdir(cmakefiles):
-        utils.trymkdir(cmakefiles)
-        utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles))
-        logging.info("clone cmaki: {}".format(cmakefiles))
-    utils.safe_system('cd {} && git pull origin master'.format(cmakefiles))
+    logging.info("clone cmaki: {}".format(cmakefiles_temp))
+    utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles_temp))
+    utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
     utils.safe_system('find {}'.format(cmakefiles))
 
 #
