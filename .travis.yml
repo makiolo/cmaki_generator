@@ -73,8 +73,8 @@ install:
 
 script:
   - set -e
-  - curl -s https://raw.githubusercontent.com/makiolo/cmaki/master/bootstrap.sh | bash
-  - rm -Rf node_modules/cmaki_generator
+  - mkdir -p node_modules/cmaki
+  - (cd node_modules && git clone https://github.com/makiolo/cmaki.git)
   - export NOCACHE_LOCAL=TRUE
   - export NOCACHE_REMOTE=FALSE
   - export USE_CMAKI_IDENTIFIER=TRUE
@@ -83,14 +83,9 @@ script:
   - git clone https://github.com/makiolo/cmaki_identifier.git $CMAKI_IDENTIFIER_FOLDER
   - cd $CMAKI_IDENTIFIER_FOLDER
   - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_IDENTIFIER_FOLDER/../output/3rdparties/cmaki/ci npm install
-  - rm -Rf boostorg_predef
-  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_IDENTIFIER_FOLDER/../node_modules/cmaki/ci npm install
   - cd -
   - find $CMAKI_PWD/output/3rdparties/cmaki/ci
-  - find $CMAKI_PWD/node_modules/cmaki/ci
-  - echo ------------------
   - $CMAKI_PWD/output/3rdparties/cmaki/ci/$MODE/predef
-  - $CMAKI_PWD/node_modules/cmaki/ci/$MODE/predef
   - echo ------------------
   # - ./build boost-headers -o --server=http://artifacts.myftp.biz:8080
   # - ./build boost-context -o --server=http://artifacts.myftp.biz:8080 -d
