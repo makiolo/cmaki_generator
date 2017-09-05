@@ -54,7 +54,6 @@ def prepare_cmakefiles(cmakefiles):
     logging.info("clone cmaki: {}".format(cmakefiles_temp))
     utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles_temp))
     utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
-    utils.safe_system('find {}'.format(cmakefiles))
 
 #
 # INMUTABLE GLOBALS
