@@ -98,8 +98,8 @@ def collapse_third_parties(rootdir, filename, yamlfile=None):
         p = pipeline.echo(yamlfile)(p)
     # exclusions
     p = pipeline.endswith('.yml')(p)
-    p = pipeline.grep_v('.build_')(p)
-    p = pipeline.grep_v('.bs_')(p)
+    # p = pipeline.grep_v('.build_')(p)
+    # p = pipeline.grep_v('.bs_')(p)
     p = pipeline.grep_v('.travis.yml')(p)
     p = pipeline.grep_v('shippable.yml')(p)
     p = pipeline.grep_v('appveyor.yml')(p)
