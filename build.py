@@ -426,6 +426,10 @@ usage:""")
     with open(yaml_collapsed_final, 'rt') as fy:
         third_parties_data_yaml = yaml.load(fy, Loader)
 
+    print("---------------------------------------------")
+    print(third_parties_data_yaml['third_parties'])
+    print("---------------------------------------------")
+
     # generate list of tuples (key, parameters)
     third_parties_data = []
     for third in third_parties_data_yaml['third_parties']:
