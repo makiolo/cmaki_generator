@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/makiolo/cmaki_generator/issues"
   },
+  "devDependencies": {
+    "cmaki": "makiolo/cmaki"
+  },
   "homepage": "https://github.com/makiolo/cmaki_generator#readme"
 }
