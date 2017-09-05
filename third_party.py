@@ -563,6 +563,7 @@ class ThirdParty:
                     plat_parms = parameters['platforms']['default']
                     raise Found()
                 else:
+                    logging.error("not found 'default' platform or %s" % plat)
                     raise Exception("not found 'default' platform or %s" % plat)
         except Found:
             try:
