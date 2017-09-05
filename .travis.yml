@@ -80,7 +80,7 @@ script:
   - export CMAKI_IDENTIFIER_FOLDER=$CMAKI_PWD/cmaki_identifier
   - git clone https://github.com/makiolo/cmaki_identifier.git $CMAKI_IDENTIFIER_FOLDER
   - cd $CMAKI_IDENTIFIER_FOLDER
-  - CMAKI_INSTALL=$CMAKI_PWD/output/3rdparties/cmaki/ci npm install
+  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_PWD/output/3rdparties/cmaki/ci npm install
   - cd -
   # - ./build boost-headers -o --server=http://artifacts.myftp.biz:8080
   # - ./build boost-context -o --server=http://artifacts.myftp.biz:8080 -d
