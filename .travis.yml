@@ -82,10 +82,11 @@ script:
   - export CMAKI_IDENTIFIER_FOLDER=$CMAKI_PWD/cmaki_identifier
   - git clone https://github.com/makiolo/cmaki_identifier.git $CMAKI_IDENTIFIER_FOLDER
   - cd $CMAKI_IDENTIFIER_FOLDER
-  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_IDENTIFIER_FOLDER/../output/3rdparties/cmaki/ci npm install
+  - export CMAKI_BASE=node_modules/cmaki
+  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_IDENTIFIER_FOLDER/../$CMAKI_BASE/ci npm install
   - cd -
-  - find $CMAKI_PWD/output/3rdparties/cmaki/ci
-  - $CMAKI_PWD/output/3rdparties/cmaki/ci/$MODE/predef
+  - find $CMAKI_PWD/$CMAKI_BASE/ci
+  - $CMAKI_PWD/$CMAKI_BASE/ci/$MODE/predef
   - echo ------------------
   # - ./build boost-headers -o --server=http://artifacts.myftp.biz:8080
   # - ./build boost-context -o --server=http://artifacts.myftp.biz:8080 -d
