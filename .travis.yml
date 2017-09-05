@@ -80,7 +80,7 @@ script:
   - export CMAKI_IDENTIFIER_FOLDER=$CMAKI_PWD/cmaki_identifier
   - git clone https://github.com/makiolo/cmaki_identifier.git $CMAKI_IDENTIFIER_FOLDER
   - cd $CMAKI_IDENTIFIER_FOLDER
-  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_PWD/output/3rdparties/cmaki/ci npm install
+  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_IDENTIFIER_FOLDER/../output/3rdparties/cmaki/ci npm install
   - cd -
   - echo find $CMAKI_PWD/output/3rdparties/cmaki/ci
   - find $CMAKI_PWD/output/3rdparties/cmaki/ci
