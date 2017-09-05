@@ -83,6 +83,13 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         environment:
             remove:
                 <<: *environment_new_linux
+    macos_64-clang_*-*:
+        generator: Unix Makefiles
+        ext_dyn: dylib
+        ext_sta: a
+        environment:
+            remove:
+                <<: *environment_new_linux
 
 
 # layer 3 - third party
