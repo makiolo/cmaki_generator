@@ -82,7 +82,7 @@ script:
   # - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o
   # - ./build boost-coroutine2 boost-filesystem --server=http://artifacts.myftp.biz:8080
   # - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --no-purge
-  - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080
+  # - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080
   # - ./build spdlog --server=http://artifacts.myftp.biz:8080 -d
   # - ./build google-gmock --server=http://artifacts.myftp.biz:8080 -d
   # - ./build raknet -o --server=http://artifacts.myftp.biz:8080
@@ -90,7 +90,7 @@ script:
   # - ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080
   # - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080
-  # - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
+  - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
   # no compila / no se
   # - ./build shiny --server=http://artifacts.myftp.biz:8080 -d
   - set +e
