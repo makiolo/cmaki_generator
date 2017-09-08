@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "cmaki": "makiolo/cmaki",
+    "cmaki_scripts": "makiolo/cmaki_scripts",
     "cmaki_identifier": "makiolo/cmaki_identifier"
   },
   "homepage": "https://github.com/makiolo/cmaki_generator#readme"
