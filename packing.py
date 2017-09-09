@@ -82,10 +82,10 @@ def packing(node, parameters, compiler_replace_maps):
             logging.info('generating package %s from source %s' % (prefix_package, os.path.join(os.getcwd(), source_folder)))
             logging.info('generating md5file %s' % prefix_package_md5)
 
-            node.safe_system("ls {}".format(os.getcwd()), compiler_replace_maps)
-            print("-----------")
-            node.safe_system("ls {}".format(parameters.prefix), compiler_replace_maps)
-            print("-----------")
+            # node.safe_system("ls {}".format(os.getcwd()), compiler_replace_maps)
+            # print("-----------")
+            # node.safe_system("ls {}".format(parameters.prefix), compiler_replace_maps)
+            # print("-----------")
             
             # packing install
             if utils.is_windows():
