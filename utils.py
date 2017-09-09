@@ -121,7 +121,7 @@ def tryremove_dir_empty(source):
             logging.debug('Removing empty directory %s' % (source))
 
 def download_from_url(url, filename):
-    if not sys.platform.startswith("darwin"):
+    if is_windows():
         logging.debug('Download from url %s' % url)
         logging.debug("Download to file %s" % (filename))
         if not os.path.exists(filename):
