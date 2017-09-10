@@ -3,6 +3,11 @@ import contextlib
 import utils
 from utils import get_stdout
 
+#
+# mejor basar la version en la fecha del ultimo commit para poder utilizar --depth=50 en los checkouts
+# git log -1 --format=%cd
+#
+
 def get_revision_svn(repo):
     '''
     This command need svn in PATH
