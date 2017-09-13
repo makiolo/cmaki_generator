@@ -107,17 +107,16 @@ def collapse_third_parties(rootdir, filename, yamlfile=None):
     else:
         p = pipeline.echo(yamlfile)(p)
     # exclusions
-    p = pipeline.endswith('cmaki.yml')(p)
-    # p = pipeline.grep_v('.travis.yml')(p)
-    # p = pipeline.grep_v('shippable.yml')(p)
-    # p = pipeline.grep_v('appveyor.yml')(p)
-    # p = pipeline.grep_v('codecov.yml')(p)
-    # p = pipeline.grep_v('depends.json')(p)
-    # p = pipeline.grep_v(yaml_collapsed_final)(p)
-    # p = pipeline.grep_v(yaml_common_references)(p)
-    # p = pipeline.grep_v(yaml_collapsed_third_parties)(p)
-    # p = pipeline.grep_v(' - Copy.yml')(p)
-    # p = pipeline.grep_v('docker-compose.yml')(p)
+    p = pipeline.endswith('.yml')(p)
+    p = pipeline.grep_v('.travis.yml')(p)
+    p = pipeline.grep_v('shippable.yml')(p)
+    p = pipeline.grep_v('appveyor.yml')(p)
+    p = pipeline.grep_v('codecov.yml')(p)
+    p = pipeline.grep_v('docker-compose.yml')(p)
+    p = pipeline.grep_v(yaml_collapsed_final)(p)
+    p = pipeline.grep_v(yaml_common_references)(p)
+    p = pipeline.grep_v(yaml_collapsed_third_parties)(p)
+    p = pipeline.grep_v(' - Copy.yml')(p)
     # cat
     p = pipeline.cat()(p)
     # write
