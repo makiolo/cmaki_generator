@@ -76,6 +76,15 @@ def amalgamation_yaml(rootdir, yamlfile=None):
             for line in fr.readlines():
                 f.write('%s%s' % (' '*8, line))
         collapse_third_parties(rootdir, yaml_collapsed_third_parties, yamlfile=yamlfile)
+        rootdir_up = os.path.join(rootdir, '..')
+        for path in os.listdir(rootdir_up):
+            if os.path.isdir(path) and not os.path.samefile(path, rootdir):
+                cmaki_file = os.path.join(path, 'cmaki.yml')
+                if os.path.isfile(cmaki_file):
+                    with open(cmaki_file, 'r') as fr:
+                        with open(yaml_collapsed_third_parties, 'a') as tp_append:
+                            for line in fr.readlines():
+                                tp_append.write(line)
         # inject third_parties.yml
         f.write('%sthird_parties:\n' % (' '*4))
         with open(yaml_collapsed_third_parties) as ft:
