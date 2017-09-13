@@ -76,10 +76,11 @@ def amalgamation_yaml(rootdir, yamlfile=None):
             for line in fr.readlines():
                 f.write('%s%s' % (' '*8, line))
         collapse_third_parties(rootdir, yaml_collapsed_third_parties, yamlfile=yamlfile)
-        rootdir_up = os.path.join(rootdir, '..')
+        rootdir_up = os.path.abspath(os.path.join(rootdir, '..'))
         for path in os.listdir(rootdir_up):
-            if os.path.isdir(path) and not os.path.samefile(path, rootdir):
-                cmaki_file = os.path.join(path, 'cmaki.yml')
+            fullpath = os.path.join(os.path.abspath(rootdir_up), path)
+            if os.path.isdir(fullpath):
+                cmaki_file = os.path.join(fullpath, 'cmaki.yml')
                 if os.path.isfile(cmaki_file):
                     with open(cmaki_file, 'r') as fr:
                         with open(yaml_collapsed_third_parties, 'a') as tp_append:
@@ -117,6 +118,7 @@ def collapse_third_parties(rootdir, filename, yamlfile=None):
     p = pipeline.grep_v(yaml_common_references)(p)
     p = pipeline.grep_v(yaml_collapsed_third_parties)(p)
     p = pipeline.grep_v(' - Copy.yml')(p)
+    p = pipeline.grep_v('docker-compose.yml')(p)
     # cat
     p = pipeline.cat()(p)
     # write
