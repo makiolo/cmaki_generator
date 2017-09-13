@@ -70,35 +70,6 @@ install:
 
 script:
   - set -e
-  # - mkdir -p node_modules/cmaki
-  # - (cd node_modules && git clone https://github.com/makiolo/cmaki.git)
-  # - export NOCACHE_LOCAL=TRUE
-  # - export NOCACHE_REMOTE=FALSE
-  # - export USE_CMAKI_IDENTIFIER=TRUE
-  # - export CMAKI_PWD=$(pwd)
-  # - export CMAKI_IDENTIFIER_FOLDER=$CMAKI_PWD/cmaki_identifier
-  # - git clone https://github.com/makiolo/cmaki_identifier.git $CMAKI_IDENTIFIER_FOLDER
-  # - cd $CMAKI_IDENTIFIER_FOLDER
-  # - export CMAKI_BASE=node_modules/cmaki
-  # - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$CMAKI_IDENTIFIER_FOLDER/../$CMAKI_BASE/ci npm install
-  # - cd -
-  # - find $CMAKI_PWD/$CMAKI_BASE/ci
-  # - $CMAKI_PWD/$CMAKI_BASE/ci/$MODE/predef
-  # - echo ------------------
   - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$(pwd)/bin npm install
-  # - ./build boost-coroutine2 boost-filesystem boost-system --server=http://artifacts.myftp.biz:8080
-  # - ./build 'boost*' --server=http://artifacts.myftp.biz:8080
-  # - ./build 'boost-headers' --server=http://artifacts.myftp.biz:8080 -o 
-  # - ./build 'python' --server=http://artifacts.myftp.biz:8080 -o --no-purge
-  # - ./build 'boost-python' --server=http://artifacts.myftp.biz:8080
-  # - ./build spdlog --server=http://artifacts.myftp.biz:8080
-  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$(pwd)/bin ./build google-gmock --server=http://artifacts.myftp.biz:8080
-  # - ./build raknet -o --server=http://artifacts.myftp.biz:8080
-  # - ./build intel-tbb* -o --server=http://artifacts.myftp.biz:8080
-  # - ./build cryptopp -o --server=http://artifacts.myftp.biz:8080
-  # - ./build paho-mqtt3 -o --server=http://artifacts.myftp.biz:8080
-  # - ./build paho-mqttpp3 -o --server=http://artifacts.myftp.biz:8080
-  # - ./build json -o --server=http://artifacts.myftp.biz:8080 -d
-  # no compila / no se
-  # - ./build shiny --server=http://artifacts.myftp.biz:8080 -d
+  - CMAKI_PWD=$(pwd) CMAKI_INSTALL=$(pwd)/bin ./build boost-system --server=http://artifacts.myftp.biz:8080
   - set +e
