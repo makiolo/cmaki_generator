@@ -55,28 +55,7 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_sta: lib
         compiler:
             - VC140, VC140
-    darwin_clang_*:
-        generator: Unix Makefiles
-        ext_dyn: dylib
-        ext_sta: a
-        environment:
-            remove:
-                <<: *environment_new_linux
-    Linux_Ubuntu_trusty_x86_64_*_*:
-        generator: Unix Makefiles
-        ext_dyn: so
-        ext_sta: a
-        environment:
-            remove:
-                <<: *environment_new_linux
-    Linux_LinuxMint_serena_x86_64_*_*:
-        generator: Unix Makefiles
-        ext_dyn: so
-        ext_sta: a
-        environment:
-            remove:
-                <<: *environment_new_linux
-    linux_64_glibc_2.*-*_*-*:
+    linux_*_glibc_2.*-*_*-*:
         generator: Unix Makefiles
         ext_dyn: so
         ext_sta: a
