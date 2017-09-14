@@ -55,6 +55,10 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_sta: lib
         compiler:
             - VC140, VC140
+    windows_*-gcc_4-*:
+        generator: Unix Makefiles
+        ext_dyn: dll
+        ext_sta: lib
     linux_*_glibc_2.*-*_*-*:
         generator: Unix Makefiles
         ext_dyn: so
