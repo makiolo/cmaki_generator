@@ -48,13 +48,14 @@ class FailThirdParty(Exception):
         return "%s" % self._msg
 
 def prepare_cmakefiles(cmakefiles):
-    cmakefiles_temp = cmakefiles + '.tmp'
-    logging.info("preparing cmaki: {}".format(cmakefiles))
-    logging.info("clone cmaki: {}".format(cmakefiles_temp))
-    utils.tryremove_dir(cmakefiles_temp)
-    utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles_temp))
-    utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
-    utils.tryremove_dir(cmakefiles_temp)
+    # cmakefiles_temp = cmakefiles + '.tmp'
+    # logging.info("preparing cmaki: {}".format(cmakefiles))
+    # logging.info("clone cmaki: {}".format(cmakefiles_temp))
+    # utils.tryremove_dir(cmakefiles_temp)
+    # utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles_temp))
+    # utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
+    # utils.tryremove_dir(cmakefiles_temp)
+    pass
 
 #
 # INMUTABLE GLOBALS
