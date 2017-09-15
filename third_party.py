@@ -77,44 +77,28 @@ if sys.platform.startswith("win"):
     archs = {'win32': '', 'win64': '64'}
     platforms = ["win32", "win64"]
 elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
-    try:
-        value = os.environ['EMSCRIPTEN']
-        is_emscripten = (str(value) == '1')
-    except KeyError:
-        is_emscripten = False
-    ######
-    if is_emscripten:
-        print('using emscripten ...')
-        somask_id = 'e'
-        archs = {'emscripten': ''}
-        platforms = ["emscripten"]
-    else:
-        print('using linux/mac ...')
-        somask_id = 'l'
+    # temporal_cmakelib = os.path.join('node_modules', 'cmaki')
+    # if not os.path.isdir(temporal_cmakelib):
+    #     temporal_cmakelib = os.path.join('output', '3rdparties', 'cmaki')
+    #     if not os.path.isdir(temporal_cmakelib):
+    #         temporal_cmakelib = os.path.join('..', 'cmaki')
+    #         if not os.path.isdir(temporal_cmakelib):
+    #             raise Exception("not found cmaki: {}".format(os.path.abspath(temporal_cmakelib)))
+    # prepare_cmakefiles(temporal_cmakelib)
+    # logging.info('using temporal cmaki: {}'.format(temporal_cmakelib))
 
-        # temporal_cmakelib = os.path.join('node_modules', 'cmaki')
-        # if not os.path.isdir(temporal_cmakelib):
-        #     temporal_cmakelib = os.path.join('output', '3rdparties', 'cmaki')
-        #     if not os.path.isdir(temporal_cmakelib):
-        #         temporal_cmakelib = os.path.join('..', 'cmaki')
-        #         if not os.path.isdir(temporal_cmakelib):
-        #             raise Exception("not found cmaki: {}".format(os.path.abspath(temporal_cmakelib)))
-        # prepare_cmakefiles(temporal_cmakelib)
-        # logging.info('using temporal cmaki: {}'.format(temporal_cmakelib))
-
-        cmaki_install = os.environ['CMAKI_INSTALL']
-        for platform in utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh')):
-            archs = {platform: '64'}
-            platforms = [platform]
-            logging.info('Detecting platform from script like: {}'.format(platform))
-            break
+    cmaki_install = os.environ['CMAKI_INSTALL']
+    for platform in utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh')):
+        archs = {platform: '64'}
+        platforms = [platform]
+        logging.info('Detecting platform from script like: {}'.format(platform))
+        break
 else:
     raise InvalidPlatform(sys.platform)
 alias_priority_name = { 10: 'minimal',
                         20: 'tools',
                         30: 'third_party' }
 alias_priority_name_inverse = {v: k for k, v in alias_priority_name.items()}
-
 
 def is_valid(package_name, mask):
     return (mask.find(somask_id) != -1) and (package_name != 'dummy')
