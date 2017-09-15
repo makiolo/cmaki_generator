@@ -72,11 +72,7 @@ uncompress_strip_default = '.'
 uncompress_prefix_default = '.'
 priority_default = 50
 build_unittests_foldername = 'unittest'
-if sys.platform.startswith("win"):
-    somask_id = 'w'
-    archs = {'win32': '', 'win64': '64'}
-    platforms = ["win32", "win64"]
-elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
+if sys.platform.startswith("linux") or sys.platform.startswith("darwin") or sys.platform.startswith("win"):
     # temporal_cmakelib = os.path.join('node_modules', 'cmaki')
     # if not os.path.isdir(temporal_cmakelib):
     #     temporal_cmakelib = os.path.join('output', '3rdparties', 'cmaki')
@@ -87,18 +83,21 @@ elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
     # prepare_cmakefiles(temporal_cmakelib)
     # logging.info('using temporal cmaki: {}'.format(temporal_cmakelib))
     
-    cmaki_install = os.environ['CMAKI_INSTALL']
     env = os.environ.copy()
+    cmaki_install = env['CMAKI_INSTALL']
     env['CMAKI_INFO'] = 'ALL'
-    platform = [utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env)][0]
+    platform = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
     env['CMAKI_INFO'] = 'ARCH'
-    arch = [utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env)][0]
-    somask_id = 'l'
+    arch = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+    env['CMAKI_INFO'] = 'OS'
+    operative_system = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+    somask_id = operative_system[0]
     archs = {platform: arch}
     platforms = [platform]
     logging.info('Detecting platform from script like: {} / {}'.format(platform, arch))
 else:
     raise InvalidPlatform(sys.platform)
+
 alias_priority_name = { 10: 'minimal',
                         20: 'tools',
                         30: 'third_party' }
