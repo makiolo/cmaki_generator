@@ -86,13 +86,17 @@ elif sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
     #             raise Exception("not found cmaki: {}".format(os.path.abspath(temporal_cmakelib)))
     # prepare_cmakefiles(temporal_cmakelib)
     # logging.info('using temporal cmaki: {}'.format(temporal_cmakelib))
-
+    
     cmaki_install = os.environ['CMAKI_INSTALL']
-    for platform in utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh')):
-        archs = {platform: '64'}
-        platforms = [platform]
-        logging.info('Detecting platform from script like: {}'.format(platform))
-        break
+    env = os.environ.copy()
+    env['CMAKI_INFO'] = 'ALL'
+    platform = [utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env)][0]
+    env['CMAKI_INFO'] = 'ARCH'
+    arch = [utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env)][0]
+    somask_id = 'l'
+    archs = {platform: arch}
+    platforms = [platform]
+    logging.info('Detecting platform from script like: {} / {}'.format(platform, arch))
 else:
     raise InvalidPlatform(sys.platform)
 alias_priority_name = { 10: 'minimal',
