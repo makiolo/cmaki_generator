@@ -85,7 +85,7 @@ compile_with_path_toolchain: &compile_with_path_toolchain
 thirdparty_defaults: &thirdparty_defaults
     platforms:
         <<: *compile_with_path_toolchain
-    mask: wlmse
+    mask: wlmsea
     mode: dri
     depends: null
     source: skip
