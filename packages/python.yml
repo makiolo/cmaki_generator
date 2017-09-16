@@ -1,7 +1,6 @@
 - python:
     <<: *thirdparty_defaults
     version: 0.0.0.0
-    mask: wls
     version_manager: git
     mode: dr
     source: https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git

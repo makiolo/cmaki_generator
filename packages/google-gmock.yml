@@ -1,6 +1,5 @@
 - google-gmock:
     <<: *thirdparty_defaults
-    mask: wlsm
     mode: dr
     version: 0.0.0.0
     version_manager: git
@@ -31,3 +30,4 @@
         - gmock_main:
             info:
                 <<: *library_static_exact
+

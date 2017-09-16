@@ -1,7 +1,6 @@
 - oxygine:
     <<: *thirdparty_defaults
     version: 0.0.0.0
-    mask: wls
     version_manager: git
     cmake_target: null
     cmake_definitions:
@@ -29,25 +28,4 @@
                     definitions:
                         - -DOXYGINE_SDL=1
 
-- oxygine:
-    <<: *thirdparty_defaults
-    version: 0.0.0.0
-    mask: e
-    version_manager: git
-    cmake_target: null
-    cmake_definitions:
-        - BUILD_SHARED_LIBS=ON
-        - EMSCRIPTEN=1
-    post_install:
-        - ./oxygine/src/*.h include/ RECURSIVE
-    mode: dr
-    source: https://github.com/oxygine/oxygine-framework.git
-    targets:
-        - oxygine-framework:
-            info:
-                <<: *library_static_exact
-            extra:
-                emscripten:
-                    definitions:
-                        - DEMSCRIPTEN=1
 

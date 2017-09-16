@@ -1,7 +1,6 @@
 - sdl2:
     <<: *thirdparty_defaults
     version: 2.0.3.0
-    mask: wls
     source: https://www.libsdl.org/release/SDL2-2.0.3.tar.gz
     uncompress_strip: SDL2-2.0.3
     depends:
