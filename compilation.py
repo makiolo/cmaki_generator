@@ -78,7 +78,7 @@ def compilation(node, parameters, compiler_replace_maps):
                 env_modified['CMAKI_DIR'] = cmakelib_dir
 
                 basename_compiler_cpp = os.path.basename(compiler_cpp)
-                install_directory = os.path.join(os.getcwd(), '..', workspace, node.get_base_folder(), plat, basename_compiler_cpp, build_mode)
+                install_directory = os.path.join(os.getcwd(), '..', workspace, node.get_base_folder(), plat)
                 utils.trymkdir(install_directory)
 
                 #################

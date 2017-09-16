@@ -760,7 +760,7 @@ class ThirdParty:
                 with open('find.cmake', 'wt') as f:
                     f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
                     f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
-                    f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/${GLOBAL_PLATFORM}/${GLOBAL_COMPILER}/${GLOBAL_BUILD_MODE}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
+                    f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/${GLOBAL_PLATFORM}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
                     f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s\" %s_BUILD)\n" % (build_directory, package_norm))
                     f.write("SET(%s_INCLUDE ${%s_INCLUDE} CACHE STRING \"Include dir %s\" FORCE)\n" % (package_norm, package_norm, package))
                     f.write("SET(%s_LIBDIR ${%s_LIBDIR} CACHE STRING \"Libs dir %s\" FORCE)\n" % (package_norm, package_norm, package))
@@ -771,9 +771,9 @@ class ThirdParty:
                     build_directory = self.get_build_directory("%PLATFORM%", "%BUILD_MODE%")
                     with open('find.cmd', 'wt') as f:
                         f.write("set %s_VERSION=%s\n" % (package_norm, version))
-                        f.write("set %s_HOME=%s\%s-%s-%%PLATFORM%%\%s-%s\%%PLATFORM%%\%%COMPILER%%\%%BUILD_MODE%%\n" % (package_norm, basedir, package, version, package, version))
+                        f.write("set %s_HOME=%s\%s-%s-%%PLATFORM%%\%s-%s\%%PLATFORM%%\n" % (package_norm, basedir, package, version, package, version))
                         f.write("set %s_BASE=%s\%s-%s-%%PLATFORM%%\%s-%s\n" % (package_norm, basedir, package, version, package, version))
-                        f.write("set SELFHOME=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\%%PLATFORM%%\%%COMPILER%%\%%BUILD_MODE%%\n" % (basedir))
+                        f.write("set SELFHOME=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\%%PLATFORM%%\n" % (basedir))
                         f.write("set SELFBASE=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\n" % (basedir))
                         f.write("set %s_BUILD=%s\%s\n" % (package_norm, basedir, build_directory))
                         f.write(r"md %SELFHOME%")
@@ -783,9 +783,9 @@ class ThirdParty:
                     with open('find.script', 'wt') as f:
                         f.write("#!/bin/bash\n")
                         f.write("%s_VERSION=%s\n" % (package_norm, version))
-                        f.write("%s_HOME=%s/%s-%s-$PLATFORM/%s-%s/$PLATFORM/$COMPILER/$BUILD_MODE\n" % (package_norm, basedir, package, version, package, version))
+                        f.write("%s_HOME=%s/%s-%s-$PLATFORM/%s-%s/$PLATFORM\n" % (package_norm, basedir, package, version, package, version))
                         f.write("%s_BASE=%s/%s-%s-$PLATFORM/%s-%s\n" % (package_norm, basedir, package, version, package, version))
-                        f.write("SELFHOME=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION/$PLATFORM/$COMPILER/$BUILD_MODE\n" % (basedir))
+                        f.write("SELFHOME=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION/$PLATFORM\n" % (basedir))
                         f.write("SELFBASE=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION\n" % (basedir))
                         f.write("%s_BUILD=%s/%s\n" % (package_norm, basedir, build_directory))
                         f.write("mkdir -p $SELFHOME\n")
