@@ -48,14 +48,14 @@ class FailThirdParty(Exception):
         return "%s" % self._msg
 
 def prepare_cmakefiles(cmakefiles):
-    # cmakefiles_temp = cmakefiles + '.tmp'
-    # logging.info("preparing cmaki: {}".format(cmakefiles))
-    # logging.info("clone cmaki: {}".format(cmakefiles_temp))
-    # utils.tryremove_dir(cmakefiles_temp)
-    # utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles_temp))
-    # utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
-    # utils.tryremove_dir(cmakefiles_temp)
-    pass
+    if not os.path.isdir(cmakefiles):
+        cmakefiles_temp = cmakefiles + '.tmp'
+        logging.info("preparing cmaki: {}".format(cmakefiles))
+        logging.info("clone cmaki: {}".format(cmakefiles_temp))
+        utils.tryremove_dir(cmakefiles_temp)
+        utils.safe_system('git clone %s %s' % (CMAKELIB_URL, cmakefiles_temp))
+        utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
+        utils.tryremove_dir(cmakefiles_temp)
 
 #
 # INMUTABLE GLOBALS
@@ -86,12 +86,15 @@ if sys.platform.startswith("linux") or sys.platform.startswith("darwin") or sys.
     
     env = os.environ.copy()
     cmaki_install = env['CMAKI_INSTALL']
+    script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.sh')
+    if not os.path.isfile(script_identifier):
+        raise Exception("there is no {} script".format(script_identifier))
     env['CMAKI_INFO'] = 'ALL'
-    platform = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+    platform = list(utils.get_stdout(script_identifier, env=env))[0]
     env['CMAKI_INFO'] = 'ARCH'
-    arch = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+    arch = list(utils.get_stdout(script_identifier, env=env))[0]
     env['CMAKI_INFO'] = 'OS'
-    operative_system = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+    operative_system = list(utils.get_stdout(script_identifier, env=env))[0]
     somask_id = operative_system[0]
     archs = {platform: arch}
     platforms = [platform]
@@ -579,7 +582,14 @@ class ThirdParty:
         ext_dyn = plat_parms['ext_dyn']
         ext_sta = plat_parms['ext_sta']
         if compilers is None:
-            compilers = [('%s, %s' % (os.environ.get('CC', 'gcc'), os.environ.get('CXX', 'g++')))]
+            # if utils.is_windows():
+            env = os.environ.copy()
+            cmaki_install = env['CMAKI_INSTALL']
+            env['CMAKI_INFO'] = 'COMPILER'
+            compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+            compilers = [('%s, %s' % (compiler, compiler))]
+            # else:
+            #     compilers = [('%s, %s' % (os.environ.get('CC', 'gcc'), os.environ.get('CXX', 'g++')))]
 
         for compiler in compilers:
             compilers_tuple = compiler.split(',')
@@ -602,9 +612,9 @@ class ThirdParty:
                 env_iter['VERSION'] = str(self.get_version())
                 env_iter['ARCH'] = str(archs[plat])
 
-                if (compiler_c != 'default') and (compiler_cpp != 'default'):
-                    env_iter['CC'] = str(compiler_c)
-                    env_iter['CXX'] = str(compiler_cpp)
+                # if (compiler_c != 'default') and (compiler_cpp != 'default'):
+                #     env_iter['CC'] = str(compiler_c)
+                #     env_iter['CXX'] = str(compiler_cpp)
 
                 try:
                     environment = plat_parms['environment']
@@ -878,36 +888,38 @@ class ThirdParty:
             extra_cmd = ''
             if branch is not None:
                 logging.info('clonning to branch %s' % branch)
-                extra_cmd = '-b %s' % branch
-            # self.safe_system('git clone --depth=50 --recursive %s %s %s' % (extra_cmd, url, build_directory), compiler_replace_maps)
-            self.safe_system('git clone --recursive %s %s %s' % (extra_cmd, url, build_directory), compiler_replace_maps)
-            depends_file = self.user_parameters.depends
-            if depends_file is not None:
-                with utils.working_directory(build_directory):
-                    # leer el fichero de dependencias
-                    if os.path.exists(depends_file):
-                        data = utils.deserialize(depends_file)
-                    else:
-                        data = {}
-
-                    # obedecer, si trae algo util
-                    if package in data:
-                        logging.debug('data package version is %s' % data[package])
-                        try:
-                            git_version = hash_version.to_git_version(build_directory, data[package])
-                            logging.debug('data package in git version is %s' % git_version)
-                            logging.debug('updating to revision %s' % git_version)
-                            self.safe_system('git reset --hard %s' % git_version, compiler_replace_maps)
-                        except AssertionError:
-                            logging.info('using HEAD')
-
-                    # actualizar y reescribir
-                    revision = hash_version.get_last_version(build_directory)
-                    assert(len(revision) > 0)
-                    data[package] = revision
-                    utils.serialize(data, depends_file)
-            else:
-                logging.warning('not found depends file, using newest changeset')
+                extra_cmd = '%s' % branch
+            # self.safe_system('git clone --depth=50 %s %s %s' % (extra_cmd, url, build_directory), compiler_replace_maps)
+            self.safe_system('git clone %s %s' % (url, build_directory), compiler_replace_maps)
+            with utils.working_directory(build_directory):
+                self.safe_system('git checkout {}'.format(extra_cmd), compiler_replace_maps)
+            # depends_file = self.user_parameters.depends
+            # if depends_file is not None:
+            #     with utils.working_directory(build_directory):
+            #         # leer el fichero de dependencias
+            #         if os.path.exists(depends_file):
+            #             data = utils.deserialize(depends_file)
+            #         else:
+            #             data = {}
+            #
+            #         # obedecer, si trae algo util
+            #         if package in data:
+            #             logging.debug('data package version is %s' % data[package])
+            #             try:
+            #                 git_version = hash_version.to_git_version(build_directory, data[package])
+            #                 logging.debug('data package in git version is %s' % git_version)
+            #                 logging.debug('updating to revision %s' % git_version)
+            #                 self.safe_system('git reset --hard %s' % git_version, compiler_replace_maps)
+            #             except AssertionError:
+            #                 logging.info('using HEAD')
+            #
+            #         # actualizar y reescribir
+            #         revision = hash_version.get_last_version(build_directory)
+            #         assert(len(revision) > 0)
+            #         data[package] = revision
+            #         utils.serialize(data, depends_file)
+            # else:
+            #     logging.warning('not found depends file, using newest changeset')
 
         # file in http
         elif (     url.startswith('http://')

@@ -76,20 +76,22 @@ def amalgamation_yaml(rootdir, yamlfile=None):
             for line in fr.readlines():
                 f.write('%s%s' % (' '*8, line))
         collapse_third_parties(rootdir, yaml_collapsed_third_parties, yamlfile=yamlfile)
-        rootdir_up = os.path.abspath(os.path.join(rootdir, '..'))
-        for path in os.listdir(rootdir_up):
-            fullpath = os.path.join(os.path.abspath(rootdir_up), path)
-            if os.path.isdir(fullpath):
-                cmaki_file = os.path.join(fullpath, 'cmaki.yml')
-                if os.path.isfile(cmaki_file):
-                    with open(cmaki_file, 'r') as fr:
-                        with open(yaml_collapsed_third_parties, 'a') as tp_append:
-                            for line in fr.readlines():
-                                tp_append.write(line)
+        if yamlfile is None:
+            rootdir_up = os.path.abspath(os.path.join(rootdir, '..'))
+            for path in os.listdir(rootdir_up):
+                fullpath = os.path.join(os.path.abspath(rootdir_up), path)
+                if os.path.isdir(fullpath):
+                    cmaki_file = os.path.join(fullpath, 'cmaki.yml')
+                    if os.path.isfile(cmaki_file):
+                        with open(cmaki_file, 'r') as fr:
+                            with open(yaml_collapsed_third_parties, 'a') as tp_append:
+                                for line in fr.readlines():
+                                    tp_append.write(line)
         # inject third_parties.yml
         f.write('%sthird_parties:\n' % (' '*4))
         with open(yaml_collapsed_third_parties) as ft:
             for line in ft.readlines():
+                # sys.stdout.write("searching {}".format(line))
                 f.write('%s%s' % (' '*8, line))
 
 def search_nodes_by_key(list_nodes, found_key):
@@ -255,7 +257,7 @@ cmaki_generator:
 
 usage:""")
     group_main = parser.add_argument_group('basic usage')
-    group_main.add_argument('packages', metavar='packages', type=str, nargs='+', help='name (or list names) third party')
+    group_main.add_argument('packages', metavar='packages', type=str, nargs='*', help='name (or list names) third party')
     group_main.add_argument('--plan', '--dry-run', dest='plan', action='store_true', help='Show packages plan (like a dry-run)', default=False)
     group_main.add_argument('--toolchain', dest='toolchain', help='Toolchain path (default is $ROOTDIR + "toolchain_default")', default=None)
     group_main.add_argument('--server', dest='server', help='artifact server', default=None)
@@ -378,6 +380,9 @@ usage:""")
         if 'SUBVERSION' in os.environ:
             parameters.with_svn = os.environ['SUBVERSION']
 
+    if 'MODE' not in os.environ:
+        raise Exception("not defined environment var: MODE")
+
     # generate toolchain prefix?
     if parameters.toolchain_proposal or parameters.toolchain_proposal_basename:
         if parameters.with_svn is not None:
@@ -406,21 +411,22 @@ usage:""")
         sys.stderr.write('You can use this in parameter --toolchain=%s\n' % parameters.toolchain)
         sys.exit(0)
 
-    i = 0
-    for package in parameters.packages:
-        if package.startswith('github://'):
-            repo = package[len('github://'):]
-            utils.trymkdir('github')
-            yml_file = os.path.join('github', '{}.yml'.format(repo.replace('/', '_')))
-            if os.path.isfile(yml_file):
-                utils.tryremove(yml_file)
-            try:
-                download_from_url('https://raw.githubusercontent.com/{}/master/cmaki.yml'.format(repo), yml_file)
-            except urllib2.HTTPError:
-                logging.error('not found cmaki.yml in {}'.format(package))
-                sys.exit(1)
-            parameters.packages[i] = repo.split('/')[1]
-        i += 1
+    # fetch remotes yaml
+    # i = 0
+    # for package in parameters.packages:
+    #     if package.startswith('github://'):
+    #         repo = package[len('github://'):]
+    #         utils.trymkdir('github')
+    #         yml_file = os.path.join('github', '{}.yml'.format(repo.replace('/', '_')))
+    #         if os.path.isfile(yml_file):
+    #             utils.tryremove(yml_file)
+    #         try:
+    #             download_from_url('https://raw.githubusercontent.com/{}/master/cmaki.yml'.format(repo), yml_file)
+    #         except urllib2.HTTPError:
+    #             logging.error('not found cmaki.yml in {}'.format(package))
+    #             sys.exit(1)
+    #         parameters.packages[i] = repo.split('/')[1]
+    #     i += 1
 
     # set env TOOLCHAIN
     os.environ['TOOLCHAIN'] = parameters.toolchain
@@ -436,11 +442,15 @@ usage:""")
         third_parties_data_yaml = yaml.load(fy, Loader)
 
     # generate list of tuples (key, parameters)
+    count = 0
     third_parties_data = []
     for third in third_parties_data_yaml['third_parties']:
         for key in third:
             parms = third[key]
             third_parties_data.append( (key, parms) )
+            count += 1
+    if count == 1 and (len(parameters.packages) == 0):
+        parameters.packages = [ third_parties_data[0][0] ]
 
     # create nodes and choose selected by filter and mask
     nodes = []

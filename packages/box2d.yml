@@ -15,6 +15,7 @@
         - ./Box2D/libBox2D.a lib/
     mode: dr
     source: https://github.com/erincatto/Box2D.git
+    branch: 17093ba37897f268aa2b48f3c25d0c96e275a702
     targets:
         - Box2D:
             info:

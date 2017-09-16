@@ -7,6 +7,19 @@ from third_party import platforms
 from third_party import CMAKELIB_URL
 from third_party import HTTP_URL_NPSERVER
 
+def search_cmakelib():
+    # compilando desde cmaki_generator
+    cmakelib_dir = os.path.join('output', '3rdparties', 'cmaki')
+    if not os.path.isdir(cmakelib_dir):
+        # compilando una dependencia
+        cmakelib_dir = os.path.join('..', 'cmaki')
+        if not os.path.isdir(cmakelib_dir):
+            # compilando proeycto raiz
+            cmakelib_dir = os.path.join('node_modules', 'cmaki')
+            if not os.path.isdir(cmakelib_dir):
+                raise Exception("not found cmaki: {}".format(os.path.abspath(cmakelib_dir)))
+    return os.path.abspath(cmakelib_dir)
+
 def compilation(node, parameters, compiler_replace_maps):
 
     package = node.get_package_name()
@@ -14,6 +27,7 @@ def compilation(node, parameters, compiler_replace_maps):
     version = node.get_version()
     cmake3p_dir = os.path.join(parameters.cmakefiles, '..', 'cmake3p')
     artifacts_dir = os.getcwd()
+    cmakelib_dir = search_cmakelib()
 
     package_upper = node.get_package_name_norm_upper()
     parms = node.parameters
@@ -61,6 +75,8 @@ def compilation(node, parameters, compiler_replace_maps):
                 env_modified['BUILD_MODE'] = str(build_mode)
                 env_modified['HTTP_URL_NPSERVER'] = HTTP_URL_NPSERVER
                 env_modified['SOURCES'] = os.path.abspath(os.path.join('..', node.get_download_directory()))
+                env_modified['CMAKI_DIR'] = cmakelib_dir
+
                 basename_compiler_cpp = os.path.basename(compiler_cpp)
                 install_directory = os.path.join(os.getcwd(), '..', workspace, node.get_base_folder(), plat, basename_compiler_cpp, build_mode)
                 utils.trymkdir(install_directory)

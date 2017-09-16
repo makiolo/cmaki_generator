@@ -2,8 +2,7 @@ project(gtc)
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKI_REPOSITORY "http://artifacts.myftp.biz:8080")
-include("${CMAKE_CURRENT_LIST_DIR}/../../cmaki/cmaki.cmake")
-
+include("$ENV{CMAKI_DIR}/cmaki.cmake")
 
 SET(GLOBAL_COMPILER "${CMAKI_COMPILER}")
 SET(GLOBAL_PLATFORM "${CMAKI_PLATFORM}")
