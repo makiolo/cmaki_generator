@@ -71,6 +71,11 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         environment:
             remove:
                 <<: *environment_new_linux
+    android_arm_api_*-gcc_*-*:
+        generator: "Unix Makefiles"
+        ext_dyn: so
+        ext_sta: a
+
 
 # layer 3 - third party
 # thirdparty preset features:
