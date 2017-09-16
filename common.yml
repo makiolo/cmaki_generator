@@ -50,7 +50,7 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         ext_dyn: dll
         ext_sta: lib
     windows_*-gcc_4-*:
-        generator: "MinGW Makefiles"
+        generator: "Unix Makefiles"
         ext_dyn: dll
         ext_sta: dll.a
     linux_*_glibc_2.*-*_*-*:
