@@ -66,6 +66,8 @@ def compilation(node, parameters, compiler_replace_maps):
                     # default packages assume came in release
                     pass
 
+                install_directory = os.path.join(os.getcwd(), '..', workspace, node.get_base_folder(), plat)
+                utils.trymkdir(install_directory)
                 cores = utils.detect_ncpus()
                 half_cores = cores / 2
                 env_modified['CORES'] = str(cores)
@@ -76,10 +78,8 @@ def compilation(node, parameters, compiler_replace_maps):
                 env_modified['HTTP_URL_NPSERVER'] = HTTP_URL_NPSERVER
                 env_modified['SOURCES'] = os.path.abspath(os.path.join('..', node.get_download_directory()))
                 env_modified['CMAKI_DIR'] = cmakelib_dir
-
-                basename_compiler_cpp = os.path.basename(compiler_cpp)
-                install_directory = os.path.join(os.getcwd(), '..', workspace, node.get_base_folder(), plat)
-                utils.trymkdir(install_directory)
+                env_modified['SELFHOME'] = install_directory
+                # env_modified['CMAKI_INSTALL'] = install_directory
 
                 #################
                 # remove cmake3p of node

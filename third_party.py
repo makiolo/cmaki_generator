@@ -579,14 +579,16 @@ class ThirdParty:
         compiler_replace_resolved['$ARCH'] = archs[plat]
         compiler_replace_resolved['${ARCH}'] = archs[plat]
 
+        # get compiler info
+        env = os.environ.copy()
+        cmaki_install = env['CMAKI_INSTALL']
+        env['CMAKI_INFO'] = 'COMPILER'
+        compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+
         ext_dyn = plat_parms['ext_dyn']
         ext_sta = plat_parms['ext_sta']
         if compilers is None:
             # if utils.is_windows():
-            env = os.environ.copy()
-            cmaki_install = env['CMAKI_INSTALL']
-            env['CMAKI_INFO'] = 'COMPILER'
-            compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
             compilers = [('%s, %s' % (compiler, compiler))]
             # else:
             #     compilers = [('%s, %s' % (os.environ.get('CC', 'gcc'), os.environ.get('CXX', 'g++')))]
@@ -605,8 +607,7 @@ class ThirdParty:
 
             for env_iter in [env_modified, env_new]:
 
-                basename_compiler_cpp = os.path.basename(compiler_cpp)
-                env_iter['COMPILER'] = str(basename_compiler_cpp)
+                env_iter['COMPILER'] = str(compiler)
                 env_iter['PLATFORM'] = str(plat)
                 env_iter['PACKAGE'] = str(self.get_package_name())
                 env_iter['VERSION'] = str(self.get_version())
@@ -1014,7 +1015,7 @@ class ThirdParty:
                         i += 1
         return condition
 
-    def _get_lib(self, rootdir, file_dll, build_mode):
+    def _get_lib(self, rootdir, file_dll):
         '''
         3 cases:
             string
@@ -1030,7 +1031,7 @@ class ThirdParty:
             utils.verbose(self.user_parameters, 'Searching list %s' % file_dll)
             valid_ff = None
             for ff in file_dll:
-                valid, valid_ff = self._get_lib(rootdir, utils.get_norm_path(ff), build_mode)
+                valid, valid_ff = self._get_lib(rootdir, utils.get_norm_path(ff))
                 if valid:
                     break
             return (valid, valid_ff)
@@ -1059,69 +1060,76 @@ class ThirdParty:
             else:
                 return (False, None)
 
-    def get_lib(self, workbase, dataset, build_mode, kind, rootdir=None):
+    def get_lib(self, workbase, dataset, kind, rootdir=None):
         '''
         Can throw exception
         '''
-        package = self.get_package_name()
+
+        # TODO: WTF
+        build_mode = os.environ['MODE']
+        print "-- build mode = {}".format(build_mode)
+        print "-- kind = {}".format(kind)
+
         if rootdir is None:
-            rootdir = os.path.join(workbase, build_mode)
+            rootdir = workbase
         utils.verbose(self.user_parameters, 'Searching rootdir %s' % (rootdir))
         if (build_mode.lower() in dataset) and (kind in dataset[build_mode.lower()]):
             file_dll = dataset[build_mode.lower()][kind]
-            valid, valid_ff = self._get_lib(rootdir, file_dll, build_mode)
+            valid, valid_ff = self._get_lib(rootdir, file_dll)
             if valid:
                 return valid_ff
             else:
+                package = self.get_package_name()
                 raise AmbiguationLibs(kind, package, build_mode)
         else:
             raise NotFoundInDataset("Not found in dataset, searching %s - %s" % (build_mode.lower(), kind))
 
-    def get_lib_basename(self, workbase, dataset, build_mode, kind, base=False):
+    def get_lib_basename(self, workbase, dataset, kind, base=False):
         '''
         First search in build mode specific
         Second search in BASE
         Other case return __not_found__.$kind
         '''
         try:
-            build_mode = self.get_prefered_build_mode(prefered[build_mode])
             try:
                 if not base:
-                    finalpath = os.path.join(build_mode, self.get_lib(workbase, dataset, build_mode, kind))
+                    finalpath = self.get_lib(workbase, dataset, kind)
                     utils.superverbose(self.user_parameters, '[01] path: %s' % finalpath)
                     return finalpath
                 else:
                     # undo platform and compiler
                     # search in base
                     rootdir = os.path.abspath(os.path.join(workbase, '..' , '..'))
-                    finalpath = os.path.join('..', '..', self.get_lib(workbase, dataset, build_mode, kind, rootdir))
+                    finalpath = os.path.join('..', '..', self.get_lib(workbase, dataset, kind, rootdir))
                     utils.superverbose(self.user_parameters, '[02] path: %s' % finalpath)
                     return finalpath
 
             except AmbiguationLibs:
                 # try search in BASE
                 if (not base):
-                    finalpath = self.get_lib_basename(workbase, dataset, build_mode, kind, base=True)
+                    finalpath = self.get_lib_basename(workbase, dataset, kind, base=True)
                     utils.superverbose(self.user_parameters, '[03] path: %s' % finalpath)
                     return finalpath
                 else:
-                    finalpath = os.path.join(build_mode, ('%s.%s' % (magic_invalid_file, kind)))
+                    finalpath = '%s.%s' % (magic_invalid_file, kind)
                     utils.superverbose(self.user_parameters, '[04] path: %s' % finalpath)
                     return finalpath
         except NotFoundInDataset:
             # exception -> return invalid file
-            finalpath = os.path.join(build_mode, ('%s.%s' % (magic_invalid_file, kind)))
+            finalpath = '%s.%s' % (magic_invalid_file, kind)
             utils.superverbose(self.user_parameters, '[05] path: %s' % finalpath)
             return finalpath
 
     def check_libs_exists(self, workbase, superpackage, package, dataset, kindlibs, build_modes=None):
         all_ok = True
         if build_modes is None:
-            build_modes = self.get_build_modes()
+            # build_modes = self.get_build_modes()
+            # TODO: WTF
+            build_modes = [ os.environ['MODE'] ]
         for build_mode in build_modes:
             for kind, must in kindlibs:
                 try:
-                    file_dll = self.get_lib_basename(workbase, dataset, build_mode, kind)
+                    file_dll = self.get_lib_basename(workbase, dataset, kind)
                     dll_path = os.path.join(workbase, file_dll)
                     if not os.path.exists(dll_path):
                         if must:
@@ -1158,23 +1166,24 @@ class ThirdParty:
             parameters = self.parameters
             version_compatible = self.get_version_compatible()
 
-            for plat in platforms:
-                for compiler_c, compiler_cpp, _, ext_sta, ext_dyn, _, _ in self.compiler_iterator(plat, compiler_replace_maps):
-                    workspace = self.get_workspace(plat)
-                    base_folder = self.get_base_folder()
-                    if 'common_factor' in parameters:
-                        common_factor = parameters['common_factor']
-                        prefered_build_mode = self.get_prefered_build_mode(prefered['Release'])
-                        for d in common_factor:
-                            for build_mode in build_modes:
-                                basename_compiler_cpp = os.path.basename(compiler_cpp)
-                                build_depend_folder = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp, build_mode, d)
-                                if build_mode == prefered_build_mode:
-                                    # Move from prefered build mode (release) to common folder
-                                    common_folder = os.path.join(oldcwd, workspace, base_folder, d)
-                                    if os.path.exists(build_depend_folder):
-                                        utils.copy_folder_recursive(build_depend_folder, common_folder)
-                                utils.tryremove_dir(build_depend_folder)
+            # for plat in platforms:
+            #     for compiler_c, compiler_cpp, _, ext_sta, ext_dyn, _, _ in self.compiler_iterator(plat, compiler_replace_maps):
+            #         workspace = self.get_workspace(plat)
+            #         base_folder = self.get_base_folder()
+            #         if 'common_factor' in parameters:
+            #             common_factor = parameters['common_factor']
+            #             prefered_build_mode = self.get_prefered_build_mode(prefered['Release'])
+            #             for d in common_factor:
+            #                 for build_mode in build_modes:
+            #                     basename_compiler_cpp = os.path.basename(compiler_cpp)
+            #                     build_depend_folder = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp, build_mode, d)
+            #                     if build_mode == prefered_build_mode:
+            #                         # Move from prefered build mode (release) to common folder
+            #                         common_folder = os.path.join(oldcwd, workspace, base_folder, d)
+            #                         if os.path.exists(build_depend_folder):
+            #                             # utils.move_folder_recursive(build_depend_folder, common_folder)
+            #                             utils.copy_folder_recursive(build_depend_folder, common_folder)
+            #                     utils.tryremove_dir(build_depend_folder)
 
             with open('%s-config.cmake' % superpackage_lower, 'wt') as f:
                 f.write('''CMAKE_POLICY(PUSH)
@@ -1260,8 +1269,6 @@ cmaki_package_version_check()
                                 for sd in system_depends:
                                     system_depends_set.append(sd)
 
-                            basename_compiler_cpp = os.path.basename(compiler_cpp)
-
                             if ('targets_paths' in self.parameters):
                                 targets_paths = self.parameters['targets_paths']
                                 for key, value in targets_paths.iteritems():
@@ -1278,16 +1285,16 @@ cmaki_package_version_check()
                                         f.write('file(TO_NATIVE_PATH "${_MY_DIR}/../../run_with_libs.sh" %s_LAUNCHER)\n' % package_upper)
 
                                 executable = platform_info['executable']
-                                workbase = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp)
+                                workbase = os.path.join(oldcwd, workspace, base_folder, plat)
                                 if not self.check_libs_exists(workbase, superpackage, package, executable, [('bin', True)], build_modes=['Release']):
                                     errors += 1
-                                release_bin = self.get_lib_basename(workbase, executable, 'Release', 'bin')
+                                release_bin = self.get_lib_basename(workbase, executable, 'bin')
 
                                 for suffix in ['', '_EXECUTABLE']:
                                     if 'use_run_with_libs' in platform_info:
-                                        f.write('set(%s%s "${%s_LAUNCHER}" "${_DIR}/%s/%s/%s" PARENT_SCOPE)\n' % (package_upper, suffix, package_upper, plat, basename_compiler_cpp, utils.get_norm_path(release_bin, native=False)))
+                                        f.write('set(%s%s "${%s_LAUNCHER}" "${_DIR}/%s/%s" PARENT_SCOPE)\n' % (package_upper, suffix, package_upper, plat, utils.get_norm_path(release_bin, native=False)))
                                     else:
-                                        f.write('set(%s%s "${_DIR}/%s/%s/%s" PARENT_SCOPE)\n' % (package_upper, suffix, plat, basename_compiler_cpp, utils.get_norm_path(release_bin, native=False)))
+                                        f.write('set(%s%s "${_DIR}/%s/%s" PARENT_SCOPE)\n' % (package_upper, suffix, plat, utils.get_norm_path(release_bin, native=False)))
                                     f.write('file(TO_NATIVE_PATH "${%s%s}" %s%s)\n' % (package_upper, suffix, package_upper, suffix))
                                 f.write('\n')
 
@@ -1300,23 +1307,23 @@ cmaki_package_version_check()
                                     f.write('list(APPEND %s_LIBRARIES %s)\n' % (superpackage_upper, package_lower))
 
                                 if plat.startswith('win'):
-                                    workbase = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp)
+                                    workbase = os.path.join(oldcwd, workspace, base_folder, plat)
                                     if not self.check_libs_exists(workbase, superpackage, package, dynamic, [('dll', True), ('lib', lib_provided), ('pdb', False)]):
                                         errors += 1
 
-                                    debug_dll = self.get_lib_basename(workbase, dynamic, 'Debug', 'dll')
-                                    release_dll = self.get_lib_basename(workbase, dynamic, 'Release', 'dll')
-                                    relwithdebinfo_dll = self.get_lib_basename(workbase, dynamic, 'RelWithDebInfo', 'dll')
-                                    minsizerel_dll = self.get_lib_basename(workbase, dynamic, 'Release', 'dll')
+                                    debug_dll = self.get_lib_basename(workbase, dynamic, 'dll')
+                                    release_dll = self.get_lib_basename(workbase, dynamic, 'dll')
+                                    relwithdebinfo_dll = self.get_lib_basename(workbase, dynamic, 'dll')
+                                    minsizerel_dll = self.get_lib_basename(workbase, dynamic, 'dll')
 
-                                    debug_lib = self.get_lib_basename(workbase, dynamic, 'Debug', 'lib')
-                                    release_lib = self.get_lib_basename(workbase, dynamic, 'Release', 'lib')
-                                    relwithdebinfo_lib = self.get_lib_basename(workbase, dynamic, 'RelWithDebInfo', 'lib')
-                                    minsizerel_lib = self.get_lib_basename(workbase, dynamic, 'Release', 'lib')
+                                    debug_lib = self.get_lib_basename(workbase, dynamic, 'lib')
+                                    release_lib = self.get_lib_basename(workbase, dynamic, 'lib')
+                                    relwithdebinfo_lib = self.get_lib_basename(workbase, dynamic, 'lib')
+                                    minsizerel_lib = self.get_lib_basename(workbase, dynamic, 'lib')
 
                                     try:
                                         # pdb is optional
-                                        relwithdebinfo_pdb = 'RelWithDebInfo/%s' % self.get_lib(workbase, dynamic, 'RelWithDebInfo', 'pdb')
+                                        relwithdebinfo_pdb = self.get_lib(workbase, dynamic, 'pdb')
                                     except KeyError:
                                         relwithdebinfo_pdb = None
                                     except Exception as e:
@@ -1324,9 +1331,7 @@ cmaki_package_version_check()
                                         relwithdebinfo_pdb = None
 
                                     try:
-                                        debug_pdb = 'Debug/%s' % self.get_lib(workbase, dynamic, 'Debug', 'pdb')
-                                        if self.is_invalid_lib(relwithdebinfo_pdb) and (not self.is_invalid_lib(debug_pdb)):
-                                            relwithdebinfo_pdb = debug_pdb
+                                        debug_pdb = self.get_lib(workbase, dynamic, 'pdb')
                                     except KeyError:
                                         debug_pdb = None
                                     except Exception as e:
@@ -1338,41 +1343,41 @@ cmaki_package_version_check()
                                     f.write('SET_TARGET_PROPERTIES(%s PROPERTIES\n' % package_lower)
 
                                     # dll
-                                    f.write('\tIMPORTED_LOCATION_DEBUG "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(debug_dll, native=False)))
-                                    f.write('\tIMPORTED_LOCATION_RELEASE "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(release_dll, native=False)))
-                                    f.write('\tIMPORTED_LOCATION_RELWITHDEBINFO "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(relwithdebinfo_dll, native=False)))
-                                    f.write('\tIMPORTED_LOCATION_MINSIZEREL "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(minsizerel_dll, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_DEBUG "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(debug_dll, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_RELEASE "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(release_dll, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_RELWITHDEBINFO "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(relwithdebinfo_dll, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_MINSIZEREL "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(minsizerel_dll, native=False)))
                                     f.write('\n')
 
                                     # lib
                                     if not self.is_invalid_lib(debug_lib):
-                                        f.write('\tIMPORTED_IMPLIB_DEBUG "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(debug_lib, native=False)))
+                                        f.write('\tIMPORTED_IMPLIB_DEBUG "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(debug_lib, native=False)))
                                     if not self.is_invalid_lib(release_lib):
-                                        f.write('\tIMPORTED_IMPLIB_RELEASE "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(release_lib, native=False)))
+                                        f.write('\tIMPORTED_IMPLIB_RELEASE "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(release_lib, native=False)))
                                     if not self.is_invalid_lib(relwithdebinfo_lib):
-                                        f.write('\tIMPORTED_IMPLIB_RELWITHDEBINFO "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(relwithdebinfo_lib, native=False)))
+                                        f.write('\tIMPORTED_IMPLIB_RELWITHDEBINFO "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(relwithdebinfo_lib, native=False)))
                                     if not self.is_invalid_lib(minsizerel_lib):
-                                        f.write('\tIMPORTED_IMPLIB_MINSIZEREL "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(minsizerel_lib, native=False)))
+                                        f.write('\tIMPORTED_IMPLIB_MINSIZEREL "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(minsizerel_lib, native=False)))
                                     f.write('\n')
 
                                     # pdb
                                     if not self.is_invalid_lib(debug_pdb):
-                                        f.write('\tIMPORTED_PDB_DEBUG "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(debug_pdb, native=False)))
+                                        f.write('\tIMPORTED_PDB_DEBUG "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(debug_pdb, native=False)))
 
                                     if not self.is_invalid_lib(relwithdebinfo_pdb):
-                                        f.write('\tIMPORTED_PDB_RELWITHDEBINFO "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(relwithdebinfo_pdb, native=False)))
+                                        f.write('\tIMPORTED_PDB_RELWITHDEBINFO "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(relwithdebinfo_pdb, native=False)))
 
                                     f.write(')\n')
                                 else:
 
-                                    workbase = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp)
+                                    workbase = os.path.join(oldcwd, workspace, base_folder, plat)
                                     if not self.check_libs_exists(workbase, superpackage, package, dynamic, [('so', True)]):
                                         errors += 1
 
-                                    debug_so = self.get_lib_basename(workbase, dynamic, 'Debug', 'so')
-                                    release_so = self.get_lib_basename(workbase, dynamic, 'Release', 'so')
-                                    relwithdebinfo_so = self.get_lib_basename(workbase, dynamic, 'RelWithDebInfo', 'so')
-                                    minsizerel_so = self.get_lib_basename(workbase, dynamic, 'Release', 'so')
+                                    debug_so = self.get_lib_basename(workbase, dynamic, 'so')
+                                    release_so = self.get_lib_basename(workbase, dynamic, 'so')
+                                    relwithdebinfo_so = self.get_lib_basename(workbase, dynamic, 'so')
+                                    minsizerel_so = self.get_lib_basename(workbase, dynamic, 'so')
 
                                     try:
                                         debug_so_full = os.path.join(oldcwd, workbase, debug_so)
@@ -1407,10 +1412,10 @@ cmaki_package_version_check()
                                     f.write('SET_TARGET_PROPERTIES(%s PROPERTIES\n' % package_lower)
 
                                     # so
-                                    f.write('\tIMPORTED_LOCATION_DEBUG "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(debug_so, native=False)))
-                                    f.write('\tIMPORTED_LOCATION_RELEASE "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(release_so, native=False)))
-                                    f.write('\tIMPORTED_LOCATION_RELWITHDEBINFO "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(relwithdebinfo_so, native=False)))
-                                    f.write('\tIMPORTED_LOCATION_MINSIZEREL "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(minsizerel_so, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_DEBUG "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(debug_so, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_RELEASE "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(release_so, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_RELWITHDEBINFO "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(relwithdebinfo_so, native=False)))
+                                    f.write('\tIMPORTED_LOCATION_MINSIZEREL "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(minsizerel_so, native=False)))
                                     f.write('\n')
 
                                     # soname
@@ -1432,14 +1437,14 @@ cmaki_package_version_check()
 
                                 static = platform_info['static']
 
-                                workbase = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp)
+                                workbase = os.path.join(oldcwd, workspace, base_folder, plat)
                                 if not self.check_libs_exists(workbase, superpackage, package, static, [('lib', True)]):
                                     errors += 1
 
-                                debug_lib = self.get_lib_basename(workbase, static, 'Debug', 'lib')
-                                release_lib = self.get_lib_basename(workbase, static, 'Release', 'lib')
-                                relwithdebinfo_lib = self.get_lib_basename(workbase, static, 'RelWithDebInfo', 'lib')
-                                minsizerel_lib = self.get_lib_basename(workbase, static, 'Release', 'lib')
+                                debug_lib = self.get_lib_basename(workbase, static, 'lib')
+                                release_lib = self.get_lib_basename(workbase, static, 'lib')
+                                relwithdebinfo_lib = self.get_lib_basename(workbase, static, 'lib')
+                                minsizerel_lib = self.get_lib_basename(workbase, static, 'lib')
 
                                 if add_3rdparty_dependencies:
                                     # register target
@@ -1450,10 +1455,10 @@ cmaki_package_version_check()
                                 f.write('SET_TARGET_PROPERTIES(%s PROPERTIES\n' % package_lower)
 
                                 # lib
-                                f.write('\tIMPORTED_LOCATION_DEBUG "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(debug_lib, native=False)))
-                                f.write('\tIMPORTED_LOCATION_RELEASE "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(release_lib, native=False)))
-                                f.write('\tIMPORTED_LOCATION_RELWITHDEBINFO "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(relwithdebinfo_lib, native=False)))
-                                f.write('\tIMPORTED_LOCATION_MINSIZEREL "${_DIR}/%s/%s/%s"\n' % (plat, basename_compiler_cpp, utils.get_norm_path(minsizerel_lib, native=False)))
+                                f.write('\tIMPORTED_LOCATION_DEBUG "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(debug_lib, native=False)))
+                                f.write('\tIMPORTED_LOCATION_RELEASE "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(release_lib, native=False)))
+                                f.write('\tIMPORTED_LOCATION_RELWITHDEBINFO "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(relwithdebinfo_lib, native=False)))
+                                f.write('\tIMPORTED_LOCATION_MINSIZEREL "${_DIR}/%s/%s"\n' % (plat, utils.get_norm_path(minsizerel_lib, native=False)))
 
                                 f.write(')\n')
 
