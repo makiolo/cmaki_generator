@@ -49,10 +49,14 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         generator: "Visual Studio 14 2015 Win64"
         ext_dyn: dll
         ext_sta: lib
-    windows_*-gcc_4-*:
+    windows_32-gcc_4-*:
         generator: "Unix Makefiles"
         ext_dyn: dll
         ext_sta: dll.a
+    windows_64-gcc_4-*:
+        generator: "Unix Makefiles"
+        ext_dyn: dll
+        ext_sta: a
     linux_*_glibc_2.*-*_*-*:
         generator: "Unix Makefiles"
         ext_dyn: so
