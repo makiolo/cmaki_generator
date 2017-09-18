@@ -90,6 +90,8 @@ compile_with_path_toolchain: &compile_with_path_toolchain
 thirdparty_defaults: &thirdparty_defaults
     platforms:
         <<: *compile_with_path_toolchain
+    version: 0.0.0.0
+    version_manager: git
     mask: wlmsea
     mode: dri
     depends: null
@@ -564,4 +566,3 @@ library_dynamic_boost: &library_dynamic_boost
         <<: *windows_dynamic_boost
     default:
         <<: *unix_dynamic_boost
-
