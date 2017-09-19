@@ -16,9 +16,9 @@
     "url": "https://github.com/makiolo/cmaki_generator/issues"
   },
   "devDependencies": {
-    "cmaki": "makiolo/cmaki",
-    "cmaki_scripts": "makiolo/cmaki_scripts",
-    "cmaki_identifier": "makiolo/cmaki_identifier"
+    "cmaki": "git+https://github.com/makiolo/cmaki.git",
+    "cmaki_scripts": "git+https://github.com/makiolo/cmaki_scripts.git"
+    "cmaki_identifier": "git+https://github.com/makiolo/cmaki_identifier.git"    
   },
   "homepage": "https://github.com/makiolo/cmaki_generator#readme"
 }
