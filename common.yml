@@ -1,46 +1,4 @@
-# begin environments references
-environment_new: &environment_new
-    PATH:
-        - $toolchain_BASE/bin
-    LD_LIBRARY_PATH:
-        - $toolchain_BASE/lib
-        - $toolchain_BASE/lib$ARCH
-    MANPATH:
-        - $toolchain_BASE/man
-    CPPFLAGS:
-        - -I$toolchain_BASE/include
-    PYTHONPATH:
-        - $toolchain_BASE/lib/python2.7/site-packages
-    LD_RUN_PATH:
-        - $toolchain_BASE/lib
-        - $toolchain_BASE/lib$ARCH
-    ACLOCAL_PATH:
-        - $toolchain_BASE/share/aclocal-1.15
-    PKG_CONFIG_PATH:
-        - $toolchain_BASE/lib/pkgconfig
-
-environment_new_solaris: &environment_new_solaris
-    <<: *environment_new
-    LDFLAGS:
-        - -L$toolchain_BASE/lib
-        - -L$toolchain_BASE/lib$ARCH
-        - -R$toolchain_BASE/lib
-        - -R$toolchain_BASE/lib$ARCH
-    LD_OPTIONS:
-        - -R$toolchain_BASE/lib
-        - -R$toolchain_BASE/lib$ARCH
-
-environment_new_linux: &environment_new_linux
-    <<: *environment_new
-    LDFLAGS:
-        - -L$toolchain_BASE/lib
-        - -L$toolchain_BASE/lib$ARCH
-        # traditional way of setting rpath only works in linux
-        #- -Wl,-rpath,\$${TOOLCHAIN}/lib
-        #- -Wl,--enable-new-dtags
-
-# end enviroments references
-compile_with_path_toolchain: &compile_with_path_toolchain
+compilation_environments: &compilation_environments
     windows_32-msvc_2015-*:
         generator: "Visual Studio 14 2015"
         ext_dyn: dll
@@ -61,57 +19,25 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         generator: "Unix Makefiles"
         ext_dyn: so
         ext_sta: a
-        environment:
-            remove:
-                <<: *environment_new_linux
     macos_64-clang_*-*:
         generator: "Unix Makefiles"
         ext_dyn: dylib
         ext_sta: a
-        environment:
-            remove:
-                <<: *environment_new_linux
     android_arm_api_*-gcc_*-*:
         generator: "Unix Makefiles"
         ext_dyn: so
         ext_sta: a
 
-# layer 3 - third party
-# thirdparty preset features:
-#   - Use last toolchain generated like compiler
-#   - Compile in all operative systems
-#   - Compile in all build mode available
 thirdparty_defaults: &thirdparty_defaults
     platforms:
-        <<: *compile_with_path_toolchain
+        <<: *compilation_environments
     version: 0.0.0.0
     version_manager: git
-    mask: wlmsea
+    mask: wlmea
     mode: dri
     depends: null
     source: skip
     packing: true
-    unittest:
-        |
-            int main() { return 0; }
-    common_factor:
-        - include
-    priority: 30
-
-# thirdparty preset features:
-#   - Use toolchain present in path (be careful if toolchain_install was executed)
-#   - Compile in all operative systems
-#   - Compile in all build mode available
-thirdparty_old_defaults: &thirdparty_old_defaults
-    platforms:
-        <<: *compile_with_path_toolchain
-    mask: wlmse
-    mode: dri
-    depends: null
-    source: skip
-    packing: true
-    # gcc 4.4 is deprecated by default, need to be explicit
-    exclude_from_all: true
     unittest:
         |
             int main() { return 0; }
@@ -170,7 +96,6 @@ library_dynamic: &library_dynamic
         <<: *library_dynamic_windows
     default:
         <<: *library_dynamic_unix
-
 
 executable: &executable
     windows: &executable_windows_common
@@ -412,84 +337,6 @@ library_static_exact: &library_static_exact
     default:
         <<: *library_static_exact_common
 
-library_net: &library_net
-    windows: &library_net_windows
-        # avoid append to BBVA_TARGET_3RDPARTY_DEPENDENCIES
-        add_3rdparty_dependencies: false
-        # lib is not mandatory in .NET library
-        lib_provided: false
-        dynamic:
-            debug:
-                dll:
-                    /*$TARGET*.dll/
-                pdb:
-                    /*$TARGET*.pdb/
-            relwithdebinfo:
-                dll:
-                    /*$TARGET*.dll/
-                pdb:
-                    /*$TARGET*.pdb/
-            release:
-                dll:
-                    /*$TARGET*.dll/
-                pdb:
-                    /*$TARGET*.pdb/
-    win32:
-        <<: *library_net_windows
-    win64:
-        <<: *library_net_windows
-
-library_net_exact: &library_net_exact
-    windows: &library_net_exact_windows
-        <<: *library_net_exact_windows
-        # avoid append to BBVA_TARGET_3RDPARTY_DEPENDENCIES
-        add_3rdparty_dependencies: false
-        # lib is not mandatory in .NET library
-        lib_provided: false
-        dynamic:
-            debug:
-                dll:
-                    - ${TARGET}d.dll
-                    - bin/${TARGET}d.dll
-                    - dll/${TARGET}d.dll
-                    - $TARGET.dll
-                    - bin/$TARGET.dll
-                    - dll/$TARGET.dll
-                pdb:
-                    - ${TARGET}d.pdb
-                    - pdb/${TARGET}d.pdb
-                    - bin/${TARGET}d.pdb
-                    - dll/${TARGET}d.pdb
-                    - ${TARGET}.pdb
-                    - dll/${TARGET}.pdb
-                    - pdb/${TARGET}.pdb
-                    - bin/${TARGET}.pdb
-            relwithdebinfo:
-                dll:
-                    - ${TARGET}.dll
-                    - bin/${TARGET}.dll
-                    - dll/${TARGET}.dll
-                pdb:
-                    - ${TARGET}.pdb
-                    - pdb/${TARGET}.pdb
-                    - bin/${TARGET}.pdb
-                    - dll/${TARGET}.pdb
-            release:
-                dll:
-                    - ${TARGET}.dll
-                    - bin/${TARGET}.dll
-                    - dll/${TARGET}.dll
-                pdb:
-                    - ${TARGET}.pdb
-                    - pdb/${TARGET}.pdb
-                    - bin/${TARGET}.pdb
-                    - dll/${TARGET}.pdb
-    win32:
-        <<: *library_net_exact_windows
-    win64:
-        <<: *library_net_exact_windows
-
-# case very specific for lapack
 # when need distribute dll (only windows) but dont need linking
 library_only_dll: &library_only_dll
     windows: &library_only_dll_windows
