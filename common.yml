@@ -75,12 +75,6 @@ compile_with_path_toolchain: &compile_with_path_toolchain
         generator: "Unix Makefiles"
         ext_dyn: so
         ext_sta: a
-    # maybe emscripten
-    unix_unknown_arch-*_4-*:
-        generator: "Unix Makefiles"
-        ext_dyn: js
-        ext_sta: js
-
 
 # layer 3 - third party
 # thirdparty preset features:
