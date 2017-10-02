@@ -4,11 +4,8 @@ import utils
 import time
 from datetime import datetime
 from utils import get_stdout
-
-#
-# mejor basar la version en la fecha del ultimo commit para poder utilizar --depth=50 en los checkouts
-# git log -1 --format=%cd
-#
+# be careful: ignore tz
+from email.utils import parsedate
 
 def get_revision_svn(repo):
     '''
@@ -27,13 +24,13 @@ def get_timestamp_from_changeset(repo, changeset_searched):
     '''
     with utils.working_directory(repo):
         lines = []
-        for line in get_stdout(r'git log --format="%H;%cd" --date="format-local:%Y%m%dT%H%M%SZ"'):
+        for line in get_stdout(r'git log --format="%H;%cd" --date=rfc'):
             lines.append(line)
         for line in reversed(lines):
             chunks = line.split(";")
             assert(len(chunks) == 2)
             changeset = chunks[0]
-            timestamp = int(time.mktime(datetime.strptime(chunks[1], '%Y%m%dT%H%M%SZ').timetuple()))
+            timestamp = int(time.mktime(parsedate(chunks[1])))
             if changeset_searched == changeset:
                 return timestamp
     raise Exception('Error in get timestamp from changeset {}'.format(changeset_searched))
@@ -70,13 +67,13 @@ def get_changeset_git_from_position(repo, position = 0):
 def get_changeset_from_timestamp(repo, timestamp_searched):
     with utils.working_directory(repo):
         lines = []
-        for line in get_stdout(r'git log --format="%H;%cd" --date="format-local:%Y%m%dT%H%M%SZ"'):
+        for line in get_stdout(r'git log --format="%H;%cd" --date=rfc'):
             lines.append(line)
         for line in reversed(lines):
             chunks = line.split(";")
             assert(len(chunks) == 2)
             changeset = chunks[0]
-            timestamp = int(time.mktime(datetime.strptime(chunks[1], '%Y%m%dT%H%M%SZ').timetuple()))
+            timestamp =  int(time.mktime(parsedate(chunks[1])))
             if timestamp_searched == timestamp:
                 return changeset
     raise Exception('Error in get git hash from timestamp {}'.format(timestamp_searched))
