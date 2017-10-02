@@ -371,6 +371,7 @@ library_only_dll: &library_only_dll
 library_dynamic_boost: &library_dynamic_boost
     common: &common_boost
         include:
+            - $PLATFORM/include
             - include
         definitions:
             - -D${PACKAGE_UPPER}_DYN_LINK
