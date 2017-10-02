@@ -16,11 +16,16 @@
 
 ## Note: on OS X you should install XCode and the associated command-line tools
 
+include(${PACKAGE_BUILD_DIRECTORY}/../paho-mqtt3/find.cmake)
+set(paho_mqtt3_LIBRARIES paho-mqtt3c paho-mqtt3a)
+link_directories("${paho_mqtt3_LIBDIR}")
+include_directories("${paho_mqtt3_INCLUDE}")
+# TODO: use find_package
+# find_package(paho-mqtt3 REQUIRED)
+
 ## include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-find_package(paho-mqtt3 REQUIRED)
-include_directories("${paho_mqtt3_INCLUDE}")
 
 ## libraries
 if(WIN32)

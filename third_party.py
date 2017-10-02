@@ -1073,12 +1073,7 @@ class ThirdParty:
         '''
         Can throw exception
         '''
-
-        # TODO: WTF
         build_mode = os.environ['MODE']
-        print "-- build mode = {}".format(build_mode)
-        print "-- kind = {}".format(kind)
-
         if rootdir is None:
             rootdir = workbase
         utils.verbose(self.user_parameters, 'Searching rootdir %s' % (rootdir))

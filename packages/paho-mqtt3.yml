@@ -7,7 +7,7 @@
         - ./src/*.h include
     mode: dr
     source: https://github.com/eclipse/paho.mqtt.c.git
-    branch: develop
+    branch: -b develop
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
         - BUILD_TESTING=OFF
