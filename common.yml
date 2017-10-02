@@ -10,7 +10,7 @@ compilation_environments: &compilation_environments
     windows_32-gcc_4-*:
         generator: "Unix Makefiles"
         ext_dyn: dll
-        ext_sta: dll.a
+        ext_sta: a
     windows_64-gcc_4-*:
         generator: "Unix Makefiles"
         ext_dyn: dll
