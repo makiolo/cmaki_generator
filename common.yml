@@ -31,7 +31,7 @@ compilation_environments: &compilation_environments
 thirdparty_defaults: &thirdparty_defaults
     platforms:
         <<: *compilation_environments
-    version: 0.0.0.0
+    version: null
     version_manager: git
     mask: wlmea
     mode: dri

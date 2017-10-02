@@ -300,7 +300,11 @@ class ThirdParty:
     def get_version(self):
         parms = self.parameters
         try:
-            return parms['version']
+            version = parms['version']
+            if version is None:
+                return '0.0.0.0'
+            else:
+                return version
         except KeyError:
             if self.get_package_name() != 'dummy':
                 raise Exception('[%s] Version is a mandatory field.' % self.get_package_name())
@@ -308,7 +312,12 @@ class ThirdParty:
     def get_version_manager(self):
         parms = self.parameters
         try:
-            return parms['version_manager']
+            version = self.get_version()
+            if version == '0.0.0.0':
+                return parms['version_manager']
+            else:
+                # si tiene version -> no usar renombrado git
+                return None
         except KeyError:
             return None
 
