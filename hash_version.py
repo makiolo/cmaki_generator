@@ -1,6 +1,8 @@
 import os
 import contextlib
 import utils
+import time
+from datetime import datetime
 from utils import get_stdout
 
 #
@@ -18,6 +20,23 @@ def get_revision_svn(repo):
             pos = line.rindex(':')
             return int(line[pos+2:])
     return -1
+
+def get_timestamp_from_changeset(repo, changeset_searched):
+    '''
+    generator of commits
+    '''
+    with utils.working_directory(repo):
+        lines = []
+        for line in get_stdout(r'git log --format="%H;%cd" --date="format-local:%Y%m%dT%H%M%SZ"'):
+            lines.append(line)
+        for line in reversed(lines):
+            chunks = line.split(";")
+            assert(len(chunks) == 2)
+            changeset = chunks[0]
+            timestamp = int(time.mktime(datetime.strptime(chunks[1], '%Y%m%dT%H%M%SZ').timetuple()))
+            if changeset_searched == changeset:
+                return timestamp
+    raise Exception('Error in get timestamp from changeset {}'.format(changeset_searched))
 
 def git_log_gen(repo, number=1, extra=''):
     '''
@@ -46,7 +65,21 @@ def get_changeset_git_from_position(repo, position = 0):
                     return commit_name
                 else:
                     i += 1
-    raise Exception('Error in get git hash from position %s' % position)
+    raise Exception('Error in get git hash from position {}'.format(position))
+
+def get_changeset_from_timestamp(repo, timestamp_searched):
+    with utils.working_directory(repo):
+        lines = []
+        for line in get_stdout(r'git log --format="%H;%cd" --date="format-local:%Y%m%dT%H%M%SZ"'):
+            lines.append(line)
+        for line in reversed(lines):
+            chunks = line.split(";")
+            assert(len(chunks) == 2)
+            changeset = chunks[0]
+            timestamp = int(time.mktime(datetime.strptime(chunks[1], '%Y%m%dT%H%M%SZ').timetuple()))
+            if timestamp_searched == timestamp:
+                return changeset
+    raise Exception('Error in get git hash from timestamp {}'.format(timestamp_searched))
 
 def get_position_git_from_changeset(repo, changeset):
     with working_directory(repo):
@@ -76,13 +109,13 @@ def get_last_changeset(repo, short=False):
 def get_last_version(repo):
     return to_cmaki_version(repo, get_last_changeset(repo))
 
-def rehash_simple(commit_name):
-    add = 0
-    if len(commit_name) > 7:
-        commit_name = commit_name[:7]
-    for c in commit_name:
-        add += ord(c)
-    return add
+def rehash_simple(commit_name, position):
+    SEPARETOR = '000'
+    return int(SEPARETOR.join(list(str(ord(character)) for character in commit_name))) % position
+    # add = 0
+    # for c in commit_name:
+    #     add += (ord(c) * ord(c))
+    # return add
 
 @contextlib.contextmanager
 def working_directory(path):
@@ -97,8 +130,9 @@ def to_cmaki_version(repo, changeset):
     '''
     git hash ----> 0.0.x.x
     '''
-    position = get_position_git_from_changeset(repo, changeset)
-    hash_simple = rehash_simple(changeset)
+    # position = get_position_git_from_changeset(repo, changeset)
+    position = get_timestamp_from_changeset(repo, changeset)
+    hash_simple = rehash_simple(changeset, position)
     versions = []
     versions.append('0')
     versions.append('0')
@@ -114,9 +148,11 @@ def to_git_version(repo, version):
     assert(len(version) == 4)
     position = int(version[2])
     pseudohash = int(version[3])
-    changeset = get_changeset_git_from_position(repo, position=position)
-    hash_simple = rehash_simple(changeset)
-    assert( get_position_git_from_changeset(repo, changeset) == position )
+    # changeset = get_changeset_git_from_position(repo, position=position)
+    changeset = get_changeset_from_timestamp(repo, position)
+    hash_simple = rehash_simple(changeset, position)
+    # assert( get_position_git_from_changeset(repo, changeset) == position )
+    assert( get_timestamp_from_changeset(repo, changeset) == position )
     assert( hash_simple == pseudohash )
     return changeset
 
@@ -127,7 +163,7 @@ if __name__ == '__main__':
     # print(Style.DIM + 'and in dim text')
     # print(Style.RESET_ALL)
     # print('back to normal now')
-    local_path = r'E:\dev\channel_service\cmaki'
+    local_path = r'/home/ricardo/dev/fast-event-system'
 
     for commit_name in git_log_gen(local_path, 10):
         cmaki_version = to_cmaki_version(local_path, commit_name)
