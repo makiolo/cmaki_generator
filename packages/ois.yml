@@ -7,7 +7,7 @@
     build:
         |
             #!/bin/bash
-            # depends: libxaw-dev
+            # depends: libxaw7-dev
             source find.script
             chmod +x bootstrap
             ./bootstrap
@@ -17,4 +17,3 @@
         - OIS:
             info:
                 <<: *library_dynamic_exact
-
