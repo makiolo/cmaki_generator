@@ -1,0 +1,18 @@
+- openssl:
+    <<: *thirdparty_defaults
+    source: https://github.com/pol51/OpenSSL-CMake.git
+    build:
+        |
+            #!/bin/bash
+            ./config
+            make
+            cp libssl.a $SELFHOME/
+            cp libcrypto.a $SELFHOME/
+    targets:
+        - ssl:
+            info:
+                <<: *library_static_exact
+        - crypto:
+            info:
+                <<: *library_static_exact
+
