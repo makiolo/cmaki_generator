@@ -6,6 +6,7 @@
             #!/bin/bash
             ./config
             make
+            # in debug use: make -d --strict-warnings
             cp libssl.a $SELFHOME/
             cp libcrypto.a $SELFHOME/
     targets:
@@ -15,4 +16,3 @@
         - crypto:
             info:
                 <<: *library_static_exact
-
