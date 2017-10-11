@@ -157,7 +157,8 @@ def grep_basename(pattern):
                 # TODO: *pat* --> find
                 # *.h ---> endswith
                 # hola* ---> startswith
-                yield line
+                # TODO: do normalize paths
+                yield line.replace('\\', '/')
     return process
 
 def grep_v(pattern):
