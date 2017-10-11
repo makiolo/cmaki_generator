@@ -86,7 +86,10 @@ if sys.platform.startswith("linux") or sys.platform.startswith("darwin") or sys.
     
     env = os.environ.copy()
     cmaki_install = env['CMAKI_INSTALL']
-    script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.sh')
+    if utils.is_windows():
+        script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.exe')
+    else:
+        script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.sh')
     if not os.path.isfile(script_identifier):
         raise Exception("there is no {} script".format(script_identifier))
     env['CMAKI_INFO'] = 'ALL'
