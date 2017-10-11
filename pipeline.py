@@ -151,6 +151,8 @@ def grep(pattern):
 def grep_basename(pattern):
     def process(p):
         for line in p:
+            print ("search %s" % pattern)
+            print ("os.path.basename(line) %s" % os.path.basename(line))
             if os.path.basename(line).find(pattern) != -1:
                 yield line
     return process
