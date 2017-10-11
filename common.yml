@@ -90,9 +90,9 @@ library_dynamic: &library_dynamic
                 so:
                     - /lib*$TARGET*.$EXT_DYN/
                     - /*$TARGET*.$EXT_DYN/
-    win32:
+    windows_32-msvc_*-*:
         <<: *library_dynamic_windows
-    win64:
+    windows_64-msvc_*-*:
         <<: *library_dynamic_windows
     default:
         <<: *library_dynamic_unix
@@ -108,9 +108,9 @@ executable: &executable
             release:
                 bin:
                     /*${TARGET}/
-    win32:
+    windows_32-msvc_*-*:
         <<: *executable_windows_common
-    win64:
+    windows_64-msvc_*-*:
         <<: *executable_windows_common
     default:
         <<: *executable_unix_common
@@ -140,9 +140,9 @@ executable_exact: &executable_exact
                     - $TARGET
                     - bin/$TARGET
                     - dll/$TARGET
-    win32:
+    windows_32-msvc_*-*:
         <<: *executable_exact_windows_common
-    win64:
+    windows_64-msvc_*-*:
         <<: *executable_exact_windows_common
     default:
         <<: *executable_exact_unix_common
@@ -273,9 +273,9 @@ library_dynamic_exact: &library_dynamic_exact
                     - lib${ARCH}/lib$TARGET.$EXT_DYN
                     - lib/${ARCH}/lib$TARGET.$EXT_DYN
                     - Release/lib$TARGET.$EXT_DYN
-    win32:
+    windows_32-msvc_*-*:
         <<: *library_dynamic_exact_windows
-    win64:
+    windows_64-msvc_*-*:
         <<: *library_dynamic_exact_windows
     default:
         <<: *library_dynamic_exact_unix
@@ -295,9 +295,9 @@ library_static: &library_static
             release:
                 lib:
                     /*$TARGET*.$EXT_STA/
-    win32:
+    windows_32-msvc_*-*:
         <<: *library_static_common
-    win64:
+    windows_64-msvc_*-*:
         <<: *library_static_common
     default:
         <<: *library_static_common
@@ -339,9 +339,9 @@ library_static_exact: &library_static_exact
                     - lib/${TARGET}.$EXT_STA
                     - lib${TARGET}.$EXT_STA
                     - lib/lib${TARGET}.$EXT_STA
-    win32:
+    windows_32-msvc_*-*:
         <<: *library_static_exact_common
-    win64:
+    windows_64-msvc_*-*:
         <<: *library_static_exact_common
     default:
         <<: *library_static_exact_common
@@ -411,9 +411,9 @@ library_dynamic_boost: &library_dynamic_boost
             release:
                 so:
                     /lib$TARGET-*-mt-*_*.$EXT_DYN/
-    win32:
+    windows_32-msvc_*-*:
         <<: *windows_dynamic_boost
-    win64:
+    windows_64-msvc_*-*:
         <<: *windows_dynamic_boost
     default:
         <<: *unix_dynamic_boost
