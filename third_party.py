@@ -595,7 +595,10 @@ class ThirdParty:
         env = os.environ.copy()
         cmaki_install = env['CMAKI_INSTALL']
         env['CMAKI_INFO'] = 'COMPILER'
-        compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+        if utils.is_windows():
+            compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.exe'), env=env))[0]
+        else:
+            compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
 
         ext_dyn = plat_parms['ext_dyn']
         ext_sta = plat_parms['ext_sta']
