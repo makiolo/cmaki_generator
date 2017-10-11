@@ -172,16 +172,14 @@ def endswith(pattern):
 def copy(rootdir, folder):
     def process(p):
         for line in p:
-            # logging.info("rootdir = %s" % rootdir)
-            # logging.info("folder = %s" % folder)
-            # logging.info("line = %s" % line)
             relfilename = os.path.relpath(line, rootdir)
             destiny = os.path.join(folder, relfilename)
             destiny_dir = os.path.dirname(destiny)
-            # logging.info("relpath_dir = %s" % destiny_dir)
             utils.trymkdir(destiny_dir)
-            # logging.info('Copy "%s" to "%s"' % (line, destiny))
-            shutil.copyfile(line, destiny)
+            if os.path.isfile(line):
+                shutil.copyfile(line, destiny)
+            else:
+                logging.warning('it does not exist filename: "%s"' % line)
             yield destiny
     return process
 
