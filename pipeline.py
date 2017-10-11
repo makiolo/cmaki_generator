@@ -178,9 +178,9 @@ def copy(rootdir, folder):
             utils.trymkdir(destiny_dir)
             if os.path.isfile(line):
                 shutil.copyfile(line, destiny)
+                yield destiny
             else:
                 logging.warning('it does not exist filename: "%s"' % line)
-            yield destiny
     return process
 
 def startswith(pattern):
