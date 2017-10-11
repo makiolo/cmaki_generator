@@ -175,8 +175,9 @@ def copy(rootdir, folder):
             relfilename = os.path.relpath(line, rootdir)
             destiny = os.path.join(folder, relfilename)
             destiny_dir = os.path.dirname(destiny)
-            utils.trymkdir(destiny_dir)
+            print(line)
             if os.path.isfile(line):
+                utils.trymkdir(destiny_dir)
                 shutil.copyfile(line, destiny)
                 yield destiny
             else:
