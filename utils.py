@@ -121,27 +121,27 @@ def tryremove_dir_empty(source):
             logging.debug('Removing empty directory %s' % (source))
 
 def download_from_url(url, filename):
-    if is_windows():
-        logging.debug('Download from url %s' % url)
-        logging.debug("Download to file %s" % (filename))
-        if not os.path.exists(filename):
-            download_dirname = os.path.dirname(filename)
-            download_basename = os.path.basename(filename)
-            with working_directory(download_dirname):
-                u = urllib2.urlopen(url)
-                with open(download_basename, 'wb') as f:
-                    file_size_dl = 0
-                    block_sz = 8192
-                    while True:
-                        buffer = u.read(block_sz)
-                        if not buffer:
-                            break
-                        file_size_dl += len(buffer)
-                        f.write(buffer)
-        else:
-            logging.debug('skipping download, already exists %s' % filename)
-    else:
-        urllib.urlretrieve(url, filename=filename)
+    # if is_windows():
+    #     logging.debug('Download from url %s' % url)
+    #     logging.debug("Download to file %s" % (filename))
+    #     if not os.path.exists(filename):
+    #         download_dirname = os.path.dirname(filename)
+    #         download_basename = os.path.basename(filename)
+    #         with working_directory(download_dirname):
+    #             u = urllib2.urlopen(url)
+    #             with open(download_basename, 'wb') as f:
+    #                 file_size_dl = 0
+    #                 block_sz = 8192
+    #                 while True:
+    #                     buffer = u.read(block_sz)
+    #                     if not buffer:
+    #                         break
+    #                     file_size_dl += len(buffer)
+    #                     f.write(buffer)
+    #     else:
+    #         logging.debug('skipping download, already exists %s' % filename)
+    # else:
+    urllib.urlretrieve(url, filename=filename)
 
 def setup_logging(level, logname):
     format_console_log = '%(asctime)s %(levelname)-7s %(message)s'
