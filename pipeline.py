@@ -153,7 +153,10 @@ def grep_basename(pattern):
         for line in p:
             print ("search %s" % pattern)
             print ("os.path.basename(line) %s" % os.path.basename(line))
-            if os.path.basename(line).find(pattern) != -1:
+            # TODO: *pat* --> find
+            # *.h ---> endswith
+            # hola* ---> startswith
+            if os.path.basename(line).endswith(pattern) != -1:
                 yield line
     return process
 
