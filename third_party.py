@@ -9,11 +9,13 @@ import copy
 import fnmatch
 from sets import Set
 
+
 class InvalidPlatform(Exception):
     def __init__(self, plat):
         self._plat = plat
     def __str__(self):
         return "Invalid platform detected: %s" % self._plat
+
 
 class DontExistsFile(Exception):
     def __init__(self, source_filename):
@@ -21,11 +23,13 @@ class DontExistsFile(Exception):
     def __str__(self):
         return 'Dont exists file %s' % self._source_filename
 
+
 class FailPrepare(Exception):
     def __init__(self, node):
         self._node = node
     def __str__(self):
         return ('Failing preparing package: %s' % self._node.get_package_name())
+
 
 class AmbiguationLibs(Exception):
     def __init__(self, kind, package, build_mode):
@@ -35,17 +39,24 @@ class AmbiguationLibs(Exception):
     def __str__(self):
         return "Ambiguation in %s in %s. Mode: %s. Candidates:" % (self._kind, self._package, self._build_mode)
 
+
 class NotFoundInDataset(Exception):
     def __init__(self, msg):
         self._msg = msg
     def __str__(self):
         return "%s" % self._msg
 
+
 class FailThirdParty(Exception):
     def __init__(self, msg):
         self._msg = msg
     def __str__(self):
         return "%s" % self._msg
+
+
+class Found(Exception):
+    pass
+
 
 def prepare_cmakefiles(cmakefiles):
     if not os.path.isdir(cmakefiles):
@@ -109,6 +120,17 @@ alias_priority_name = { 10: 'minimal',
                         20: 'tools',
                         30: 'third_party' }
 alias_priority_name_inverse = {v: k for k, v in alias_priority_name.items()}
+
+def search_fuzzy(data, fuzzy_key, fallback='default'):
+    for key in data:
+        if fnmatch.fnmatch(fuzzy_key, key):
+            return data[key]
+    else:
+        if fallback in data:
+            return data[fallback]
+        else:
+            logging.error("not found 'default' platform or %s" % fuzzy_key)
+            raise Exception("not found '{}'".format(fuzzy_key))
 
 def is_valid(package_name, mask):
     return (mask.find(somask_id) != -1) and (package_name != 'dummy')
@@ -487,30 +509,18 @@ class ThirdParty:
         for targets in self.get_targets():
 
             for target_name in targets:
-
                 target_info = targets[target_name]
-
-                # info is mandatory for each platform
-                # extra os optional
                 if 'info' in target_info:
-                    outputinfo = target_info['info']
-                    if plat in outputinfo:
-                        platform_info = copy.deepcopy( outputinfo[plat] )
-                    elif 'default' in outputinfo:
-                        platform_info = copy.deepcopy( outputinfo['default'] )
-                    else:
-                        platform_info = None
+                    outputinfo = search_fuzzy(target_info['info'], plat)
+                    if outputinfo is not None:
+                        platform_info = copy.deepcopy( outputinfo )
                 else:
                     platform_info = None
 
                 if 'extra' in target_info:
-                    outputinfo_extra = target_info['extra']
-                    if plat in outputinfo_extra:
-                        platform_extra = copy.deepcopy( outputinfo_extra[plat] )
-                    elif 'default' in outputinfo_extra:
-                        platform_extra = copy.deepcopy( outputinfo_extra['default'] )
-                    else:
-                        platform_extra = None
+                    outputinfo_extra = search_fuzzy(target_info['extra'], plat)
+                    if outputinfo_extra is not None:
+                        platform_extra = copy.deepcopy( outputinfo_extra )
                 else:
                     platform_extra = None
 
@@ -555,32 +565,17 @@ class ThirdParty:
             return True
 
     def compiler_iterator(self, plat, compiler_replace_maps):
-        parameters = self.parameters
-        generator = None
-        compilers = None
-        class Found(Exception): pass
-        try:
-            for key in parameters['platforms']:
-                if fnmatch.fnmatch(plat, key):
-                    plat_parms = parameters['platforms'][key]
-                    raise Found()
-            else:
-                if 'default' in parameters['platforms']:
-                    plat_parms = parameters['platforms']['default']
-                    raise Found()
-                else:
-                    logging.error("not found 'default' platform or %s" % plat)
-                    raise Exception("not found 'default' platform or %s" % plat)
-        except Found:
-            try:
-                generator = plat_parms['generator']
-            except KeyError:
-                generator = None
 
-            try:
-                compilers = plat_parms['compiler']
-            except KeyError:
-                compilers = None
+        plat_parms = search_fuzzy(self.parameters['platforms'], plat)
+        try:
+            generator = plat_parms['generator']
+        except KeyError:
+            generator = None
+
+        try:
+            compilers = plat_parms['compiler']
+        except KeyError:
+            compilers = None
 
         # resolve map
         compiler_replace_resolved = {}
@@ -1030,29 +1025,29 @@ class ThirdParty:
                         i += 1
         return condition
 
-    def _get_lib(self, rootdir, file_dll):
+    def _search_library(self, rootdir, special_pattern):
         '''
         3 cases:
             string
             pattern as special string
             list of strings
         '''
-        if file_dll is None:
+        if special_pattern is None:
             logging.warning('Failed searching lib in %s' % rootdir)
             return (False, None)
 
         package = self.get_package_name()
-        if isinstance(file_dll, list):
-            utils.verbose(self.user_parameters, 'Searching list %s' % file_dll)
+        if isinstance(special_pattern, list):
+            utils.verbose(self.user_parameters, 'Searching list %s' % special_pattern)
             valid_ff = None
-            for ff in file_dll:
-                valid, valid_ff = self._get_lib(rootdir, utils.get_norm_path(ff))
+            for ff in special_pattern:
+                valid, valid_ff = self._search_library(rootdir, utils.get_norm_path(ff))
                 if valid:
                     break
             return (valid, valid_ff)
 
-        elif file_dll.startswith('/') and file_dll.endswith('/'):
-            pattern = file_dll[1:-1]
+        elif special_pattern.startswith('/') and special_pattern.endswith('/'):
+            pattern = special_pattern[1:-1]
             utils.verbose(self.user_parameters, 'Searching rootdir %s, pattern %s' % (rootdir, pattern))
             files_found = utils.rec_glob(rootdir, pattern, deep_max=10)
             utils.verbose(self.user_parameters, 'Candidates %s' % files_found)
@@ -1064,28 +1059,34 @@ class ThirdParty:
                 logging.debug(msg)
                 return (False, None)
             else:
-                msg = "Ambiguation in %s. Mode: %s. Candidates:" % (package, build_mode)
+                msg = "Ambiguation in %s" % (package)
                 logging.debug(msg)
                 return (False, None)
         else:
-            pathfull = os.path.join(rootdir, file_dll)
+            pathfull = os.path.join(rootdir, special_pattern)
             utils.verbose(self.user_parameters, 'Checking file %s' % pathfull)
             if os.path.exists(pathfull):
-                return (True, utils.get_norm_path(file_dll))
+                return (True, utils.get_norm_path(special_pattern))
             else:
                 return (False, None)
 
-    def get_lib(self, workbase, dataset, kind, rootdir=None):
+    def search_library(self, workbase, dataset, kind, rootdir=None):
         '''
         Can throw exception
         '''
-        build_mode = os.environ['MODE']
+        build_mode = self.get_prefered_build_mode(prefered[os.environ['MODE']])
         if rootdir is None:
             rootdir = workbase
         utils.verbose(self.user_parameters, 'Searching rootdir %s' % (rootdir))
         if (build_mode.lower() in dataset) and (kind in dataset[build_mode.lower()]):
-            file_dll = dataset[build_mode.lower()][kind]
-            valid, valid_ff = self._get_lib(rootdir, file_dll)
+            special_pattern = dataset[build_mode.lower()][kind]
+            # logging.info('------------------------')
+            # logging.info('rootdir = {}'.format(rootdir))
+            # logging.info('special_pattern = {}'.format(special_pattern))
+            # logging.info('kind = {}'.format(kind))
+            valid, valid_ff = self._search_library(rootdir, special_pattern)
+            # logging.info('valid = {}'.format(valid))
+            # logging.info('valid_ff = {}'.format(valid_ff))
             if valid:
                 return valid_ff
             else:
@@ -1094,66 +1095,55 @@ class ThirdParty:
         else:
             raise NotFoundInDataset("Not found in dataset, searching %s - %s" % (build_mode.lower(), kind))
 
-    def get_lib_basename(self, workbase, dataset, kind, base=False):
-        '''
-        First search in build mode specific
-        Second search in BASE
-        Other case return __not_found__.$kind
-        '''
+    def search_library_noexcept(self, workbase, dataset, kind):
         try:
             try:
-                if not base:
-                    finalpath = self.get_lib(workbase, dataset, kind)
-                    utils.superverbose(self.user_parameters, '[01] path: %s' % finalpath)
-                    return finalpath
-                else:
-                    # undo platform and compiler
-                    # search in base
-                    rootdir = os.path.abspath(os.path.join(workbase, '..' , '..'))
-                    finalpath = os.path.join('..', '..', self.get_lib(workbase, dataset, kind, rootdir))
-                    utils.superverbose(self.user_parameters, '[02] path: %s' % finalpath)
-                    return finalpath
-
+                rootdir = os.path.abspath(workbase)
+                finalpath = self.search_library(workbase, dataset, kind, rootdir)
+                utils.superverbose(self.user_parameters, '[01] path: %s' % finalpath)
+                return finalpath
             except AmbiguationLibs:
-                # try search in BASE
-                if (not base):
-                    finalpath = self.get_lib_basename(workbase, dataset, kind, base=True)
-                    utils.superverbose(self.user_parameters, '[03] path: %s' % finalpath)
-                    return finalpath
-                else:
-                    finalpath = '%s.%s' % (magic_invalid_file, kind)
-                    utils.superverbose(self.user_parameters, '[04] path: %s' % finalpath)
-                    return finalpath
+                finalpath = '%s.%s' % (magic_invalid_file, kind)
+                utils.superverbose(self.user_parameters, '[02] path: %s' % finalpath)
+                return finalpath
         except NotFoundInDataset:
-            # exception -> return invalid file
             finalpath = '%s.%s' % (magic_invalid_file, kind)
-            utils.superverbose(self.user_parameters, '[05] path: %s' % finalpath)
+            utils.superverbose(self.user_parameters, '[03] path: %s' % finalpath)
             return finalpath
 
-    def check_libs_exists(self, workbase, superpackage, package, dataset, kindlibs, build_modes=None):
+    def check_parts_exists(self, workbase, package, target, dataset, kindlibs, build_modes=None):
+        '''
+        Asegura que todas las partes del target existen, devuelve True o False si todas las partes existen
+
+        workbase: directorio de instalacion base 
+        package: nombre del paquete
+        target: nombre del target
+        dataset: es la estructura que contiene las estrategias de busqueda
+            {"debug": {"part1": ["*.dll", "*d.dll"]}, "release": {"part1": ["*_release.dll"]}}
+        kindlibs: tupla de partes a verificar, cada tupla representa (tipo, obligatoriedad)
+        build_modes: restringuir la busqueda a ciertos build modes
+        '''
+
         all_ok = True
         if build_modes is None:
-            # build_modes = self.get_build_modes()
-            # TODO: WTF
-            build_modes = [ os.environ['MODE'] ]
+            build_modes = self.get_build_modes()
         for build_mode in build_modes:
             for kind, must in kindlibs:
                 try:
-                    file_dll = self.get_lib_basename(workbase, dataset, kind)
-                    dll_path = os.path.join(workbase, file_dll)
-                    if not os.path.exists(dll_path):
+                    part_fullpath = os.path.join(workbase, self.search_library_noexcept(workbase, dataset, kind))
+                    if not os.path.exists(part_fullpath):
                         if must:
-                            logging.error("[%s] Don't found %s in %s. Mode: %s. Path: %s" % (superpackage, kind, package, build_mode, dll_path))
+                            logging.error("[%s] Don't found %s in %s. Mode: %s. Path: %s" % (package, kind, target, build_mode, part_fullpath))
                             all_ok = False
                         else:
-                            msg = "[%s] Don't found %s in %s. Mode: %s. Path: %s" % (superpackage, kind, package, build_mode, dll_path)
+                            msg = "[%s] Don't found %s in %s. Mode: %s. Path: %s" % (package, kind, target, build_mode, part_fullpath)
                             if build_mode != 'Release':
                                 logging.warning(msg)
                             else:
                                 logging.debug(msg)
                 except NotFoundInDataset as e:
                     if must:
-                        logging.error("[ERROR] [NOT FOUND] [%s] %s" % (superpackage, e))
+                        logging.error("[ERROR] [NOT FOUND] [%s] %s" % (package, e))
                         all_ok = False
         return all_ok
 
@@ -1296,9 +1286,9 @@ cmaki_package_version_check()
 
                                 executable = platform_info['executable']
                                 workbase = os.path.join(oldcwd, workspace, base_folder, plat)
-                                if not self.check_libs_exists(workbase, superpackage, package, executable, [('bin', True)], build_modes=['Release']):
+                                if not self.check_parts_exists(workbase, superpackage, package, executable, [('bin', True)], build_modes=['Release']):
                                     errors += 1
-                                release_bin = self.get_lib_basename(workbase, executable, 'bin')
+                                release_bin = self.search_library_noexcept(workbase, executable, 'bin')
 
                                 for suffix in ['', '_EXECUTABLE']:
                                     if 'use_run_with_libs' in platform_info:
@@ -1318,32 +1308,27 @@ cmaki_package_version_check()
 
                                 if plat.startswith('win'):
                                     workbase = os.path.join(oldcwd, workspace, base_folder, plat)
-                                    if not self.check_libs_exists(workbase, superpackage, package, dynamic, [('dll', True), ('lib', lib_provided), ('pdb', False)]):
+                                    if not self.check_parts_exists(workbase, superpackage, package, dynamic, [('dll', True), ('lib', lib_provided), ('pdb', False)]):
                                         errors += 1
 
-                                    debug_dll = self.get_lib_basename(workbase, dynamic, 'dll')
-                                    release_dll = self.get_lib_basename(workbase, dynamic, 'dll')
-                                    relwithdebinfo_dll = self.get_lib_basename(workbase, dynamic, 'dll')
-                                    minsizerel_dll = self.get_lib_basename(workbase, dynamic, 'dll')
+                                    debug_dll = self.search_library_noexcept(workbase, dynamic, 'dll')
+                                    release_dll = self.search_library_noexcept(workbase, dynamic, 'dll')
+                                    relwithdebinfo_dll = self.search_library_noexcept(workbase, dynamic, 'dll')
+                                    minsizerel_dll = self.search_library_noexcept(workbase, dynamic, 'dll')
 
-                                    debug_lib = self.get_lib_basename(workbase, dynamic, 'lib')
-                                    release_lib = self.get_lib_basename(workbase, dynamic, 'lib')
-                                    relwithdebinfo_lib = self.get_lib_basename(workbase, dynamic, 'lib')
-                                    minsizerel_lib = self.get_lib_basename(workbase, dynamic, 'lib')
+                                    debug_lib = self.search_library_noexcept(workbase, dynamic, 'lib')
+                                    release_lib = self.search_library_noexcept(workbase, dynamic, 'lib')
+                                    relwithdebinfo_lib = self.search_library_noexcept(workbase, dynamic, 'lib')
+                                    minsizerel_lib = self.search_library_noexcept(workbase, dynamic, 'lib')
 
                                     try:
-                                        # pdb is optional
-                                        relwithdebinfo_pdb = self.get_lib(workbase, dynamic, 'pdb')
-                                    except KeyError:
-                                        relwithdebinfo_pdb = None
+                                        relwithdebinfo_pdb = self.search_library(workbase, dynamic, 'pdb')
                                     except Exception as e:
                                         logging.debug('exception searching lib: %s' % e)
                                         relwithdebinfo_pdb = None
 
                                     try:
-                                        debug_pdb = self.get_lib(workbase, dynamic, 'pdb')
-                                    except KeyError:
-                                        debug_pdb = None
+                                        debug_pdb = self.search_library(workbase, dynamic, 'pdb')
                                     except Exception as e:
                                         logging.debug('exception searching lib: %s' % e)
                                         debug_pdb = None
@@ -1381,13 +1366,13 @@ cmaki_package_version_check()
                                 else:
 
                                     workbase = os.path.join(oldcwd, workspace, base_folder, plat)
-                                    if not self.check_libs_exists(workbase, superpackage, package, dynamic, [('so', True)]):
+                                    if not self.check_parts_exists(workbase, superpackage, package, dynamic, [('so', True)]):
                                         errors += 1
 
-                                    debug_so = self.get_lib_basename(workbase, dynamic, 'so')
-                                    release_so = self.get_lib_basename(workbase, dynamic, 'so')
-                                    relwithdebinfo_so = self.get_lib_basename(workbase, dynamic, 'so')
-                                    minsizerel_so = self.get_lib_basename(workbase, dynamic, 'so')
+                                    debug_so = self.search_library_noexcept(workbase, dynamic, 'so')
+                                    release_so = self.search_library_noexcept(workbase, dynamic, 'so')
+                                    relwithdebinfo_so = self.search_library_noexcept(workbase, dynamic, 'so')
+                                    minsizerel_so = self.search_library_noexcept(workbase, dynamic, 'so')
 
                                     try:
                                         debug_so_full = os.path.join(oldcwd, workbase, debug_so)
@@ -1448,13 +1433,13 @@ cmaki_package_version_check()
                                 static = platform_info['static']
 
                                 workbase = os.path.join(oldcwd, workspace, base_folder, plat)
-                                if not self.check_libs_exists(workbase, superpackage, package, static, [('lib', True)]):
+                                if not self.check_parts_exists(workbase, superpackage, package, static, [('lib', True)]):
                                     errors += 1
 
-                                debug_lib = self.get_lib_basename(workbase, static, 'lib')
-                                release_lib = self.get_lib_basename(workbase, static, 'lib')
-                                relwithdebinfo_lib = self.get_lib_basename(workbase, static, 'lib')
-                                minsizerel_lib = self.get_lib_basename(workbase, static, 'lib')
+                                debug_lib = self.search_library_noexcept(workbase, static, 'lib')
+                                release_lib = self.search_library_noexcept(workbase, static, 'lib')
+                                relwithdebinfo_lib = self.search_library_noexcept(workbase, static, 'lib')
+                                minsizerel_lib = self.search_library_noexcept(workbase, static, 'lib')
 
                                 if add_3rdparty_dependencies:
                                     # register target

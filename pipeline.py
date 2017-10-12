@@ -152,8 +152,8 @@ def grep_basename(pattern):
     def process(p):
         for line in p:
             if os.path.basename(line).endswith(pattern):
-                print ("search %s" % pattern)
-                print ("os.path.basename(line) %s" % os.path.basename(line))
+                # print ("search %s" % pattern)
+                # print ("os.path.basename(line) %s" % os.path.basename(line))
                 # TODO: *pat* --> find
                 # *.h ---> endswith
                 # hola* ---> startswith
@@ -181,7 +181,6 @@ def copy(rootdir, folder):
             relfilename = os.path.relpath(line, rootdir)
             destiny = os.path.join(folder, relfilename)
             destiny_dir = os.path.dirname(destiny)
-            print(line)
             if os.path.isfile(line):
                 try:
                     utils.trymkdir(destiny_dir)

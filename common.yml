@@ -159,68 +159,83 @@ library_dynamic_exact: &library_dynamic_exact
                 dll:
                     - ${TARGET}d.dll
                     - bin/${TARGET}d.dll
+                    - Debug/${TARGET}d.dll
                     - dll/${TARGET}d.dll
                     - ${TARGET}_D.dll
                     - bin/${TARGET}_D.dll
+                    - Debug/${TARGET}_D.dll
                     - dll/${TARGET}_D.dll
                     - $TARGET.dll
                     - bin/$TARGET.dll
+                    - Debug/$TARGET.dll
                     - dll/$TARGET.dll
                 lib:
                     - ${TARGET}d.lib
                     - lib/${TARGET}d.lib
                     - bin/${TARGET}d.lib
+                    - Debug/${TARGET}d.lib
                     - dll/${TARGET}d.lib
                     - ${TARGET}_D.lib
                     - lib/${TARGET}_D.lib
                     - bin/${TARGET}_D.lib
+                    - Debug/${TARGET}_D.lib
                     - dll/${TARGET}_D.lib
                     - $TARGET.lib
                     - lib/$TARGET.lib
                     - bin/$TARGET.lib
+                    - Debug/$TARGET.lib
                     - dll/$TARGET.lib
                 pdb:
                     - ${TARGET}d.pdb
                     - pdb/${TARGET}d.pdb
                     - bin/${TARGET}d.pdb
+                    - Debug/${TARGET}d.pdb
                     - dll/${TARGET}d.pdb
                     - ${TARGET}_D.pdb
                     - pdb/${TARGET}_D.pdb
                     - bin/${TARGET}_D.pdb
+                    - Debug/${TARGET}_D.pdb
                     - dll/${TARGET}_D.pdb
                     - $TARGET.pdb
                     - pdb/$TARGET.pdb
                     - bin/$TARGET.pdb
+                    - Debug/$TARGET.pdb
                     - dll/$TARGET.pdb
             relwithdebinfo:
                 dll:
                     - $TARGET.dll
                     - bin/$TARGET.dll
+                    - RelWithDebInfo/$TARGET.dll
                     - dll/$TARGET.dll
                 lib:
                     - $TARGET.lib
                     - lib/$TARGET.lib
                     - bin/$TARGET.lib
+                    - RelWithDebInfo/$TARGET.lib
                     - dll/$TARGET.lib
                 pdb:
                     - $TARGET.pdb
                     - pdb/$TARGET.pdb
                     - bin/$TARGET.pdb
+                    - RelWithDebInfo/$TARGET.pdb
                     - dll/$TARGET.pdb
             release:
                 dll:
                     - $TARGET.dll
                     - bin/$TARGET.dll
+                    - Release/$TARGET.dll
                     - dll/$TARGET.dll
                 lib:
                     - $TARGET.lib
                     - lib/$TARGET.lib
                     - bin/$TARGET.lib
+                    - Release/$TARGET.lib
                     - dll/$TARGET.lib
                 pdb:
                     - $TARGET.pdb
                     - pdb/$TARGET.pdb
                     - bin/$TARGET.pdb
+                    - Release/$TARGET.pdb
                     - dll/$TARGET.pdb
 
     unix: &library_dynamic_exact_unix

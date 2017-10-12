@@ -20,6 +20,7 @@ def search_cmakelib():
                 raise Exception("not found cmaki: {}".format(os.path.abspath(cmakelib_dir)))
     return os.path.abspath(cmakelib_dir)
 
+
 def compilation(node, parameters, compiler_replace_maps):
 
     package = node.get_package_name()
@@ -79,7 +80,6 @@ def compilation(node, parameters, compiler_replace_maps):
                 env_modified['SOURCES'] = os.path.abspath(os.path.join('..', node.get_download_directory()))
                 env_modified['CMAKI_DIR'] = cmakelib_dir
                 env_modified['SELFHOME'] = install_directory
-                # env_modified['CMAKI_INSTALL'] = install_directory
 
                 #################
                 # remove cmake3p of node
@@ -166,7 +166,6 @@ def compilation(node, parameters, compiler_replace_maps):
                 else:
                     for build_script in ['.build.sh', 'build.sh']:
                         if os.path.exists(build_script):
-
                             # show vars
                             node.show_environment_vars(env_modified)
 
@@ -219,3 +218,4 @@ def compilation(node, parameters, compiler_replace_maps):
 
     # finish well
     return True
+
