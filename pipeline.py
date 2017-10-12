@@ -183,9 +183,12 @@ def copy(rootdir, folder):
             destiny_dir = os.path.dirname(destiny)
             print(line)
             if os.path.isfile(line):
-                utils.trymkdir(destiny_dir)
-                shutil.copyfile(line, destiny)
-                yield destiny
+                try:
+                    utils.trymkdir(destiny_dir)
+                    shutil.copyfile(line, destiny)
+                    yield destiny
+                except IOError:
+                    logging.warning('error in copyfile: "%s"' % line)
             else:
                 logging.warning('it does not exist filename: "%s"' % line)
     return process
