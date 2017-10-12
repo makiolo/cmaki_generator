@@ -38,6 +38,15 @@ thirdparty_defaults: &thirdparty_defaults
     depends: null
     source: skip
     packing: true
+    build:
+        |
+            #!/bin/bash
+            CMAKI_INSTALL=$SELFHOME npm install
+    build_windows:
+        |
+            @echo off
+            set CMAKI_INSTALL=%SELFHOME%
+            npm install
     unittest:
         |
             int main() { return 0; }

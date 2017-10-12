@@ -245,7 +245,10 @@ class ThirdParty:
     def get_build_script_content(self):
         parms = self.parameters
         try:
-            return parms['build']
+            if not utils.is_windows():
+                return parms['build']
+            else:
+                return parms['build_windows']
         except KeyError:
             # default value
             return None
