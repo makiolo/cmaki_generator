@@ -1075,7 +1075,7 @@ class ThirdParty:
 
     def search_library(self, workbase, dataset, kind, rootdir=None):
         '''
-        Can throw exception
+        can throw exception
         '''
         build_mode = self.get_prefered_build_mode(prefered[os.environ['MODE']])
         if rootdir is None:
@@ -1083,13 +1083,7 @@ class ThirdParty:
         utils.verbose(self.user_parameters, 'Searching rootdir %s' % (rootdir))
         if (build_mode.lower() in dataset) and (kind in dataset[build_mode.lower()]):
             special_pattern = dataset[build_mode.lower()][kind]
-            # logging.info('------------------------')
-            # logging.info('rootdir = {}'.format(rootdir))
-            # logging.info('special_pattern = {}'.format(special_pattern))
-            # logging.info('kind = {}'.format(kind))
             valid, valid_ff = self._search_library(rootdir, special_pattern)
-            # logging.info('valid = {}'.format(valid))
-            # logging.info('valid_ff = {}'.format(valid_ff))
             if valid:
                 return valid_ff
             else:
@@ -1168,30 +1162,10 @@ class ThirdParty:
             build_modes = self.get_build_modes()
             parameters = self.parameters
             version_compatible = self.get_version_compatible()
-
-            # for plat in platforms:
-            #     for compiler_c, compiler_cpp, _, ext_sta, ext_dyn, _, _ in self.compiler_iterator(plat, compiler_replace_maps):
-            #         workspace = self.get_workspace(plat)
-            #         base_folder = self.get_base_folder()
-            #         if 'common_factor' in parameters:
-            #             common_factor = parameters['common_factor']
-            #             prefered_build_mode = self.get_prefered_build_mode(prefered['Release'])
-            #             for d in common_factor:
-            #                 for build_mode in build_modes:
-            #                     basename_compiler_cpp = os.path.basename(compiler_cpp)
-            #                     build_depend_folder = os.path.join(oldcwd, workspace, base_folder, plat, basename_compiler_cpp, build_mode, d)
-            #                     if build_mode == prefered_build_mode:
-            #                         # Move from prefered build mode (release) to common folder
-            #                         common_folder = os.path.join(oldcwd, workspace, base_folder, d)
-            #                         if os.path.exists(build_depend_folder):
-            #                             # utils.move_folder_recursive(build_depend_folder, common_folder)
-            #                             utils.copy_folder_recursive(build_depend_folder, common_folder)
-            #                     utils.tryremove_dir(build_depend_folder)
-
             with open('%s-config.cmake' % superpackage_lower, 'wt') as f:
                 f.write('''CMAKE_POLICY(PUSH)
-CMAKE_POLICY(VERSION 2.8)
-cmake_minimum_required(VERSION 2.8)
+CMAKE_POLICY(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0011 NEW)
                 ''')
 
@@ -1215,9 +1189,8 @@ include(${_MY_DIR}/${CMAKI_PLATFORM}.cmake)
 
             with open('%s-config-version.cmake' % superpackage_lower, 'wt') as f:
                 f.write('''\
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 cmake_policy(SET CMP0011 NEW)
-
 include(${CMAKI_PATH}/facts/facts.cmake)
 cmaki_package_version_check()
                 ''')
@@ -1461,7 +1434,6 @@ cmaki_package_version_check()
                                 f.write(')\n')
 
                             if install_3rdparty_dependencies and (package != 'dummy'):
-                                # install 3rd party
                                 f.write('cmaki_install_3rdparty(%s)\n' % package_lower)
                             f.write('\n')
 
