@@ -2,6 +2,9 @@
   "name": "cmaki_generator",
   "version": "1.0.0",
   "description": "generator of artifacts",
+  "scripts": {
+    "docker": "curl -s https://raw.githubusercontent.com/makiolo/cmaki_scripts/master/docker.sh | bash"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/makiolo/cmaki_generator.git"
