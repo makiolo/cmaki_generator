@@ -4,7 +4,7 @@
         - ./entityx/*.h include/ RECURSIVE
     source: https://github.com/alecthomas/entityx.git
     cmake_definitions:
-        - -DENTITYX_BUILD_SHARED=0
+        - ENTITYX_BUILD_SHARED=0
     targets:
         - entityx:
             info:
