@@ -68,6 +68,18 @@ def prepare_cmakefiles(cmakefiles):
         utils.move_folder_recursive(cmakefiles_temp, cmakefiles)
         utils.tryremove_dir(cmakefiles_temp)
 
+def get_identifier(mode = 'ALL'):
+    env = os.environ.copy()
+    cmaki_install = env['CMAKI_INSTALL']
+    if utils.is_windows():
+        script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.exe')
+    else:
+        script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.sh')
+    if not os.path.isfile(script_identifier):
+        raise Exception("there is no {} script".format(script_identifier))
+    env['CMAKI_INFO'] = 'ALL'
+    return list(utils.get_stdout(script_identifier, env=env))[0]
+
 #
 # INMUTABLE GLOBALS
 #
@@ -590,13 +602,7 @@ class ThirdParty:
         compiler_replace_resolved['${ARCH}'] = archs[plat]
 
         # get compiler info
-        env = os.environ.copy()
-        cmaki_install = env['CMAKI_INSTALL']
-        env['CMAKI_INFO'] = 'COMPILER'
-        if utils.is_windows():
-            compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.exe'), env=env))[0]
-        else:
-            compiler = list(utils.get_stdout(os.path.join(cmaki_install, 'cmaki_identifier.sh'), env=env))[0]
+        compiler = get_identifier('COMPILER')
 
         ext_dyn = plat_parms['ext_dyn']
         ext_sta = plat_parms['ext_sta']

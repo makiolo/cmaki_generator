@@ -6,6 +6,7 @@ from itertools import product
 from third_party import platforms
 from third_party import CMAKELIB_URL
 from third_party import HTTP_URL_NPSERVER
+from third_party import get_identifier
 
 def search_cmakelib():
     # compilando desde cmaki_generator
@@ -143,7 +144,7 @@ def compilation(node, parameters, compiler_replace_maps):
                 # end definitions cmake
 
                 cmake_prefix = node.get_cmake_prefix()
-                cmake_configure = 'cmake %s %s -DCMAKE_MODULE_PATH=%s -DCMAKI_PATH=%s -DCMAKE_BUILD_TYPE=%s -DAVOID_USE_HTTP=1 -DINSTALL_SIMPLE=1 -DCMAKE_PREFIX_PATH=%s -DPACKAGE=%s -DPACKAGE_UPPER=%s -DPACKAGE_VERSION=%s -DPACKAGE_BUILD_DIRECTORY=%s -DARTIFACTS_PATH=%s %s' % (generator_extra, cmake_prefix, cmakelib_dir, cmakelib_dir, build_mode, cmake_prefix_path, package, package_upper, version, build_directory, artifacts_dir, definitions_extra)
+                cmake_configure = 'cmake %s %s -DCMAKE_MODULE_PATH=%s -DCMAKI_PATH=%s -DCMAKE_BUILD_TYPE=%s -DAVOID_USE_HTTP=1 -DINSTALL_SIMPLE=1 -DCMAKE_PREFIX_PATH=%s -DPACKAGE=%s -DPACKAGE_UPPER=%s -DPACKAGE_VERSION=%s -DPACKAGE_BUILD_DIRECTORY=%s -DARTIFACTS_PATH=%s -DCMAKI_COMPILER=%s -DCMAKI_PLATFORM=%s %s' % (generator_extra, cmake_prefix, cmakelib_dir, cmakelib_dir, build_mode, cmake_prefix_path, package, package_upper, version, build_directory, artifacts_dir, get_identifier('COMPILER'), get_identifier('ALL'), definitions_extra)
 
                 target = node.get_cmake_target()
                 if target is not None:
