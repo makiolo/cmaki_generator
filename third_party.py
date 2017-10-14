@@ -77,7 +77,7 @@ def get_identifier(mode = 'ALL'):
         script_identifier = os.path.join(cmaki_install, 'cmaki_identifier.sh')
     if not os.path.isfile(script_identifier):
         raise Exception("there is no {} script".format(script_identifier))
-    env['CMAKI_INFO'] = 'ALL'
+    env['CMAKI_INFO'] = mode
     return list(utils.get_stdout(script_identifier, env=env))[0]
 
 #
