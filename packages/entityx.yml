@@ -2,11 +2,12 @@
     <<: *thirdparty_defaults
     post_install:
         - ./entityx/*.h include/ RECURSIVE
+    cmake_target: null
     source: https://github.com/alecthomas/entityx.git
     cmake_definitions:
         - ENTITYX_BUILD_SHARED=0
     targets:
         - entityx:
             info:
-                <<: *library_dynamic_exact
+                <<: *library_static_exact
 
