@@ -160,18 +160,25 @@ def compilation(node, parameters, compiler_replace_maps):
                 if utils.is_windows():
                     for build_script in ['.build.cmd', 'build.cmd']:
                         if os.path.exists(build_script):
+                            logging.warning('exists 1 {}'.format(build_script))
                             # execute manual build script
                             node.ret += abs(utils.safe_system('%s %s %s %s %s %s' % (build_script, install_directory, package, version, plat, build_mode), env=env_modified))
                             executed_build_script = True
                 else:
                     for build_script in ['.build.sh', 'build.sh']:
                         if os.path.exists(build_script):
+                            logging.warning('exists 2 {}'.format(build_script))
+                            with open(build_script, 'r') as f:
+                                content = f.read()
+                            logging.warning(content)
+
                             # show vars
                             node.show_environment_vars(env_modified)
 
                             node.ret += abs(utils.safe_system('chmod +x %s && ./%s %s %s %s %s %s' % (build_script, build_script, install_directory, package, version, plat, build_mode), env=env_modified))
                             executed_build_script = True
 
+                logging.warning(executed_build_script)
                 if not executed_build_script:
                     logging.debug('configure command: %s' % cmake_configure)
 
