@@ -411,6 +411,11 @@ usage:""")
         sys.stderr.write('You can use this in parameter --toolchain=%s\n' % parameters.toolchain)
         sys.exit(0)
 
+    if utils.is_windows():
+        logging.info('-- detected windows')
+    else:
+        logging.info('-- detected linux or mingw')
+
     # fetch remotes yaml
     # i = 0
     # for package in parameters.packages:
