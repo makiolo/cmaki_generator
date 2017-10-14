@@ -1,0 +1,72 @@
+- haxx-libcurl:
+    <<: *thirdparty_defaults
+    version: 7.56.0.0
+    source: https://curl.haxx.se/download/curl-7.56.0.tar.gz
+    uncompress_strip: curl-7.56.0
+    cmake_definitions:
+        - CMAKE_POSITION_INDEPENDENT_CODE=ON
+        - BUILD_CURL_EXE=OFF
+        - BUILD_CURL_TESTS=OFF
+        - CMAKE_USE_OPENSSL=OFF
+        - ENABLE_IPV6=OFF
+    unittest:
+        |
+            #include <curl/curl.h>
+            int main()
+            {
+                CURL *curl;
+                curl = curl_easy_init();
+                return 0;
+            }
+    references:
+        library_dynamic: &library_dynamic_curl
+            common: &library_dynamic_common_curl
+                include:
+                    - $PLATFORM/include
+                    - include
+            windows: &library_dynamic_windows_curl
+                <<: *library_dynamic_common_curl
+                dynamic:
+                    debug:
+                        dll:
+                            lib$TARGET.dll
+                        lib:
+                            lib$TARGET_imp.lib
+                        pdb:
+                            lib$TARGET.pdb
+                    relwithdebinfo:
+                        dll:
+                            lib$TARGET.dll
+                        lib:
+                            lib$TARGET_imp.lib
+                        pdb:
+                            lib$TARGET.pdb
+                    release:
+                        dll:
+                            lib$TARGET.dll
+                        lib:
+                            lib$TARGET_imp.lib
+                        pdb:
+                            null
+            
+            unix: &library_dynamic_unix_curl
+                <<: *library_dynamic_common_curl
+                dynamic:
+                    debug:
+                        so:
+                            lib/lib$TARGET.so
+                    relwithdebinfo:
+                        so:
+                            lib/lib$TARGET.so
+                    release:
+                        so:
+                            lib/lib$TARGET.so
+            windows_*-msvc_*-*:
+                <<: *library_dynamic_windows_curl
+            default:
+                <<: *library_dynamic_unix_curl
+    targets:
+        - curl:
+            info:
+                <<: *library_dynamic_curl
+
