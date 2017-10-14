@@ -1074,7 +1074,7 @@ class ThirdParty:
                     part_fullpath = os.path.join(workbase, self.search_library_noexcept(workbase, dataset, kind))
                     if not os.path.exists(part_fullpath):
                         if must:
-                            logging.error("[%s] Don't found %s in %s. Mode: %s. Path: %s" % (package, kind, target, build_mode, part_fullpath))
+                            logging.error("[%s] Don't found %s in %s. Mode: %s. Path: %s. Dataset: %s" % (package, kind, target, build_mode, part_fullpath, dataset))
                             all_ok = False
                         else:
                             msg = "[%s] Don't found %s in %s. Mode: %s. Path: %s" % (package, kind, target, build_mode, part_fullpath)
