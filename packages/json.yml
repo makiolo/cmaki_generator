@@ -4,7 +4,7 @@
     mode: dr
     version_manager: git
     post_install:
-        - ./src/*.h include
+        - ./src/*.h* include
     cmake_target: null
     mode: dr
     source: https://github.com/nlohmann/json.git

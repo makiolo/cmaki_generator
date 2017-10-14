@@ -160,17 +160,14 @@ def compilation(node, parameters, compiler_replace_maps):
                 if utils.is_windows():
                     for build_script in ['.build.cmd', 'build.cmd']:
                         if os.path.exists(build_script):
-                            logging.warning('exists 1 {}'.format(build_script))
                             # execute manual build script
                             node.ret += abs(utils.safe_system('%s %s %s %s %s %s' % (build_script, install_directory, package, version, plat, build_mode), env=env_modified))
                             executed_build_script = True
                 else:
                     for build_script in ['.build.sh', 'build.sh']:
                         if os.path.exists(build_script):
-                            logging.warning('exists 2 {}'.format(build_script))
                             with open(build_script, 'r') as f:
                                 content = f.read()
-                            logging.warning(content)
 
                             # show vars
                             node.show_environment_vars(env_modified)
@@ -178,7 +175,6 @@ def compilation(node, parameters, compiler_replace_maps):
                             node.ret += abs(utils.safe_system('chmod +x %s && ./%s %s %s %s %s %s' % (build_script, build_script, install_directory, package, version, plat, build_mode), env=env_modified))
                             executed_build_script = True
 
-                logging.warning(executed_build_script)
                 if not executed_build_script:
                     logging.debug('configure command: %s' % cmake_configure)
 
@@ -212,7 +208,7 @@ def compilation(node, parameters, compiler_replace_maps):
                         p = pipeline.find(source_folder, 99)(p)
                     else:
                         p = pipeline.find(source_folder, 0)(p)
-                    p = pipeline.grep_basename(pattern.replace('*', ''))(p)
+                    p = pipeline.grep_basename(pattern)(p)
                     p = pipeline.copy(source_folder, install_directory_chunk)(p)
                     p = pipeline.debug('copied ')(p)
                     # end

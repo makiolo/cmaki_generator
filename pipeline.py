@@ -150,15 +150,19 @@ def grep(pattern):
 
 def grep_basename(pattern):
     def process(p):
+        p0 = pattern[:1]
+        pL = pattern[-1:]
+        fixed_pattern = pattern.replace('*', '')
         for line in p:
-            if os.path.basename(line).endswith(pattern):
-                # print ("search %s" % pattern)
-                # print ("os.path.basename(line) %s" % os.path.basename(line))
-                # TODO: *pat* --> find
-                # *.h ---> endswith
-                # hola* ---> startswith
-                # TODO: do normalize paths
-                yield line.replace('\\', '/')
+            if(p0 == '*' and pL != '*'):
+                if os.path.basename(line).endswith(fixed_pattern):
+                    yield line.replace('\\', '/')
+            elif(p0 != '*' and pL == '*'):
+                if os.path.basename(line).startswith(fixed_pattern):
+                    yield line.replace('\\', '/')
+            else:
+                if os.path.basename(line).find(fixed_pattern) != -1:
+                    yield line.replace('\\', '/')
     return process
 
 def grep_v(pattern):
@@ -181,15 +185,15 @@ def copy(rootdir, folder):
             relfilename = os.path.relpath(line, rootdir)
             destiny = os.path.join(folder, relfilename)
             destiny_dir = os.path.dirname(destiny)
-            if os.path.isfile(line):
-                try:
-                    utils.trymkdir(destiny_dir)
-                    shutil.copyfile(line, destiny)
-                    yield destiny
-                except IOError:
-                    logging.warning('error in copyfile: "%s"' % line)
-            else:
-                logging.warning('it does not exist filename: "%s"' % line)
+            # if os.path.isfile(line):
+            # try:
+            utils.trymkdir(destiny_dir)
+            shutil.copyfile(line, destiny)
+            yield destiny
+            # except IOError:
+            #     logging.warning('error in copyfile: "%s"' % line)
+            # else:
+            #     logging.warning('it does not exist filename: "%s"' % line)
     return process
 
 def startswith(pattern):
