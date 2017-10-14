@@ -80,6 +80,17 @@ def get_identifier(mode = 'ALL'):
     env['CMAKI_INFO'] = mode
     return list(utils.get_stdout(script_identifier, env=env))[0]
 
+def search_fuzzy(data, fuzzy_key, fallback='default'):
+    for key in data:
+        if fnmatch.fnmatch(fuzzy_key, key):
+            return data[key]
+    else:
+        if fallback in data:
+            return data[fallback]
+        else:
+            logging.error("not found 'default' platform or %s" % fuzzy_key)
+            raise Exception("not found '{}'".format(fuzzy_key))
+
 #
 # INMUTABLE GLOBALS
 #
@@ -110,17 +121,6 @@ alias_priority_name = { 10: 'minimal',
                         30: 'third_party' }
 alias_priority_name_inverse = {v: k for k, v in alias_priority_name.items()}
 
-def search_fuzzy(data, fuzzy_key, fallback='default'):
-    for key in data:
-        if fnmatch.fnmatch(fuzzy_key, key):
-            return data[key]
-    else:
-        if fallback in data:
-            return data[fallback]
-        else:
-            logging.error("not found 'default' platform or %s" % fuzzy_key)
-            raise Exception("not found '{}'".format(fuzzy_key))
-
 def is_valid(package_name, mask):
     return (mask.find(somask_id) != -1) and (package_name != 'dummy')
 
@@ -136,6 +136,7 @@ def is_blacklisted(blacklist_file, no_blacklist, package_name):
     if blacklisted and (package_name in no_blacklist):
         blacklisted = False
     return blacklisted
+
 
 class ThirdParty:
     def __init__(self, user_parameters, name, parameters):
@@ -359,18 +360,6 @@ class ThirdParty:
         except KeyError:
             return priority_default
 
-    def has_version_compatible(self):
-        return 'version_compatible' in self.parameters
-
-    def get_version_compatible(self):
-        parms = self.parameters
-        try:
-            # comvert X in x
-            return str(parms['version_compatible']).lower()
-        except KeyError:
-            # default value
-            return self.get_version()
-
     def is_packing(self):
         parms = self.parameters
         try:
@@ -464,14 +453,6 @@ class ThirdParty:
             # default value
             return True
 
-    def is_toolchain(self):
-        parms = self.parameters
-        try:
-            return parms['is_toolchain']
-        except KeyError:
-            # default value
-            return False
-
     def get_unittest(self):
         parms = self.parameters
         try:
@@ -495,7 +476,6 @@ class ThirdParty:
         '''
         TODO: create new class "target"
         '''
-
         superpackage = self.get_package_name_norm()
 
         for targets in self.get_targets():
@@ -539,7 +519,6 @@ class ThirdParty:
 
                 yield (target_name, platform_info)
 
-    # true if have any static target
     def have_any_in_target(self, plat, key, compiler_replace_maps):
         any_static = False
         for compiler_c, compiler_cpp, _, ext_sta, ext_dyn, _, _ in self.compiler_iterator(plat, compiler_replace_maps):
@@ -736,10 +715,7 @@ class ThirdParty:
         utils.trymkdir(to_package)
         with utils.working_directory(to_package):
             basedir = os.path.abspath('..')
-            if not self.is_toolchain():
-                compiler_replace_maps['$%s_BASE' % package_norm] = os.path.join(basedir, self.get_workspace('$PLATFORM'), self.get_base_folder())
-            else:
-                compiler_replace_maps['$%s_BASE' % package_norm] = self.user_parameters.toolchain
+            compiler_replace_maps['$%s_BASE' % package_norm] = os.path.join(basedir, self.get_workspace('$PLATFORM'), self.get_base_folder())
 
     def generate_scripts_headers(self, compiler_replace_maps):
         package = self.get_package_name()
@@ -750,54 +726,40 @@ class ThirdParty:
         with utils.working_directory(to_package):
             basedir = os.path.abspath('..')
 
-            if not self.is_toolchain():
+            # generate find.cmake
+            build_directory = self.get_build_directory(r"${GLOBAL_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
+            with open('find.cmake', 'wt') as f:
+                f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
+                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
+                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/${GLOBAL_PLATFORM}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
+                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s\" %s_BUILD)\n" % (build_directory, package_norm))
+                f.write("SET(%s_INCLUDE ${%s_INCLUDE} CACHE STRING \"Include dir %s\" FORCE)\n" % (package_norm, package_norm, package))
+                f.write("SET(%s_LIBDIR ${%s_LIBDIR} CACHE STRING \"Libs dir %s\" FORCE)\n" % (package_norm, package_norm, package))
+                f.write("SET(%s_BUILD ${%s_BUILD} CACHE STRING \"Build dir %s\" FORCE)\n" % (package_norm, package_norm, package))
 
-                # generate find.cmake
-                build_directory = self.get_build_directory(r"${GLOBAL_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
-                with open('find.cmake', 'wt') as f:
-                    f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
-                    f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
-                    f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/${GLOBAL_PLATFORM}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
-                    f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s\" %s_BUILD)\n" % (build_directory, package_norm))
-                    f.write("SET(%s_INCLUDE ${%s_INCLUDE} CACHE STRING \"Include dir %s\" FORCE)\n" % (package_norm, package_norm, package))
-                    f.write("SET(%s_LIBDIR ${%s_LIBDIR} CACHE STRING \"Libs dir %s\" FORCE)\n" % (package_norm, package_norm, package))
-                    f.write("SET(%s_BUILD ${%s_BUILD} CACHE STRING \"Build dir %s\" FORCE)\n" % (package_norm, package_norm, package))
-
-                # genereate find.script / cmd
-                if utils.is_windows():
-                    build_directory = self.get_build_directory("%PLATFORM%", "%BUILD_MODE%")
-                    with open('find.cmd', 'wt') as f:
-                        f.write("set %s_VERSION=%s\n" % (package_norm, version))
-                        f.write("set %s_HOME=%s\%s-%s-%%PLATFORM%%\%s-%s\%%PLATFORM%%\n" % (package_norm, basedir, package, version, package, version))
-                        f.write("set %s_BASE=%s\%s-%s-%%PLATFORM%%\%s-%s\n" % (package_norm, basedir, package, version, package, version))
-                        f.write("set SELFHOME=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\%%PLATFORM%%\n" % (basedir))
-                        f.write("set SELFBASE=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\n" % (basedir))
-                        f.write("set %s_BUILD=%s\%s\n" % (package_norm, basedir, build_directory))
-                        f.write(r"md %SELFHOME%")
-                        f.write("\n")
-                else:
-                    build_directory = self.get_build_directory("${PLATFORM}", "${BUILD_MODE}")
-                    with open('find.script', 'wt') as f:
-                        f.write("#!/bin/bash\n")
-                        f.write("%s_VERSION=%s\n" % (package_norm, version))
-                        f.write("%s_HOME=%s/%s-%s-$PLATFORM/%s-%s/$PLATFORM\n" % (package_norm, basedir, package, version, package, version))
-                        f.write("%s_BASE=%s/%s-%s-$PLATFORM/%s-%s\n" % (package_norm, basedir, package, version, package, version))
-                        f.write("SELFHOME=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION/$PLATFORM\n" % (basedir))
-                        f.write("SELFBASE=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION\n" % (basedir))
-                        f.write("%s_BUILD=%s/%s\n" % (package_norm, basedir, build_directory))
-                        f.write("mkdir -p $SELFHOME\n")
+            # genereate find.script / cmd
+            if utils.is_windows():
+                build_directory = self.get_build_directory("%PLATFORM%", "%BUILD_MODE%")
+                with open('find.cmd', 'wt') as f:
+                    f.write("set %s_VERSION=%s\n" % (package_norm, version))
+                    f.write("set %s_HOME=%s\%s-%s-%%PLATFORM%%\%s-%s\%%PLATFORM%%\n" % (package_norm, basedir, package, version, package, version))
+                    f.write("set %s_BASE=%s\%s-%s-%%PLATFORM%%\%s-%s\n" % (package_norm, basedir, package, version, package, version))
+                    f.write("set SELFHOME=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\%%PLATFORM%%\n" % (basedir))
+                    f.write("set SELFBASE=%s\%%PACKAGE%%-%%VERSION%%-%%PLATFORM%%\%%PACKAGE%%-%%VERSION%%\n" % (basedir))
+                    f.write("set %s_BUILD=%s\%s\n" % (package_norm, basedir, build_directory))
+                    f.write(r"md %SELFHOME%")
+                    f.write("\n")
             else:
-                if utils.is_windows():
-                    logging.debug('ERROR: Windows dont have toolchain.')
-                else:
-                    with open('find.script', 'wt') as f:
-                        f.write("#!/bin/bash\n")
-                        f.write("%s_VERSION=%s\n" % (package_norm, version))
-                        f.write("%s_HOME=%s\n" % (package_norm, self.user_parameters.toolchain))
-                        f.write("%s_BASE=%s\n" % (package_norm, self.user_parameters.toolchain))
-                        f.write("SELFHOME=%s\n" % (self.user_parameters.toolchain))
-                        f.write("SELFBASE=%s\n" % (self.user_parameters.toolchain))
-                        f.write("mkdir -p $SELFHOME\n")
+                build_directory = self.get_build_directory("${PLATFORM}", "${BUILD_MODE}")
+                with open('find.script', 'wt') as f:
+                    f.write("#!/bin/bash\n")
+                    f.write("%s_VERSION=%s\n" % (package_norm, version))
+                    f.write("%s_HOME=%s/%s-%s-$PLATFORM/%s-%s/$PLATFORM\n" % (package_norm, basedir, package, version, package, version))
+                    f.write("%s_BASE=%s/%s-%s-$PLATFORM/%s-%s\n" % (package_norm, basedir, package, version, package, version))
+                    f.write("SELFHOME=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION/$PLATFORM\n" % (basedir))
+                    f.write("SELFBASE=%s/$PACKAGE-$VERSION-$PLATFORM/$PACKAGE-$VERSION\n" % (basedir))
+                    f.write("%s_BUILD=%s/%s\n" % (package_norm, basedir, build_directory))
+                    f.write("mkdir -p $SELFHOME\n")
 
     def remove_cmakefiles(self):
         utils.tryremove('CMakeCache.txt')
@@ -830,10 +792,7 @@ class ThirdParty:
         utils.trymkdir(thirdparty_path)
         with utils.working_directory(thirdparty_path):
             with open('%s.cmake' % package, 'wt') as f:
-                if not self.has_version_compatible():
-                    f.write('SET(%s_REQUIRED_VERSION %s EXACT)\n' % (package_norm_upper, version))
-                else:
-                    f.write('SET(%s_REQUIRED_VERSION %s)\n' % (package_norm_upper, version))
+                f.write('SET(%s_REQUIRED_VERSION %s EXACT)\n' % (package_norm_upper, version))
 
     def _smart_uncompress(self, position, package_file_abs, uncompress_directory, destiny_directory, compiler_replace_maps):
         uncompress = self.get_uncompress(position)
@@ -1146,7 +1105,6 @@ class ThirdParty:
             superpackage_upper = superpackage.upper()
             build_modes = self.get_build_modes()
             parameters = self.parameters
-            version_compatible = self.get_version_compatible()
             with open('%s-config.cmake' % superpackage_lower, 'wt') as f:
                 f.write('''CMAKE_POLICY(PUSH)
 CMAKE_POLICY(VERSION 3.0)
@@ -1507,7 +1465,4 @@ PLATFORM=%s
 
     def safe_system(self, cmd, compiler_replace_maps, log=False):
         return utils.safe_system(cmd, env=self.get_first_environment(compiler_replace_maps), log=log)
-
-    def __repr__(self):
-        return "%s - %s" % (self.name, self.parameters)
 

@@ -71,11 +71,7 @@ def packing(node, parameters, compiler_replace_maps):
                 utils.safe_system('del /s *.ilk')
                 utils.safe_system('del /s *.exp')
 
-            if not node.is_toolchain() or (parameters.toolchain is None):
-                source_folder = node.get_base_folder()
-            else:
-                source_folder = parameters.toolchain
-
+            source_folder = node.get_base_folder()
             prefix_package = os.path.join(parameters.prefix, '%s.tar.gz' % workspace)
             prefix_package_cmake = os.path.join(parameters.prefix, '%s-cmake.tar.gz' % workspace)
             prefix_package_md5 = os.path.join(output_3rdparty, '%s.md5' % workspace)
@@ -83,15 +79,6 @@ def packing(node, parameters, compiler_replace_maps):
             logging.info('generating md5file %s' % prefix_package_md5)
 
             # packing install
-            # if utils.is_windows():
-            #     gen_targz = "%star zcvf %s %s" % (precmd, prefix_package, source_folder)
-            # elif sys.platform.startswith("linux"):
-            #     # OJO: excluir el prefix del empaquetado, (los paquetes se guardan dentro del toolchain)
-            #     gen_targz = "%star zcvf %s %s --exclude '%s/*'" % (precmd, prefix_package, source_folder, parameters.prefix)
-            # else:
-            #     gen_targz = "%star zcvf %s %s" % (precmd, prefix_package, source_folder)
-
-            # no need exclude
             gen_targz = "%star zcvf %s %s" % (precmd, prefix_package, source_folder)
 
             node.ret += abs( node.safe_system(gen_targz, compiler_replace_maps, log=parameters.verbose) )

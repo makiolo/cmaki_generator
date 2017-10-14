@@ -465,10 +465,6 @@ usage:""")
         # define variables for unused projects
         package = node.get_package_name()
 
-        # generate include scripts in toolchain
-        if node.is_toolchain():
-            node.generate_scripts_headers(compiler_replace_maps)
-
         # fill compiler_replace_maps
         node.apply_replace_maps(compiler_replace_maps)
 
