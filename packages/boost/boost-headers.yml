@@ -2,7 +2,7 @@
     <<: *thirdparty_defaults
     version: 1.65.0.0
     mode: dr
-    source: http://downloads.sourceforge.net/project/boost/boost/1.65.0/boost_1_65_0.tar.bz2
+    source: $HTTP_URL_NPSERVER/boost_1_65_0.tar.bz2
     cmake_definitions:
         - BASENAME_STRIP=boost_1_65_0
         - BOOST_INSTALL_HEADERS=1
@@ -10,12 +10,6 @@
         - ../boost-headers/CMakeLists.txt .
     references:
         definitions_boost_headers: &definitions_boost_headers
-            win32:
-                definitions:
-                    - -DBOOST_ALL_NO_LIB
-            win64:
-                definitions:
-                    - -DBOOST_ALL_NO_LIB
             default:
                 definitions:
                     - -DBOOST_ALL_NO_LIB
