@@ -330,35 +330,58 @@ library_static_exact: &library_static_exact
         static:
             debug:
                 lib:
-                    - Debug/lib${TARGET}.$EXT_STA
                     - Debug/lib${TARGET}d.$EXT_STA
+                    - Debug/lib${TARGET}-d.$EXT_STA
+                    - Debug/lib${TARGET}.$EXT_STA
+                    - Debug/${TARGET}d.$EXT_STA
+                    - Debug/${TARGET}-d.$EXT_STA
                     - Debug/${TARGET}.$EXT_STA
-                    - ${TARGET}d.$EXT_STA
-                    - lib/${TARGET}d.$EXT_STA
+                    ################
                     - lib${TARGET}d.$EXT_STA
-                    - lib/lib${TARGET}d.$EXT_STA
-                    - lib/lib${TARGET}.$EXT_STA
-                    - ${TARGET}.$EXT_STA
-                    - lib/${TARGET}.$EXT_STA
+                    - lib${TARGET}-d.$EXT_STA
                     - lib${TARGET}.$EXT_STA
+                    - ${TARGET}d.$EXT_STA
+                    - ${TARGET}-d.$EXT_STA
+                    - ${TARGET}.$EXT_STA
+                    ################
+                    - lib/lib${TARGET}d.$EXT_STA
+                    - lib/lib${TARGET}-d.$EXT_STA
+                    - lib/lib${TARGET}.$EXT_STA
+                    - lib/${TARGET}d.$EXT_STA
+                    - lib/${TARGET}-d.$EXT_STA
+                    - lib/${TARGET}.$EXT_STA
             relwithdebinfo:
                 lib:
-                    - RelWithDebInfo/lib${TARGET}.$EXT_STA
                     - RelWithDebInfo/lib${TARGET}d.$EXT_STA
+                    - RelWithDebInfo/lib${TARGET}-d.$EXT_STA
+                    - RelWithDebInfo/lib${TARGET}.$EXT_STA
+                    - RelWithDebInfo/${TARGET}d.$EXT_STA
+                    - RelWithDebInfo/${TARGET}-d.$EXT_STA
                     - RelWithDebInfo/${TARGET}.$EXT_STA
-                    - ${TARGET}.$EXT_STA
-                    - lib/${TARGET}.$EXT_STA
+                    ################
+                    - lib${TARGET}d.$EXT_STA
+                    - lib${TARGET}-d.$EXT_STA
                     - lib${TARGET}.$EXT_STA
+                    - ${TARGET}d.$EXT_STA
+                    - ${TARGET}-d.$EXT_STA
+                    - ${TARGET}.$EXT_STA
+                    ################
+                    - lib/lib${TARGET}d.$EXT_STA
+                    - lib/lib${TARGET}-d.$EXT_STA
                     - lib/lib${TARGET}.$EXT_STA
+                    - lib/${TARGET}d.$EXT_STA
+                    - lib/${TARGET}-d.$EXT_STA
+                    - lib/${TARGET}.$EXT_STA
             release:
                 lib:
                     - Release/lib${TARGET}.$EXT_STA
-                    - Release/lib${TARGET}d.$EXT_STA
                     - Release/${TARGET}.$EXT_STA
-                    - ${TARGET}.$EXT_STA
-                    - lib/${TARGET}.$EXT_STA
+                    ################
                     - lib${TARGET}.$EXT_STA
+                    - ${TARGET}.$EXT_STA
+                    ################
                     - lib/lib${TARGET}.$EXT_STA
+                    - lib/${TARGET}.$EXT_STA
     windows_*-msvc_*-*:
         <<: *library_static_exact_common
     default:
