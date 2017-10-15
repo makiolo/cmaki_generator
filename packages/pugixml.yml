@@ -1,11 +1,7 @@
 - pugixml:
     <<: *thirdparty_defaults
-    version: 0.0.0.0
-    version_manager: git
-    cmake_prefix: ./scripts/CMakeLists.txt
-    mode: dr
-    source: http://github.com/zeux/pugixml/releases/download/v1.7/pugixml-1.7.tar.gz
-    uncompress_strip: pugixml-1.7
+    source: http://github.com/zeux/pugixml/releases/download/v1.8/pugixml-1.8.tar.gz
+    uncompress_strip: pugixml-1.8
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
     targets:
