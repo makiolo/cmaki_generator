@@ -1,7 +1,5 @@
 - oxygine:
     <<: *thirdparty_defaults
-    version: 0.0.0.0
-    version_manager: git
     cmake_target: null
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
@@ -12,12 +10,11 @@
         - OX_HAVE_HTTP=0
         - OX_USE_SDL2=1
     post_install:
-        - ./oxygine/src/*.h include/ RECURSIVE
-    mode: dr
+        - ./oxygine/src/*.h* include/ RECURSIVE
     depends:
         - sdl2
-        - libjpeg
-        - libpng
+        - freeimage
+        - haxx-libcurl
     source: https://github.com/oxygine/oxygine-framework.git
     targets:
         - oxygine-framework:
@@ -27,5 +24,4 @@
                 default:
                     definitions:
                         - -DOXYGINE_SDL=1
-
 

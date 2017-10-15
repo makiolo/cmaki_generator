@@ -15,7 +15,7 @@
                     system_depends:
                         - dl
                         - util
-        - python3:
+        - python:
             info:
                 <<: *executable_exact
 

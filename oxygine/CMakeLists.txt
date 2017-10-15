@@ -2,9 +2,9 @@ cmake_minimum_required (VERSION 2.6)
 project (OXYGINE)
 
 cmaki_find_package(sdl2 REQUIRED)
-cmaki_find_package(libpng REQUIRED)
-cmaki_find_package(libjpeg REQUIRED)
+cmaki_find_package(freeimage REQUIRED)
 cmaki_find_package(dune-zlib REQUIRED)
+cmaki_find_package(haxx-libcurl REQUIRED)
 
 include_directories(${CMAKI_INCLUDE_DIRS})
 set(CORE_LIBS ${CORE_LIBS}	${CMAKI_LIBRARIES})
