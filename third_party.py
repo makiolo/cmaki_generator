@@ -727,11 +727,11 @@ class ThirdParty:
             basedir = os.path.abspath('..')
 
             # generate find.cmake
-            build_directory = self.get_build_directory(r"${GLOBAL_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
+            build_directory = self.get_build_directory(r"${CMAKI_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
             with open('find.cmake', 'wt') as f:
                 f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
-                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
-                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${GLOBAL_PLATFORM}/%s-%s/${GLOBAL_PLATFORM}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
+                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${CMAKI_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
+                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${CMAKI_PLATFORM}/%s-%s/${CMAKI_PLATFORM}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
                 f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s\" %s_BUILD)\n" % (build_directory, package_norm))
                 f.write("SET(%s_INCLUDE ${%s_INCLUDE} CACHE STRING \"Include dir %s\" FORCE)\n" % (package_norm, package_norm, package))
                 f.write("SET(%s_LIBDIR ${%s_LIBDIR} CACHE STRING \"Libs dir %s\" FORCE)\n" % (package_norm, package_norm, package))
