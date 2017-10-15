@@ -837,37 +837,7 @@ class ThirdParty:
             self.safe_system( 'svn co %s %s' % (url, build_directory), compiler_replace_maps )
             # utils.tryremove_dir( os.path.join(build_directory, '.svn') )
 
-        # file in http
-        elif (     url.startswith('http://')
-                or url.startswith('https://')
-                or url.endswith('.zip')
-                or url.endswith('.tar.gz')
-                or url.endswith('.tar.bz2')
-                or url.endswith('.tgz')
-                or url.endswith('.py') ):
-
-            logging.info('Download from url: %s' % url)
-            # download to source_filename
-            package_file_abs = os.path.join(uncompress_directory, source_filename)
-            utils.download_from_url(url, package_file_abs)
-            if os.path.isfile(package_file_abs):
-
-                # uncompress in download folder for after generate a patch with all changes
-                if not os.path.isdir( self.get_original_directory() ):
-                    utils.trymkdir( self.get_original_directory() )
-                    logging.debug('preparing original uncompress')
-                    # uncompress in original
-                    self._smart_uncompress(position, package_file_abs, uncompress_directory, self.get_original_directory(), compiler_replace_maps)
-                else:
-                    logging.debug('skipping original uncompress (already exists)')
-
-                # uncompress in intermediate build directory
-                self._smart_uncompress(position, package_file_abs, uncompress_directory, build_directory, compiler_replace_maps)
-
-            else:
-                raise DontExistsFile(source_filename)
-
-        elif(url.endswith('.git') or (url.find('github') != -1) or (url.find('bitbucket') != -1)):
+        elif(url.endswith('.git') or (url.find('github') != -1) or (url.find('bitbucket') != -1)) and not ( url.endswith('.zip') or url.endswith('.tar.gz') or url.endswith('.tar.bz2') or url.endswith('.tgz') or url.endswith('.py') ):
             # strip is not implemmented with git://
             utils.tryremove_dir( build_directory )
             logging.info('Download from git: %s' % url)
@@ -907,6 +877,36 @@ class ThirdParty:
             #         utils.serialize(data, depends_file)
             # else:
             #     logging.warning('not found depends file, using newest changeset')
+
+        # file in http
+        elif (     url.startswith('http://')
+                or url.startswith('https://')
+                or url.endswith('.zip')
+                or url.endswith('.tar.gz')
+                or url.endswith('.tar.bz2')
+                or url.endswith('.tgz')
+                or url.endswith('.py') ):
+
+            logging.info('Download from url: %s' % url)
+            # download to source_filename
+            package_file_abs = os.path.join(uncompress_directory, source_filename)
+            utils.download_from_url(url, package_file_abs)
+            if os.path.isfile(package_file_abs):
+
+                # uncompress in download folder for after generate a patch with all changes
+                if not os.path.isdir( self.get_original_directory() ):
+                    utils.trymkdir( self.get_original_directory() )
+                    logging.debug('preparing original uncompress')
+                    # uncompress in original
+                    self._smart_uncompress(position, package_file_abs, uncompress_directory, self.get_original_directory(), compiler_replace_maps)
+                else:
+                    logging.debug('skipping original uncompress (already exists)')
+
+                # uncompress in intermediate build directory
+                self._smart_uncompress(position, package_file_abs, uncompress_directory, build_directory, compiler_replace_maps)
+
+            else:
+                raise DontExistsFile(source_filename)
 
         else:
             raise Exception('Invalid source: %s - %s' % (package, url))
