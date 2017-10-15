@@ -1,7 +1,7 @@
 - entityx:
     <<: *thirdparty_defaults
     post_install:
-        - ./entityx/*.h include/ RECURSIVE
+        - ./entityx/*.h* include/ RECURSIVE
     cmake_target: null
     source: https://github.com/alecthomas/entityx.git
     cmake_definitions:
