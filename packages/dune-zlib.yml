@@ -1,9 +1,9 @@
 - dune-zlib:
     <<: *thirdparty_defaults
-    version: 1.2.8.0
+    version: 1.2.11.0
     mask: w
-    source: http://zlib.net/zlib-1.2.8.tar.gz
-    uncompress_strip: zlib-1.2.8
+    source: https://zlib.net/zlib-1.2.11.tar.gz
+    uncompress_strip: zlib-1.2.11
     unittest:
         |
             #include <zlib.h>
@@ -19,10 +19,10 @@
 
 - dune-zlib:
     <<: *thirdparty_defaults
-    version: 1.2.8.0
+    version: 1.2.11.0
     mask: ls
-    source: http://zlib.net/zlib-1.2.8.tar.gz
-    uncompress_strip: zlib-1.2.8
+    source: https://zlib.net/zlib-1.2.11.tar.gz
+    uncompress_strip: zlib-1.2.11
     unittest:
         |
             #include <zlib.h>
