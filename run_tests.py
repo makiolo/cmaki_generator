@@ -107,7 +107,7 @@ def run_tests(node, parameters, compiler_replace_maps, unittests):
             if os.path.exists(unittest_found):
 
                 logging.info('Search cmakelib in %s' % cmakelib_dir)
-                if os.path.exists(os.path.join(cmakelib_dir, 'setup_projects.cmake')):
+                if os.path.isdir(os.path.join(cmakelib_dir)):
 
                     with utils.working_directory(unittest_folder):
 
