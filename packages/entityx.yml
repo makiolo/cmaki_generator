@@ -5,9 +5,9 @@
     cmake_target: null
     source: https://github.com/alecthomas/entityx.git
     cmake_definitions:
-        - ENTITYX_BUILD_SHARED=0
+        - ENTITYX_BUILD_SHARED=1
     targets:
         - entityx:
             info:
-                <<: *library_static_exact
+                <<: *library_dynamic_exact
 

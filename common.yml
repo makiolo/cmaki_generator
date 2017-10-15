@@ -17,11 +17,11 @@ compilation_environments: &compilation_environments
         ext_sta: lib
     windows_32-gcc_4-*:
         generator: "Unix Makefiles"
-        ext_dyn: dll
+        ext_dyn: dll.a
         ext_sta: a
     windows_64-gcc_4-*:
         generator: "Unix Makefiles"
-        ext_dyn: dll
+        ext_dyn: dll.a
         ext_sta: a
     linux_*_glibc_2.*-*_*-*:
         generator: "Unix Makefiles"
