@@ -1,18 +1,11 @@
 - bullet2:
     <<: *thirdparty_defaults
     version: 2.83.6.0
-    mode: dr
     source: https://github.com/bulletphysics/bullet3/archive/2.83.6.tar.gz
     uncompress_strip: bullet3-2.83.6
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
     references: &bullet2_common_extra
-        win32:
-            include:
-                - include/bullet
-        win64:
-            include:
-                - include/bullet
         default:
             include:
                 - include/bullet
