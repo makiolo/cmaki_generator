@@ -1198,7 +1198,8 @@ cmaki_package_version_check()
                                 install_3rdparty_dependencies = False
 
                                 if 'use_run_with_libs' in platform_info:
-                                    if plat.startswith('win'):
+                                    # if plat.startswith('win'):
+                                    if utils.is_windows():
                                         f.write('file(TO_NATIVE_PATH "${_MY_DIR}/../../run_with_libs.cmd" %s_LAUNCHER)\n' % package_upper)
                                     else:
                                         f.write('file(TO_NATIVE_PATH "${_MY_DIR}/../../run_with_libs.sh" %s_LAUNCHER)\n' % package_upper)
@@ -1225,7 +1226,8 @@ cmaki_package_version_check()
                                 if add_3rdparty_dependencies:
                                     f.write('list(APPEND %s_LIBRARIES %s)\n' % (superpackage_upper, package_lower))
 
-                                if plat.startswith('win'):
+                                # if plat.startswith('win'):
+                                if utils.is_windows():
                                     workbase = os.path.join(oldcwd, workspace, base_folder, plat)
                                     if not self.check_parts_exists(workbase, superpackage, package, dynamic, [('dll', True), ('lib', lib_provided), ('pdb', False)]):
                                         errors += 1

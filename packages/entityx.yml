@@ -6,6 +6,9 @@
     source: https://github.com/alecthomas/entityx.git
     cmake_definitions:
         - ENTITYX_BUILD_SHARED=1
+        - ENTITYX_BUILD_TESTING=0
+        - ENTITYX_MAX_COMPONENTS=128
+        - ENTITYX_DT_TYPE=double
     targets:
         - entityx:
             info:

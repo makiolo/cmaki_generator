@@ -252,51 +252,86 @@ library_dynamic_exact: &library_dynamic_exact
         dynamic:
             debug:
                 so:
-                    - lib${TARGET}d.$EXT_DYN
-                    - lib/lib${TARGET}d.$EXT_DYN
-                    - bin/lib${TARGET}d.$EXT_DYN
-                    - lib${ARCH}/lib${TARGET}d.$EXT_DYN
-                    - lib/${ARCH}/lib${TARGET}d.$EXT_DYN
-                    - lib${TARGET}_D.$EXT_DYN
-                    - lib/lib${TARGET}_D.$EXT_DYN
-                    - bin/lib${TARGET}_D.$EXT_DYN
-                    - lib${ARCH}/lib${TARGET}_D.$EXT_DYN
-                    - lib/${ARCH}/lib${TARGET}_D.$EXT_DYN
                     - Debug/lib${TARGET}d.$EXT_DYN
-                    - lib${TARGET}.$EXT_DYN
-                    - lib/lib${TARGET}.$EXT_DYN
-                    - bin/lib${TARGET}.$EXT_DYN
-                    - lib${ARCH}/lib${TARGET}.$EXT_DYN
-                    - lib/${ARCH}/lib${TARGET}.$EXT_DYN
-                    - Debug/lib${TARGET}.$EXT_DYN
-                    - lib${TARGET}_debug.$EXT_DYN
-                    - lib/lib${TARGET}_debug.$EXT_DYN
-                    - bin/lib${TARGET}_debug.$EXT_DYN
-                    - lib${ARCH}/lib${TARGET}_debug.$EXT_DYN
-                    - lib/${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - Debug/lib${TARGET}_D.$EXT_DYN
                     - Debug/lib${TARGET}_debug.$EXT_DYN
-                    - lib${TARGET}-d.$EXT_DYN
-                    - lib/lib${TARGET}-d.$EXT_DYN
-                    - bin/lib${TARGET}-d.$EXT_DYN
-                    - lib${ARCH}/lib${TARGET}-d.$EXT_DYN
-                    - lib/${ARCH}/lib${TARGET}-d.$EXT_DYN
                     - Debug/lib${TARGET}-d.$EXT_DYN
+                    - Debug/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - bin/lib${TARGET}d.$EXT_DYN
+                    - bin/lib${TARGET}_D.$EXT_DYN
+                    - bin/lib${TARGET}_debug.$EXT_DYN
+                    - bin/lib${TARGET}-d.$EXT_DYN
+                    - bin/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - lib/lib${TARGET}d.$EXT_DYN
+                    - lib/lib${TARGET}_D.$EXT_DYN
+                    - lib/lib${TARGET}_debug.$EXT_DYN
+                    - lib/lib${TARGET}-d.$EXT_DYN
+                    - lib/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - lib${ARCH}/lib${TARGET}d.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}_D.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}-d.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - lib${TARGET}d.$EXT_DYN
+                    - lib${TARGET}_D.$EXT_DYN
+                    - lib${TARGET}_debug.$EXT_DYN
+                    - lib${TARGET}-d.$EXT_DYN
+                    - lib${TARGET}.$EXT_DYN
+                    ######################
+                    - lib/${ARCH}/lib${TARGET}d.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}_D.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}-d.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}.$EXT_DYN
             relwithdebinfo:
                 so:
-                    - lib$TARGET.$EXT_DYN
-                    - lib/lib$TARGET.$EXT_DYN
-                    - bin/lib$TARGET.$EXT_DYN
-                    - lib${ARCH}/lib$TARGET.$EXT_DYN
-                    - lib/${ARCH}/lib$TARGET.$EXT_DYN
-                    - RelWithDebInfo/lib$TARGET.$EXT_DYN
+                    - RelWithDebInfo/lib${TARGET}d.$EXT_DYN
+                    - RelWithDebInfo/lib${TARGET}_D.$EXT_DYN
+                    - RelWithDebInfo/lib${TARGET}_debug.$EXT_DYN
+                    - RelWithDebInfo/lib${TARGET}-d.$EXT_DYN
+                    - RelWithDebInfo/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - bin/lib${TARGET}d.$EXT_DYN
+                    - bin/lib${TARGET}_D.$EXT_DYN
+                    - bin/lib${TARGET}_debug.$EXT_DYN
+                    - bin/lib${TARGET}-d.$EXT_DYN
+                    - bin/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - lib/lib${TARGET}d.$EXT_DYN
+                    - lib/lib${TARGET}_D.$EXT_DYN
+                    - lib/lib${TARGET}_debug.$EXT_DYN
+                    - lib/lib${TARGET}-d.$EXT_DYN
+                    - lib/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - lib${ARCH}/lib${TARGET}d.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}_D.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}-d.$EXT_DYN
+                    - lib${ARCH}/lib${TARGET}.$EXT_DYN
+                    #####################
+                    - lib${TARGET}d.$EXT_DYN
+                    - lib${TARGET}_D.$EXT_DYN
+                    - lib${TARGET}_debug.$EXT_DYN
+                    - lib${TARGET}-d.$EXT_DYN
+                    - lib${TARGET}.$EXT_DYN
+                    ######################
+                    - lib/${ARCH}/lib${TARGET}d.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}_D.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}_debug.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}-d.$EXT_DYN
+                    - lib/${ARCH}/lib${TARGET}.$EXT_DYN
             release:
                 so:
-                    - lib$TARGET.$EXT_DYN
-                    - lib/lib$TARGET.$EXT_DYN
-                    - bin/lib$TARGET.$EXT_DYN
-                    - lib${ARCH}/lib$TARGET.$EXT_DYN
-                    - lib/${ARCH}/lib$TARGET.$EXT_DYN
                     - Release/lib$TARGET.$EXT_DYN
+                    - bin/lib$TARGET.$EXT_DYN
+                    - lib/lib$TARGET.$EXT_DYN
+                    - lib${ARCH}/lib$TARGET.$EXT_DYN
+                    - lib$TARGET.$EXT_DYN
+                    - lib/${ARCH}/lib$TARGET.$EXT_DYN
     windows_*-msvc_*-*:
         <<: *library_dynamic_exact_windows
     default:
