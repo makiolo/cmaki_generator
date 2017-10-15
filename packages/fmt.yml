@@ -1,0 +1,12 @@
+- fmt:
+    <<: *thirdparty_defaults
+    post_install:
+        - ./fmt/*.h* include/fmt
+    source: https://github.com/fmtlib/fmt
+    cmake_definitions:
+        - BUILD_SHARED_LIBS=ON
+    targets:
+        - fmt:
+            info:
+                <<: *library_dynamic_exact
+
