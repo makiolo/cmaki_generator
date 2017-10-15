@@ -10,17 +10,24 @@ def run_tests(node, parameters, compiler_replace_maps, unittests):
 
     oldcwd = os.getcwd()
 
+    artifacts_dir = parameters.rootdir
+    artifacts_dir = utils.get_norm_path(artifacts_dir)
+    artifacts_dir = artifacts_dir.replace('\\', '/')
+
     cmakelib_dir = parameters.cmakefiles
     cmakelib_dir = utils.get_norm_path(cmakelib_dir)
     cmakelib_dir = cmakelib_dir.replace('\\', '/')
 
-    cmake3p_dir = os.path.join(parameters.cmakefiles, '..', 'cmake3p')
+    cmake3p_dir = parameters.prefix
     cmake3p_dir = utils.get_norm_path(cmake3p_dir)
+    cmake3p_dir = cmake3p_dir.replace('\\', '/')
 
     cmake_prefix = parameters.prefix
+    cmake_prefix = utils.get_norm_path(cmake_prefix)
     cmake_prefix = cmake_prefix.replace('\\', '/')
 
     cmake_third_party_dir = parameters.third_party_dir
+    cmake_third_party_dir = utils.get_norm_path(cmake_third_party_dir)
     cmake_third_party_dir = cmake_third_party_dir.replace('\\', '/')
 
     package = node.get_package_name()
@@ -96,8 +103,9 @@ def run_tests(node, parameters, compiler_replace_maps, unittests):
 
             logging.info('running unittests. Build mode: %s Platform: %s' % (build_mode, plat))
 
-            # remove cmake3p (and cmake3p of depends)
-            node.remove_cmake3p( cmake3p_dir )
+            # OJO con borrar cmake3p, se borra la marca
+            # node.remove_cmake3p( cmake3p_dir )
+
             builddir = os.path.join(oldcwd, node.get_build_directory(plat, build_mode))
             logging.info('Using builddir %s' % builddir)
             unittest_folder = os.path.join(builddir, build_unittests_foldername)
@@ -116,14 +124,29 @@ def run_tests(node, parameters, compiler_replace_maps, unittests):
                         if generator is not None:
                             generator_extra = '-G"%s"' % generator
 
+                        find_packages = []
+                        find_packages.append(package)
+                        for dep in node.get_depends_raw():
+                            package_name = dep.get_package_name()
+                            find_packages.append(package_name)
+                        find_packages_str = ';'.join(find_packages)
+
                         # remove CMakeCache.txt for avoid problems when
                         # change of generator
                         utils.tryremove('CMakeCache.txt')
                         utils.tryremove('cmake_install.cmake')
                         utils.tryremove('install_manifest.txt')
                         utils.tryremove_dir('CMakeFiles')
-
-                        cmd = 'cmake %s %s -DCMAKI_COMPILER=%s -DCMAKI_PLATFORM=%s -DCMAKE_MODULE_PATH=%s -DPACKAGE=%s -DPACKAGE_UPPER=%s -DCMAKE_BUILD_TYPE=%s -DAVOID_USE_HTTP=1 -DINSTALL_SIMPLE=1 -DCMAKE_PREFIX_PATH=%s -DUNITTEST_PATH=%s -DCMAKI_GENERATOR_PREFIX=%s && cmake --build . --config %s --target install && ctest . -C %s --output-on-failure -VV' % (unittest_root, generator_extra, get_identifier('COMPILER'), get_identifier('ALL'), cmakelib_dir, package, package_upper, build_mode, cmake_third_party_dir, unittest_found, cmake_prefix, build_mode, build_mode)
+                        '''
+                        TODO:
+                        refactor:
+                        prefix = DEPENDS_PATH (cmake3p)
+                        cmakefiles = CMAKI_PATH, CMAKE_MODULE_PATH (cmakelib)
+                        third-party-dir = CMAKE_PREFIX_PATH (directorio artifacts/cmaki_find_package) (3rdparty)
+                        rootdir = ARTIFACTS_PATH, es la base de donde esta build.py (cmaki_generator) (scripts de generacion)
+                        CMAKI_INSTALL: se espera tener instalado el cmaki_identifier
+                        '''
+                        cmd = 'cmake %s %s -DARTIFACTS_PATH="%s" -DCMAKI_COMPILER="%s" -DCMAKI_PLATFORM="%s" -DCMAKE_MODULE_PATH="%s" -DPACKAGE="%s" -DPACKAGE_UPPER="%s" -DCMAKE_BUILD_TYPE="%s" -DAVOID_USE_HTTP=1 -DINSTALL_SIMPLE=1 -DCMAKE_PREFIX_PATH="%s" -DUNITTEST_PATH="%s" -DDEPENDS_PATH="%s" -DFIND_PACKAGES="%s" -DCMAKI_DEBUG=TRUE && cmake --build . --config %s --target install && ctest . -C %s --output-on-failure -VV' % (unittest_root, generator_extra, artifacts_dir, get_identifier('COMPILER'), get_identifier('ALL'), cmakelib_dir, package, package_upper, build_mode, cmake_third_party_dir, unittest_found, cmake_prefix, find_packages_str, build_mode, build_mode)
                         ret = utils.safe_system(cmd, env=env_modified)
                         node.ret += abs(ret)
                         if ret != 0:
@@ -135,10 +158,6 @@ def run_tests(node, parameters, compiler_replace_maps, unittests):
             else:
                 unittests[ '%s - %s' % (package, version) ] = 'WARN: No unittest found'
 
-        if parameters.fast:
-            logging.debug('skipping for because is in fast mode: "run_tests"')
-            break
-
-    # finish well
+    # successful
     return True
 

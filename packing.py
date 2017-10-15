@@ -5,6 +5,7 @@ import logging
 import hash_version
 from itertools import product
 from third_party import platforms
+from third_party import get_identifier
 
 def packing(node, parameters, compiler_replace_maps):
 
@@ -55,6 +56,10 @@ def packing(node, parameters, compiler_replace_maps):
 
     folder_3rdparty = parameters.third_party_dir
     output_3rdparty = os.path.join(folder_3rdparty, node.get_base_folder())
+    utils.trymkdir(output_3rdparty)
+
+    folder_mark = os.path.join(parameters.prefix, node.get_base_folder())
+    utils.trymkdir(folder_mark)
 
     utils.superverbose(parameters, '*** [%s] Generation cmakefiles *** %s' % (package, output_3rdparty))
     errors = node.generate_cmakefiles(platforms, output_3rdparty, compiler_replace_maps)
@@ -75,13 +80,14 @@ def packing(node, parameters, compiler_replace_maps):
             prefix_package = os.path.join(parameters.prefix, '%s.tar.gz' % workspace)
             prefix_package_cmake = os.path.join(parameters.prefix, '%s-cmake.tar.gz' % workspace)
             prefix_package_md5 = os.path.join(output_3rdparty, '%s.md5' % workspace)
+
             logging.info('generating package %s from source %s' % (prefix_package, os.path.join(os.getcwd(), source_folder)))
             logging.info('generating md5file %s' % prefix_package_md5)
 
             # packing install
             gen_targz = "%star zcvf %s %s" % (precmd, prefix_package, source_folder)
 
-            node.ret += abs( node.safe_system(gen_targz, compiler_replace_maps, log=parameters.verbose) )
+            node.ret += abs( node.safe_system(gen_targz, compiler_replace_maps) )
             if not os.path.exists(prefix_package):
                 logging.error('No such file: {}'.format(prefix_package))
                 return False
@@ -92,14 +98,14 @@ def packing(node, parameters, compiler_replace_maps):
             with open(prefix_package_md5, 'wt') as f:
                 f.write('%s\n' % package_md5)
 
-        if parameters.fast:
-            logging.debug('skipping for because is in fast mode: "packing"')
-            break
+    # marker is a empty file
+    prefix_package_marker = os.path.join(folder_mark, '%s.cache' % get_identifier('ALL'))
+    logging.info('generating marker %s' % prefix_package_marker)
+    open(prefix_package_marker, 'a').close()
 
     # packing cmakefiles (more easy distribution)
     if not parameters.no_packing_cmakefiles:
         for plat in platforms:
-            utils.trymkdir(output_3rdparty)
             base_folder = node.get_base_folder()
             prefix_package_cmake = os.path.join(parameters.prefix, '%s-%s-cmake.tar.gz' % (base_folder, plat))
             with utils.working_directory(folder_3rdparty):

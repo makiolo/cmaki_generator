@@ -20,8 +20,8 @@
   },
   "devDependencies": {
     "cmaki": "git+https://github.com/makiolo/cmaki.git",
-    "cmaki_scripts": "git+https://github.com/makiolo/cmaki_scripts.git",
-    "cmaki_identifier": "git+https://github.com/makiolo/cmaki_identifier.git"
+    "cmaki_identifier": "git+https://github.com/makiolo/cmaki_identifier.git",
+    "cmaki_scripts": "git+https://github.com/makiolo/cmaki_scripts.git"
   },
   "homepage": "https://github.com/makiolo/cmaki_generator#readme"
 }

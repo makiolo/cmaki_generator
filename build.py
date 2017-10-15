@@ -191,9 +191,6 @@ def show_results(parameters, groups_ordered, rets, unittests):
 
         logging.info('')
         logging.info( '-'* 80)
-        if toolchain_povided:
-            logging.info('Compiled with this toolchain: --toolchain=%s' % parameters.toolchain)
-            logging.info( '-'* 80)
     else:
         anyFail = 1
         logging.error('No results generated.')
@@ -263,7 +260,6 @@ usage:""")
     group_main = parser.add_argument_group('basic usage')
     group_main.add_argument('packages', metavar='packages', type=str, nargs='*', help='name (or list names) third party')
     group_main.add_argument('--plan', '--dry-run', dest='plan', action='store_true', help='Show packages plan (like a dry-run)', default=False)
-    group_main.add_argument('--toolchain', dest='toolchain', help='Toolchain path (default is $ROOTDIR + "toolchain_default")', default=None)
     group_main.add_argument('--server', dest='server', help='artifact server', default=None)
 
     group_layer = group_main.add_mutually_exclusive_group()
@@ -298,8 +294,6 @@ usage:""")
     group_jedi.add_argument('-q', '--quiet', dest='quiet', action='store_true', help='quiet mode', default=False)
     group_jedi.add_argument('-d', '--debug', action='store_true', help='Ridiculous debugging (probably not useful)')
     group_jedi.add_argument('--purge-if-fail', dest='purge_if_fail', action='store_true', help='purge even if a package finish with fail', default=False)
-    group_jedi.add_argument('--toolchain-proposal', dest='toolchain_proposal', action='store_true', help='print automatic toolchain path', default=False)
-    group_jedi.add_argument('--toolchain-proposal-basename', dest='toolchain_proposal_basename', action='store_true', help='print automatic toolchain basename path', default=False)
     group_jedi.add_argument('--with-svn', dest='with_svn', help='svn executable', default=None)
     group_jedi.add_argument('--fast', dest='fast', action='store_true', default=False, help=argparse.SUPPRESS)
     group_jedi.add_argument('--log', dest='log', help='specified full path log (default is "gtc.log")', default='gtc.log')
@@ -308,23 +302,28 @@ usage:""")
     group_jedi.add_argument('--no-blacklist', action='append', dest='no_blacklist', help='list packages (separated with comma), for annular blacklist effect.', default=[])
     group_master_jedi = parser.add_argument_group('master jedi')
     group_master_jedi.add_argument('--rootdir', dest='rootdir', help='input folder with yamls, is recursive (default is current directory)', default=None)
-    group_master_jedi.add_argument('--prefix', dest='prefix', help='output folder where packages will be generated (default is $TOOLCHAIN + "3rdparties")', default=None)
+    group_master_jedi.add_argument('--prefix', dest='prefix', help='output folder where packages will be generated (default is $ROOTDIR + "artifacts")', default=None)
     group_master_jedi.add_argument('--cmakefiles', dest='cmakefiles', help='input folder with cmake scripts (default is $PREFIX + "cmakelib")', default=None)
     group_master_jedi.add_argument('--third-party-dir', dest='third_party_dir', help='output folder for cmakefiles (default is $CMAKEFILES + "3rdparty")', default=None)
     group_master_jedi.add_argument('--depends', dest='depends', help='json for save versions', default=None)
     group_master_jedi.add_argument('--yaml', dest='yaml', help='unique file with third party to compile', default=None)
     parameters = parser.parse_args()
 
-    toolchain_povided = parameters.toolchain is not None
+    '''
+    MODE=Release
+    ./build boost-headers
+    --third-party-dir=$(pwd)/artifacts/cmaki_find_package
+    --cmakefiles=$(pwd)/node_modules/cmaki
+    --prefix=$(pwd)/artifacts
+    '''
 
     # parameters cmd line are paths
     parameters.rootdir = init_parameter_path(parameters.rootdir, os.getcwd())
-    parameters.toolchain = init_parameter_path(parameters.toolchain, os.path.join(parameters.rootdir, 'output'))
-    parameters.prefix = init_parameter_path(parameters.prefix, os.path.join(parameters.toolchain, '3rdparties'))
-    parameters.cmakefiles = init_parameter_path(parameters.cmakefiles, os.path.join(parameters.prefix, 'cmaki'))
-    parameters.third_party_dir = init_parameter_path(parameters.third_party_dir, os.path.join(parameters.cmakefiles, '3rdparty'))
+    parameters.prefix = init_parameter_path(parameters.prefix, os.path.join(parameters.rootdir, 'artifacts'))
+    parameters.cmakefiles = init_parameter_path(parameters.cmakefiles, os.path.join(parameters.rootdir, 'node_modules', 'cmaki'))
+    parameters.third_party_dir = init_parameter_path(parameters.third_party_dir, os.path.join(parameters.prefix, 'cmaki_find_package'))
     parameters.blacklist = init_parameter_path(parameters.blacklist, os.path.join(parameters.rootdir, 'blacklist.txt'))
-    parameters.depends = init_parameter_path(parameters.depends, os.path.join(parameters.cmakefiles, '..', 'depends.json'))
+    parameters.depends = init_parameter_path(parameters.depends, os.path.join(parameters.prefix, '..', 'depends.json'))
 
     # convert priority to int
     parameters.priority = convert_priority_to_integer(parameters.priority)
@@ -387,39 +386,6 @@ usage:""")
     if 'MODE' not in os.environ:
         raise Exception("not defined environment var: MODE")
 
-    # generate toolchain prefix?
-    if parameters.toolchain_proposal or parameters.toolchain_proposal_basename:
-        if parameters.with_svn is not None:
-            revision = utils.get_revision_svn(os.getcwd(), parameters.with_svn)
-        else:
-            revision = utils.get_revision_svn(os.getcwd())
-        # set toolchain path
-        if revision != -1:
-            if parameters.toolchain_proposal_basename:
-                parameters.toolchain = '%s.rev%d' % (datetime.datetime.now().strftime(image_pattern), revision)
-            else:
-                parameters.toolchain = os.path.join(os.environ['HOME_TOOLCHAIN'], '%s.rev%d' % (datetime.datetime.now().strftime(image_pattern), revision))
-            logging.debug('Using toolchain prefix: %s' % parameters.toolchain)
-        else:
-            if parameters.with_svn is not None:
-                logging.error('ERROR: svn not found in "%s"' % parameters.with_svn)
-                logging.error('svn is optional, don\'t specify parameter --with-svn')
-                sys.exit(1)
-            if parameters.toolchain_proposal_basename:
-                parameters.toolchain = '%s' % (datetime.datetime.now().strftime(image_pattern))
-            else:
-                parameters.toolchain = os.path.join(os.environ['HOME_TOOLCHAIN'], '%s' % (datetime.datetime.now().strftime(image_pattern)))
-            logging.warning('No svn found, using toolchain prefix: %s' % parameters.toolchain)
-
-        sys.stdout.write('%s\n' % parameters.toolchain)
-        sys.stderr.write('You can use this in parameter --toolchain=%s\n' % parameters.toolchain)
-        sys.exit(0)
-
-    if utils.is_windows():
-        logging.info('-- detected windows')
-    else:
-        logging.info('-- detected linux or mingw')
-
     # fetch remotes yaml
     # i = 0
     # for package in parameters.packages:
@@ -436,9 +402,6 @@ usage:""")
     #             sys.exit(1)
     #         parameters.packages[i] = repo.split('/')[1]
     #     i += 1
-
-    # set env TOOLCHAIN
-    os.environ['TOOLCHAIN'] = parameters.toolchain
 
     # prepare cmakelin
     prepare_cmakefiles(parameters.cmakefiles)

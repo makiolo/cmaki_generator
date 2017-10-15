@@ -464,19 +464,45 @@ def get_stdout(cmd, env=os.environ.copy(), program_required=None):
     else:
         raise NotFoundProgram('Not found program %s, for execute: %s' % (program_required, cmd))
 
-def safe_system(cmd, env=os.environ.copy(), log=False):
+# def safe_system(cmd, env=os.environ.copy(), log=False):
+#     logging.debug("exec command: %s" % cmd)
+#     p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
+#     data, err = p.communicate()
+#     data = [line for line in data.split('\n')]
+#     if p.returncode != 0:
+#         logging.error("begin@output: %s" % cmd)
+#     for line in data:
+#         if (p.returncode != 0) or log:
+#             logging.warning(line)
+#         else:
+#             logging.debug(line)
+#     if p.returncode != 0:
+#         logging.error("end@output: %s" % cmd)
+#     return p.returncode
+
+def safe_system(cmd, env=None):
+    if env is None:
+        env = os.environ.copy()
     logging.debug("exec command: %s" % cmd)
-    p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
-    data, err = p.communicate()
-    data = [line for line in data.split('\n')]
-    if p.returncode != 0:
-        logging.error("begin@output: %s" % cmd)
-    for line in data:
-        if (p.returncode != 0) or log:
-            logging.warning(line)
-        else:
-            logging.debug(line)
-    if p.returncode != 0:
-        logging.error("end@output: %s" % cmd)
-    return p.returncode
+
+    if 'CMAKI_PRINT' in env:
+        try:
+            return subprocess.call('{}'.format(cmd), env=env, shell=True)
+        except OSError as e:
+            logging.warning(str(e))
+            return -1
+    else:
+        p = subprocess.Popen(cmd, shell=True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, universal_newlines=True, env=env)
+        data, err = p.communicate()
+        data = [line for line in data.split('\n')]
+        if p.returncode != 0:
+            logging.error("begin@output: %s" % cmd)
+        for line in data:
+            if p.returncode != 0:
+                logging.warning(line)
+            else:
+                logging.debug(line)
+        if p.returncode != 0:
+            logging.error("end@output: %s" % cmd)
+        return p.returncode
 
