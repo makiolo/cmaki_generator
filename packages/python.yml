@@ -1,18 +1,11 @@
 - python:
     <<: *thirdparty_defaults
-    version: 0.0.0.0
-    version_manager: git
-    mode: dr
     source: https://github.com/python-cmake-buildsystem/python-cmake-buildsystem.git
     cmake_definitions:
-        - BUILD_SHARED=TRUE
-        - BUILD_STATIC=FALSE
-        - USE_LIB64=TRUE
-        - BUILD_EXTENSIONS_AS_BUILTIN=TRUE
-        - INSTALL_DEVELOPMENT=TRUE
-        - INSTALL_MANUAL=TRUE
+        - BUILD_SHARED=FALSE
+        - BUILD_STATIC=TRUE
     targets:
-        - libpython3.5m:
+        - python3.5m:
             info:
                 <<: *library_static_exact
             extra:
