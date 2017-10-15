@@ -94,7 +94,8 @@ def search_fuzzy(data, fuzzy_key, fallback='default'):
 #
 # INMUTABLE GLOBALS
 #
-HTTP_URL_NPSERVER = 'http://artifacts.myftp.biz:8080/packages'
+
+HTTP_URL_NPSERVER = 'http://artifacts.myftp.biz:8080/sources'
 CMAKELIB_URL='https://github.com/makiolo/cmaki.git'
 prefered = {}
 prefered['Debug'] = ['Debug', 'RelWithDebInfo', 'Release']

@@ -1,13 +1,11 @@
 - fmod:
     <<: *thirdparty_defaults
     version: 1.0.1.0
-    mode: r
-    source: http://localhost/packages/fmodstudioapi10703linux.tar.gz
-    uncompress_strip: fmodstudioapi10703linux/api/lowlevel
+    source: $HTTP_URL_NPSERVER/fmodstudioapi11000linux.tar.gz
+    uncompress_strip: fmodstudioapi11000linux/api/lowlevel
     post_install:
         - ./lib/x86_64/* lib/
-        - ./inc/*.h include/
-        - ./inc/*.hpp include/
+        - ./inc/*.h* include/
     build:
         |
             #!/bin/bash

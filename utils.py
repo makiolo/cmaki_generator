@@ -241,8 +241,24 @@ def extract_file(path, to_directory, environment):
 
     if path.endswith('.zip'):
         opener, mode = zipfile.ZipFile, 'r'
+    # elif path.endswith('.tar.gz') or path.endswith('.tgz'):
+    #     opener, mode = tarfile.open, 'r:gz'
     elif path.endswith('.tar.gz') or path.endswith('.tgz'):
-        opener, mode = tarfile.open, 'r:gz'
+        # python have problems with big .tar.gz in linux -_-
+        if is_windows():
+            with working_directory(to_directory):
+                logging.debug('Using cmake -E tar for package: %s' % path)
+                ret = safe_system('cmake -E tar zxvf %s' % path, env=environment)
+                ok = (ret == 0)
+            # be careful, early return
+            return ok
+        else:
+            with working_directory(to_directory):
+                logging.debug('Using system tar for package: %s' % path)
+                ret = safe_system('tar zxvf %s' % path, env=environment)
+                ok = (ret == 0)
+            # be careful, early return
+            return ok
     elif path.endswith('.tar.bz2') or path.endswith('.tbz'):
         # python have problems with big .tar.bz2 in windows
         if is_windows():
