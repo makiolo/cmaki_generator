@@ -1,36 +1,36 @@
-# - freeimage:
-- dummy:
+- freeimage:
     <<: *thirdparty_defaults
     version: 3.1.7.0
-    mode: dr
-    source: http://downloads.sourceforge.net/project/freeimage/Source%20Distribution/3.17.0/FreeImage3170.zip
-    uncompress_strip: FreeImage
-    build:
-        |
-            #!/bin/bash
-            source find.script
-            make && make dist
-            code=$?
-            mkdir -p $freeimage_HOME/include
-            mkdir -p $freeimage_HOME/lib
-            cp Dist/*.so $freeimage_HOME/lib
-            cp Dist/*.a $freeimage_HOME/lib
-            cp Dist/*.h $freeimage_HOME/include
-            cd $freeimage_HOME/lib
-            ln -sf libfreeimage-3.17.0.so libfreeimage.so
-            exit $code
+    source: https://github.com/Kanma/FreeImage
+    cmake_target: null
+    post_install:
+        - ./lib/*.a lib/
     targets:
         - freeimage:
             info:
-                <<: *library_dynamic_exact
-            extra:
-                win32:
-                    definitions:
-                        - -DFREEIMAGE_LIBRARY_TYPE=SHARED
-                win64:
-                    definitions:
-                        - -DFREEIMAGE_LIBRARY_TYPE=SHARED
-                default:
-                    definitions:
-                        - -DFREEIMAGE_LIBRARY_TYPE=SHARED
+                <<: *library_static_exact
+        - jpeg:
+            info:
+                <<: *library_static_exact
+        - mng:
+            info:
+                <<: *library_static_exact
+        - openexr:
+            info:
+                <<: *library_static_exact
+        - openjpeg:
+            info:
+                <<: *library_static_exact
+        - png:
+            info:
+                <<: *library_static_exact
+        - rawlite:
+            info:
+                <<: *library_static_exact
+        - tiff:
+            info:
+                <<: *library_static_exact
+        - zlib:
+            info:
+                <<: *library_static_exact
 

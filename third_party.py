@@ -850,6 +850,8 @@ class ThirdParty:
             # self.safe_system('git clone %s %s' % (url, build_directory), compiler_replace_maps)
             with utils.working_directory(build_directory):
                 self.safe_system('git checkout {}'.format(extra_cmd), compiler_replace_maps)
+                self.safe_system('git submodule init', compiler_replace_maps)
+                self.safe_system('git submodule update', compiler_replace_maps)
             # depends_file = self.user_parameters.depends
             # if depends_file is not None:
             #     with utils.working_directory(build_directory):
