@@ -846,7 +846,7 @@ class ThirdParty:
             if branch is not None:
                 logging.info('clonning to branch %s' % branch)
                 extra_cmd = '%s' % branch
-            self.safe_system('git clone --depth=50 %s %s' % (url, build_directory), compiler_replace_maps)
+            self.safe_system('git clone --depth=200 %s %s' % (url, build_directory), compiler_replace_maps)
             # self.safe_system('git clone %s %s' % (url, build_directory), compiler_replace_maps)
             with utils.working_directory(build_directory):
                 self.safe_system('git checkout {}'.format(extra_cmd), compiler_replace_maps)

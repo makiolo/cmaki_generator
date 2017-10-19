@@ -9,6 +9,7 @@
     cmake_target: null
     mode: dr
     source: https://github.com/weidai11/cryptopp.git
+    branch: 1c740b0a097aecaa66044036c0d2c54220eda5d5
     cmake_definitions:
         - BUILD_SHARED_LIBS=ON
         - BUILD_STATIC=ON
