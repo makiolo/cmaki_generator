@@ -99,9 +99,9 @@ def packing(node, parameters, compiler_replace_maps):
                 f.write('%s\n' % package_md5)
 
     # marker is a empty file
-    prefix_package_marker = os.path.join(folder_mark, '%s.cache' % get_identifier('ALL'))
-    logging.info('generating marker %s' % prefix_package_marker)
-    open(prefix_package_marker, 'a').close()
+    # prefix_package_marker = os.path.join(folder_mark, '%s.cache' % get_identifier('ALL'))
+    # logging.info('generating marker %s' % prefix_package_marker)
+    # open(prefix_package_marker, 'a').close()
 
     # packing cmakefiles (more easy distribution)
     if not parameters.no_packing_cmakefiles:
