@@ -319,10 +319,11 @@ usage:""")
 
     # parameters cmd line are paths
 
-    if 'CMAKI_PWD' in os.environ:
-        parameters.rootdir = init_parameter_path(parameters.rootdir, os.environ.get('CMAKI_PWD'))
-    else:
-        parameters.rootdir = init_parameter_path(parameters.rootdir, os.getcwd())
+    # if 'CMAKI_PWD' in os.environ:
+    #     parameters.rootdir = init_parameter_path(parameters.rootdir, os.environ.get('CMAKI_PWD'))
+    # else:
+    parameters.rootdir = init_parameter_path(parameters.rootdir, os.getcwd())
+
     parameters.prefix = init_parameter_path(parameters.prefix, os.path.join(parameters.rootdir, 'artifacts'))
     parameters.cmakefiles = init_parameter_path(parameters.cmakefiles, os.path.join(parameters.rootdir, 'node_modules', 'cmaki'))
     parameters.third_party_dir = init_parameter_path(parameters.third_party_dir, os.path.join(parameters.prefix, 'cmaki_find_package'))
