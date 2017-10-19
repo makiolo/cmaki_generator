@@ -325,6 +325,13 @@ usage:""")
     parameters.blacklist = init_parameter_path(parameters.blacklist, os.path.join(parameters.rootdir, 'blacklist.txt'))
     parameters.depends = init_parameter_path(parameters.depends, os.path.join(parameters.prefix, '..', 'depends.json'))
 
+    logging.info('---- rootdir: {}'.format(parameters.rootdir))
+    logging.info('---- prefix: {}'.format(parameters.prefix))
+    logging.info('---- cmakefiles: {}'.format(parameters.cmakefiles))
+    logging.info('---- third_party_dir: {}'.format(parameters.third_party_dir))
+    logging.info('---- blacklist: {}'.format(parameters.blacklist))
+    logging.info('---- depends: {}'.format(parameters.depends))
+
     # convert priority to int
     parameters.priority = convert_priority_to_integer(parameters.priority)
     parameters.no_priority = convert_priority_to_integer(parameters.no_priority)
