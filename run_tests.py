@@ -140,7 +140,7 @@ def run_tests(node, parameters, compiler_replace_maps, unittests):
                         '''
                         TODO:
                         refactor:
-                        prefix = DEPENDS_PATH (cmake3p)
+                        prefix = DEPENDS_PATH (cmake3p) (artifacts)
                         cmakefiles = CMAKI_PATH, CMAKE_MODULE_PATH (cmakelib)
                         third-party-dir = CMAKE_PREFIX_PATH (directorio artifacts/cmaki_find_package) (3rdparty)
                         rootdir = ARTIFACTS_PATH, es la base de donde esta build.py (cmaki_generator) (scripts de generacion) tambien podria ser CMAKI_PWD

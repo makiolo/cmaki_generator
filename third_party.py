@@ -482,20 +482,20 @@ class ThirdParty:
         for targets in self.get_targets():
 
             for target_name in targets:
+
+                platform_info = None
+                platform_extra = None
+
                 target_info = targets[target_name]
                 if 'info' in target_info:
                     outputinfo = search_fuzzy(target_info['info'], plat)
                     if outputinfo is not None:
                         platform_info = copy.deepcopy( outputinfo )
-                else:
-                    platform_info = None
 
                 if 'extra' in target_info:
                     outputinfo_extra = search_fuzzy(target_info['extra'], plat)
                     if outputinfo_extra is not None:
                         platform_extra = copy.deepcopy( outputinfo_extra )
-                else:
-                    platform_extra = None
 
                 if (platform_info is not None) and (platform_extra is not None):
                     platform_info = utils.smart_merge(platform_info, platform_extra)
@@ -730,8 +730,10 @@ class ThirdParty:
             # generate find.cmake
             build_directory = self.get_build_directory(r"${CMAKI_PLATFORM}", r"${GLOBAL_BUILD_MODE}")
             with open('find.cmake', 'wt') as f:
+                # TODO: remove vars
+                # ONLY HOME
                 f.write("SET(%s_VERSION %s CACHE STRING \"Last version compiled ${PACKAGE}\" FORCE)\n" % (package_norm, version))
-                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${CMAKI_PLATFORM}/%s-%s/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
+                f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${CMAKI_PLATFORM}/%s-%s/${CMAKI_PLATFORM}/include\" %s_INCLUDE)\n" % (package, version, package, version, package_norm))
                 f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s-%s-${CMAKI_PLATFORM}/%s-%s/${CMAKI_PLATFORM}\" %s_LIBDIR)\n" % (package, version, package, version, package_norm))
                 f.write("file(TO_NATIVE_PATH \"${PACKAGE_BUILD_DIRECTORY}/../%s\" %s_BUILD)\n" % (build_directory, package_norm))
                 f.write("SET(%s_INCLUDE ${%s_INCLUDE} CACHE STRING \"Include dir %s\" FORCE)\n" % (package_norm, package_norm, package))

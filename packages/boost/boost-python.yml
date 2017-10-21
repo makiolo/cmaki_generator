@@ -13,11 +13,13 @@
         - BOOST_PARAMETERS=--with-python
         - BOOST_INSTALL_HEADERS=0
     targets:
-        - boost_python:
+        - boost_python3:
             info:
                 <<: *library_dynamic_boost
             extra:
-                \*-debug:
+                linux_*_*_*-*-debug:
                     definitions:
                         - Debug="-DBOOST_DEBUG_PYTHON=1"
+                default:
+                    null
 

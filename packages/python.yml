@@ -11,7 +11,7 @@
             extra:
                 default:
                     include:
-                        - include/python3.5
+                        - include/python3.5m
                     system_depends:
                         - dl
                         - util

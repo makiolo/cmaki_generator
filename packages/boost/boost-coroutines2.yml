@@ -20,3 +20,4 @@
         - dummy:
             info:
                 <<: *library_dynamic_boost
+

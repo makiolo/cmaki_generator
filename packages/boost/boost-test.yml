@@ -20,9 +20,9 @@
             info:
                 <<: *library_dynamic_boost
             extra:
+                windows-*:
+                    null
                 default:
                     system_depends:
                         - pthread
-                solaris_sparc32:
-                    system_depends:
-                        - pthread
+
