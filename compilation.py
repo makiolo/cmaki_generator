@@ -150,7 +150,7 @@ def compilation(node, parameters, compiler_replace_maps):
                     definitions_extra += ' -D%s' % definition
                 # end definitions cmake
 
-                if (not 'CMAKE_TOOLCHAIN_FILE' in env_modified) or (not env_modified['CMAKE_TOOLCHAIN_FILE']):
+                if (not 'CMAKE_TOOLCHAIN_FILE' in env_modified) or (not env_modified['CMAKE_TOOLCHAIN_FILE']) or (env_modified['CMAKE_TOOLCHAIN_FILE'] == "no cross compile"):
                     cmake_toolchain_file_filepath=''
                 else:
                     cmake_toolchain_file_filepath=' -DCMAKE_TOOLCHAIN_FILE="{}"'.format(env_modified['CMAKE_TOOLCHAIN_FILE'])
