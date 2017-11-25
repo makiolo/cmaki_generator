@@ -114,6 +114,7 @@ def collapse_third_parties(rootdir, filename, yamlfile=None):
     p = pipeline.grep_v('shippable.yml')(p)
     p = pipeline.grep_v('appveyor.yml')(p)
     p = pipeline.grep_v('codecov.yml')(p)
+    p = pipeline.grep_v('.github')(p)
     p = pipeline.grep_v('docker-compose.yml')(p)
     p = pipeline.grep_v('circle.yml')(p)
     p = pipeline.grep_v('_config.yml')(p)
