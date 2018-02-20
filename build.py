@@ -311,11 +311,7 @@ usage:""")
     parameters = parser.parse_args()
 
     '''
-    MODE=Release
-    ./build boost-headers
-    --third-party-dir=$(pwd)/artifacts/cmaki_find_package
-    --cmakefiles=$(pwd)/node_modules/cmaki
-    --prefix=$(pwd)/artifacts
+    MODE=Release ./build boost-headers --third-party-dir=$(pwd)/artifacts/cmaki_find_package --cmakefiles=$(pwd)/node_modules/cmaki --prefix=$(pwd)/artifacts
     '''
 
     # parameters cmd line are paths
