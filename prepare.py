@@ -31,16 +31,16 @@ def prepare(node, parameters, compiler_replace_maps):
         content_cmakelists = f.read()
 
     # remove packages before
-    # for plat in platforms:
-    #     prefix_package = os.path.join(parameters.prefix, '%s.tar.gz' % node.get_workspace(plat))
-    #     prefix_package_cmake = os.path.join(parameters.prefix, '%s-cmakelib-%s.tar.gz' % (node.get_base_folder(), sys.platform))
-    #     prefix_folder_cmake = os.path.join(parameters.third_party_dir, node.get_base_folder())
-    #     logging.debug("preremoving package %s" % prefix_package)
-    #     logging.debug("preremoving package cmakefiles %s" % prefix_package_cmake)
-    #     logging.debug("preremoving folder cmakefiles %s" % prefix_folder_cmake)
-    #     utils.tryremove(prefix_package)
-    #     utils.tryremove(prefix_package_cmake)
-    #     utils.tryremove_dir(prefix_folder_cmake)
+    for plat in platforms:
+        prefix_package = os.path.join(parameters.prefix, '%s.tar.gz' % node.get_workspace(plat))
+        prefix_package_cmake = os.path.join(parameters.prefix, '%s-cmakelib-%s.tar.gz' % (node.get_base_folder(), sys.platform))
+        prefix_folder_cmake = os.path.join(parameters.third_party_dir, node.get_base_folder())
+        logging.debug("preremoving package %s" % prefix_package)
+        logging.debug("preremoving package cmakefiles %s" % prefix_package_cmake)
+        logging.debug("preremoving folder cmakefiles %s" % prefix_folder_cmake)
+        utils.tryremove(prefix_package)
+        utils.tryremove(prefix_package_cmake)
+        utils.tryremove_dir(prefix_folder_cmake)
 
     # run_tests or packing
     build_modes = node.get_build_modes()
