@@ -27,10 +27,12 @@
             info:
                 <<: *library_dynamic_exact
 
+
 - google-gmock:
     <<: *thirdparty_defaults
     mask: ls
     source: https://github.com/google/googletest.git
+    branch: release-1.8.0
     post_install:
         - ./googlemock/include/gmock/*.h* include/gmock/ RECURSIVE
         - ./googletest/include/gtest/*.h* include/gtest/ RECURSIVE
@@ -54,3 +56,5 @@
         - gmock_main:
             info:
                 <<: *library_static_exact
+
+
