@@ -7,7 +7,7 @@
         - CMAKE_POSITION_INDEPENDENT_CODE=OFF
         - BUILD_CURL_EXE=OFF
         - BUILD_CURL_TESTS=OFF
-        - CMAKE_USE_OPENSSL=OFF
+        - CMAKE_USE_OPENSSL=ON
         - ENABLE_IPV6=OFF
     unittest:
         |
