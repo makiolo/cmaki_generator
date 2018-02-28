@@ -4,11 +4,11 @@
     source: https://curl.haxx.se/download/curl-7.58.0.tar.gz
     uncompress_strip: curl-7.58.0
     cmake_definitions:
-        - CMAKE_POSITION_INDEPENDENT_CODE=OFF
-        - BUILD_CURL_EXE=OFF
-        - BUILD_CURL_TESTS=OFF
+        # - CMAKE_POSITION_INDEPENDENT_CODE=OFF
+        # - BUILD_CURL_EXE=OFF
+        # - BUILD_CURL_TESTS=OFF
         - CMAKE_USE_OPENSSL=ON
-        - ENABLE_IPV6=OFF
+        # - ENABLE_IPV6=OFF
     unittest:
         |
             #include <curl/curl.h>
